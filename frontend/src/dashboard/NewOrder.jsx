@@ -28,7 +28,7 @@ function NewOrder() {
       setServicesLoading(true);
 
       const response = await axios.get(
-        "http://localhost:5000/api/dashboard-service"
+        `${process.env.REACT_APP_API_URL}/api/dashboard-service`
       );
 
       console.log("Services:", response.data);
@@ -63,7 +63,7 @@ const fetchWalletBalance = async () => {
     console.log("Token exists:", !!token);
 
     const response = await axios.get(
-      "http://localhost:5000/api/wallet/balance",
+      `${process.env.REACT_APP_API_URL}/api/wallet/balance`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -332,7 +332,7 @@ Please add funds.`
 
       const response =
         await axios.post(
-          "http://localhost:5000/api/orders",
+          `${process.env.REACT_APP_API_URL}/api/orders`,
           {
 
             serviceId:

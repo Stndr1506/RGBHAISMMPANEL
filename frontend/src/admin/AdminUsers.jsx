@@ -35,7 +35,7 @@ function AdminUsers() {
 
 
       const response = await axios.get(
-        "http://localhost:5000/api/admin/users",
+        `${process.env.REACT_APP_API_URL}/api/admin/users`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -26,7 +26,7 @@ function Payments() {
       }
 
       const response = await axios.get(
-        "http://localhost:5000/api/admin/payments",
+        `${process.env.REACT_APP_API_URL}/api/admin/payments`,
       {
           headers: {
             Authorization: `Bearer ${token}`,

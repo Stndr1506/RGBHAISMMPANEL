@@ -21,7 +21,7 @@ function Funds() {
       console.log("Verifying Paytm payment:", orderId);
 
       const response = await fetch(
-        "http://localhost:5000/api/payments/paytm/verify",
+        `${process.env.REACT_APP_API_URL}/api/payments/paytm/verify`,
         {
           method: "POST",
           headers: {
@@ -124,7 +124,7 @@ function Funds() {
       // ------------------------------------------------
 
       const response = await fetch(
-        "http://localhost:5000/api/payments/create",
+        `${process.env.REACT_APP_API_URL}/api/payments/create`,
         {
           method: "POST",
           headers: {
@@ -378,7 +378,7 @@ function Funds() {
     console.log("Token exists:", !!token);
 
     const response = await axios.get(
-      "http://localhost:5000/api/wallet/balance",
+      `${process.env.REACT_APP_API_URL}/api/wallet/balance`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

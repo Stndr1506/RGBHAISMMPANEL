@@ -3,7 +3,7 @@ import "../styles/DashboardServices.css";
 import Home from "../pages/Home";
 
 // Backend API
-const API_URL = "http://localhost:5000/api/dashboard-service";
+const API_URL = `${process.env.REACT_APP_API_URL}/api/dashboard-service`;
 
 const categories = [
   "All",

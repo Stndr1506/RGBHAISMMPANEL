@@ -30,7 +30,7 @@ function AdminOrders() {
 
 
       const response = await axios.get(
-        "http://localhost:5000/api/admin/orders",
+        `${process.env.REACT_APP_API_URL}/api/admin/orders`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -4,7 +4,7 @@ import "../styles/DashboardServices.css";
 import AdminHome from "./AdminHome";
 
 // Change this if your backend is hosted somewhere else
-const API_URL = "http://localhost:5000/api/admin-service";
+const API_URL = `${process.env.REACT_APP_API_URL}/api/admin-service`;
 
 const categories = [
   "All",
