@@ -1,0 +1,318 @@
+/* ================================
+   SIGNUP PAGE
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+.signup-page {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 50px 20px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(255, 104, 170, 0.25),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(123, 92, 255, 0.22),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #fff0f7 0%,
+      #f4efff 50%,
+      #eef7ff 100%
+    );
+}
+
+
+/* ================================
+   SIGNUP CARD
+================================ */
+
+.signup-card {
+  width: 100%;
+  max-width: 520px;
+
+  padding: 35px;
+
+  position: relative;
+  z-index: 5;
+
+  background: rgba(255, 255, 255, 0.88);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 60px rgba(90, 60, 120, 0.15),
+    0 5px 20px rgba(0, 0, 0, 0.05);
+
+  backdrop-filter: blur(15px);
+}
+
+
+/* ================================
+   INPUT GROUP
+================================ */
+
+.signup-input-group {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 18px;
+}
+
+.signup-input-group label {
+  margin-bottom: 8px;
+
+  color: #333;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.signup-input-group input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  outline: none;
+
+  background: #fff;
+
+  color: #222;
+
+  font-size: 15px;
+
+  transition: all 0.25s ease;
+}
+
+.signup-input-group input:hover {
+  border-color: #bbb;
+}
+
+.signup-input-group input:focus {
+  border-color: #ff3d91;
+
+  box-shadow:
+    0 0 0 4px rgba(255, 61, 145, 0.1);
+}
+
+
+/* ================================
+   SIGNUP BUTTON
+================================ */
+
+.signup-btn {
+  width: 100%;
+  height: 54px;
+
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff5fa7
+    );
+
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px rgba(255, 61, 145, 0.3);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 30px rgba(255, 61, 145, 0.4);
+}
+
+.signup-btn:active {
+  transform: translateY(0);
+}
+
+
+/* ================================
+   ALREADY ACCOUNT
+================================ */
+
+.already-account {
+  margin-top: 22px;
+
+  text-align: center;
+
+  color: #666;
+
+  font-size: 14px;
+}
+
+.already-account a {
+  margin-left: 5px;
+
+  color: #ff3d91;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.already-account a:hover {
+  color: #d91f72;
+
+  text-decoration: underline;
+}
+
+
+/* ================================
+   WHATSAPP BUTTON
+================================ */
+
+.whatsapp-btn {
+  position: fixed;
+
+  right: 25px;
+  bottom: 25px;
+
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #25d366;
+
+  color: #fff;
+
+  font-size: 27px;
+
+  cursor: pointer;
+
+  z-index: 20;
+
+  box-shadow:
+    0 8px 25px rgba(37, 211, 102, 0.35);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: scale(1.1);
+
+  box-shadow:
+    0 12px 30px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-btn span {
+  transform: rotate(-20deg);
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+  .signup-page {
+    padding: 30px 15px;
+  }
+
+  .signup-card {
+    max-width: 100%;
+
+    padding: 25px 20px;
+
+    border-radius: 20px;
+  }
+
+  .signup-input-group {
+    margin-bottom: 16px;
+  }
+
+  .signup-input-group input {
+    height: 48px;
+  }
+
+  .signup-btn {
+    height: 51px;
+  }
+
+  .whatsapp-btn {
+    width: 52px;
+    height: 52px;
+
+    right: 18px;
+    bottom: 18px;
+  }
+}
+
+
+/* ================================
+   SMALL MOBILE
+================================ */
+
+@media (max-width: 380px) {
+  .signup-card {
+    padding: 22px 16px;
+  }
+
+  .signup-input-group label {
+    font-size: 13px;
+  }
+
+  .signup-input-group input {
+    height: 46px;
+  }
+
+  .signup-btn {
+    height: 49px;
+
+    font-size: 15px;
+  }
+
+  .already-account {
+    font-size: 13px;
+  }
+}

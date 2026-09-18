@@ -1,0 +1,1026 @@
+/* =========================================
+   NEW ORDER PAGE
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.order-page {
+  min-height: 100vh;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 104, 170, 0.14),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(123, 92, 255, 0.14),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #fff0f7 0%,
+      #f4efff 50%,
+      #eef7ff 100%
+    );
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================
+   HOME SIDEBAR COMPATIBILITY
+========================================= */
+
+.order-page .vertical-nav {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 230px;
+  height: 100vh;
+
+  z-index: 1000;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.order-container {
+  margin-left: 230px;
+
+  width: calc(100% - 230px);
+
+  min-height: 100vh;
+
+  padding: 25px 30px 40px;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+.order-title {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto 20px;
+}
+
+.order-title h1 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.order-title p {
+  margin: 6px 0 0;
+
+  color: #777;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   ORDER LAYOUT
+========================================= */
+
+.order-layout {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 320px;
+
+  gap: 20px;
+
+  align-items: start;
+}
+
+
+/* =========================================
+   FORM CARD
+========================================= */
+
+.order-form-card {
+  width: 100%;
+
+  padding: 25px;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 35px rgba(90, 60, 120, 0.1);
+
+  backdrop-filter: blur(12px);
+}
+
+
+/* =========================================
+   CARD HEADING
+========================================= */
+
+.card-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 22px;
+
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.heading-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff5fa7
+    );
+
+  color: white;
+
+  font-size: 25px;
+  font-weight: 400;
+
+  box-shadow:
+    0 6px 15px rgba(255, 61, 145, 0.25);
+}
+
+.card-heading h2 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 19px;
+}
+
+.card-heading p {
+  margin: 4px 0 0;
+
+  color: #888;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-group {
+  margin-bottom: 17px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #333;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   INPUT / SELECT
+========================================= */
+
+.form-group input,
+.form-group select {
+  width: 100%;
+
+  height: 46px;
+
+  padding: 0 13px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #fff;
+
+  color: #333;
+
+  font-size: 13px;
+
+  transition: 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #ff3d91;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 61, 145, 0.1);
+}
+
+.form-group input:hover,
+.form-group select:hover {
+  border-color: #bbb;
+}
+
+.form-group small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #888;
+
+  font-size: 11px;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   SERVICE INFO
+========================================= */
+
+.service-info {
+  margin: 0 0 18px;
+
+  padding: 16px;
+
+  border: 1px solid #f3d5e3;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff5f9,
+      #fffafd
+    );
+}
+
+.service-info-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 10px;
+
+  color: #999;
+
+  font-size: 11px;
+}
+
+.service-badge {
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  background: #ffe2ef;
+
+  color: #df2474;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+.service-info h3 {
+  margin: 0 0 7px;
+
+  color: #333;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+.service-info p {
+  margin: 0 0 14px;
+
+  color: #777;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   SERVICE LIMITS
+========================================= */
+
+.service-limits {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+.service-limits > div {
+  padding: 10px;
+
+  border-radius: 8px;
+
+  background: white;
+
+  border: 1px solid #eee;
+}
+
+.service-limits span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #999;
+
+  font-size: 10px;
+}
+
+.service-limits strong {
+  color: #ff3d91;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   CHECKBOX
+========================================= */
+
+.checkbox-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 5px 0 18px;
+}
+
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+
+  accent-color: #ff3d91;
+
+  cursor: pointer;
+}
+
+.checkbox-row label {
+  color: #555;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   PLACE ORDER BUTTON
+========================================= */
+
+.place-order-btn {
+  width: 100%;
+
+  height: 48px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff5fa7
+    );
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 20px rgba(255, 61, 145, 0.25);
+
+  transition: 0.2s ease;
+}
+
+.place-order-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 25px rgba(255, 61, 145, 0.35);
+}
+
+.place-order-btn:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   RIGHT SUMMARY
+========================================= */
+
+.order-summary {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  position: sticky;
+
+  top: 20px;
+}
+
+
+/* =========================================
+   SUMMARY CARD
+========================================= */
+
+.summary-card {
+  padding: 20px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 10px 30px rgba(90, 60, 120, 0.1);
+
+  backdrop-filter: blur(12px);
+}
+
+.summary-title {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.summary-title h2 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 17px;
+}
+
+.summary-title span {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #ffe3ef;
+
+  color: #ff3d91;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   SUMMARY LINES
+========================================= */
+
+.summary-line {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 8px 0;
+
+  font-size: 12px;
+}
+
+.summary-line span {
+  color: #888;
+}
+
+.summary-line strong {
+  max-width: 160px;
+
+  overflow: hidden;
+
+  text-align: right;
+
+  color: #444;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   DIVIDER
+========================================= */
+
+.summary-divider {
+  height: 1px;
+
+  margin: 8px 0;
+
+  background: #eee;
+}
+
+
+/* =========================================
+   TOTAL
+========================================= */
+
+.total-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 5px 0 15px;
+}
+
+.total-row span {
+  color: #333;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.total-row strong {
+  color: #ff3d91;
+
+  font-size: 20px;
+}
+
+
+/* =========================================
+   SUMMARY BUTTON
+========================================= */
+
+.summary-order-btn {
+  width: 100%;
+
+  height: 42px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #fff0f6;
+
+  color: #df2474;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.summary-order-btn:hover {
+  background: #ff3d91;
+
+  color: white;
+}
+
+
+/* =========================================
+   BALANCE CARD
+========================================= */
+
+.balance-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 15px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff5fa7
+    );
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px rgba(255, 61, 145, 0.25);
+}
+
+.balance-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.2);
+
+  font-weight: 700;
+}
+
+.balance-card span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 10px;
+
+  opacity: 0.85;
+}
+
+.balance-card strong {
+  font-size: 16px;
+}
+
+
+/* =========================================
+   HELP CARD
+========================================= */
+
+.help-card {
+  padding: 17px;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  box-shadow:
+    0 8px 25px rgba(90, 60, 120, 0.08);
+}
+
+.help-card h3 {
+  margin: 0 0 7px;
+
+  color: #333;
+
+  font-size: 14px;
+}
+
+.help-card p {
+  margin: 0 0 10px;
+
+  color: #777;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.help-card a {
+  color: #ff3d91;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.help-card a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   RECENT ORDERS
+========================================= */
+
+.recent-orders {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 20px auto 0;
+
+  padding: 20px;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 30px rgba(90, 60, 120, 0.08);
+}
+
+
+/* =========================================
+   RECENT HEADER
+========================================= */
+
+.recent-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.recent-header h2 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 17px;
+}
+
+.recent-header p {
+  margin: 4px 0 0;
+
+  color: #888;
+
+  font-size: 11px;
+}
+
+.recent-header a {
+  color: #ff3d91;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+/* =========================================
+   RECENT TABLE
+========================================= */
+
+.recent-table {
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid #eee;
+
+  border-radius: 10px;
+}
+
+.recent-row {
+  display: grid;
+
+  grid-template-columns:
+    90px
+    minmax(180px, 1fr)
+    100px
+    120px
+    100px;
+
+  align-items: center;
+
+  min-height: 45px;
+
+  padding: 0 12px;
+
+  border-bottom: 1px solid #eee;
+
+  color: #555;
+
+  font-size: 11px;
+}
+
+.recent-row:last-child {
+  border-bottom: none;
+}
+
+.recent-head {
+  background: #fff1f7;
+
+  color: #df2474;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status-processing,
+.status-complete {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  border-radius: 20px;
+
+  font-size: 9px;
+}
+
+.status-processing {
+  background: #fff3cd;
+
+  color: #a87500;
+}
+
+.status-complete {
+  background: #dcfce7;
+
+  color: #16803c;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+  .order-container {
+    margin-left: 200px;
+
+    width: calc(100% - 200px);
+
+    padding: 20px;
+  }
+
+  .order-page .vertical-nav {
+    width: 200px;
+  }
+
+  .order-layout {
+    grid-template-columns:
+      minmax(0, 1fr) 280px;
+  }
+
+  .recent-row {
+    grid-template-columns:
+      70px
+      minmax(150px, 1fr)
+      80px
+      100px
+      80px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+  .order-page .vertical-nav {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+  }
+
+  .order-container {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding: 15px;
+  }
+
+  .order-title h1 {
+    font-size: 25px;
+  }
+
+  .order-layout {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .order-summary {
+    position: static;
+  }
+
+  .order-form-card {
+    padding: 20px;
+  }
+
+  .service-limits {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .recent-orders {
+    padding: 15px;
+
+    overflow-x: auto;
+  }
+
+  .recent-table {
+    min-width: 600px;
+  }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .order-container {
+    padding: 12px;
+  }
+
+  .order-title {
+    margin-bottom: 15px;
+  }
+
+  .order-title h1 {
+    font-size: 22px;
+  }
+
+  .order-title p {
+    font-size: 12px;
+  }
+
+  .order-form-card {
+    padding: 16px;
+  }
+
+  .card-heading {
+    margin-bottom: 17px;
+  }
+
+  .card-heading h2 {
+    font-size: 16px;
+  }
+
+  .service-limits {
+    gap: 6px;
+  }
+
+  .service-limits > div {
+    padding: 8px 5px;
+  }
+
+  .service-limits strong {
+    font-size: 11px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+}

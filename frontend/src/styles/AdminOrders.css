@@ -1,0 +1,567 @@
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fb;
+  color: #202938;
+}
+
+
+/* =====================================================
+   ADMIN ORDERS PAGE
+===================================================== */
+
+.admin-orders-page {
+  width: 100%;
+  max-width: 1280px;
+
+  margin: 0 auto;
+
+  padding: 45px 25px 80px;
+}
+
+
+/* =====================================================
+   PAGE HEADER
+===================================================== */
+
+.orders-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 25px;
+}
+
+.orders-header h1 {
+  margin: 0;
+
+  color: #1e2532;
+
+  font-size: 30px;
+
+  font-weight: 750;
+}
+
+.orders-header p {
+  margin: 8px 0 0;
+
+  color: #8a93a3;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   REFRESH BUTTON
+===================================================== */
+
+.orders-header button {
+  height: 40px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #635bff;
+
+  color: #ffffff;
+
+  padding: 0 18px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.orders-header button:hover {
+  background: #5148e8;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   ORDERS CARD
+===================================================== */
+
+.orders-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e8ee;
+
+  border-radius: 10px;
+
+  overflow-x: auto;
+
+  box-shadow:
+    0 2px 8px rgba(31, 41, 55, 0.03);
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.orders-card table {
+  width: 100%;
+
+  min-width: 1100px;
+
+  border-collapse: collapse;
+}
+
+
+/* =====================================================
+   TABLE HEADER
+===================================================== */
+
+.orders-card thead {
+  background: #f8f9fb;
+}
+
+.orders-card th {
+  padding: 16px 15px;
+
+  text-align: left;
+
+  color: #737d8d;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #e8ebf0;
+}
+
+
+/* =====================================================
+   TABLE BODY
+===================================================== */
+
+.orders-card td {
+  padding: 16px 15px;
+
+  color: #596273;
+
+  font-size: 13px;
+
+  vertical-align: middle;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.orders-card tbody tr {
+  transition: background 0.15s;
+}
+
+.orders-card tbody tr:hover {
+  background: #fafaff;
+}
+
+.orders-card tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* =====================================================
+   ORDER ID
+===================================================== */
+
+.orders-card td:first-child {
+  color: #635bff;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   USER
+===================================================== */
+
+.orders-card td strong {
+  color: #303846;
+
+  font-weight: 600;
+}
+
+.orders-card td small {
+  display: inline-block;
+
+  margin-top: 5px;
+
+  color: #929aa8;
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   SERVICE
+===================================================== */
+
+.orders-card td:nth-child(3) {
+  max-width: 250px;
+
+  color: #303846;
+
+  font-weight: 500;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   CATEGORY
+===================================================== */
+
+.orders-card td:nth-child(4) {
+  color: #635bff;
+
+  font-size: 11px;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   LINK
+===================================================== */
+
+.orders-card td a {
+  display: inline-block;
+
+  color: #635bff;
+
+  text-decoration: none;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.orders-card td a:hover {
+  color: #5047e8;
+
+  text-decoration: underline;
+}
+
+
+/* =====================================================
+   QUANTITY
+===================================================== */
+
+.orders-card td:nth-child(6) {
+  color: #657080;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   RATE
+===================================================== */
+
+.orders-card td:nth-child(7) {
+  color: #657080;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   AMOUNT
+===================================================== */
+
+.orders-card td:nth-child(8) {
+  color: #13a36f;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+  display: inline-block;
+
+  padding: 6px 9px;
+
+  border-radius: 5px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   STATUS COLORS
+===================================================== */
+
+/* Pending */
+
+.status.pending {
+  background: #fff6df;
+
+  color: #b77900;
+}
+
+
+/* Processing */
+
+.status.processing {
+  background: #eef2ff;
+
+  color: #4f46b5;
+}
+
+
+/* Completed */
+
+.status.completed {
+  background: #e9f8f1;
+
+  color: #12805a;
+}
+
+
+/* Cancelled */
+
+.status.cancelled {
+  background: #fff0f0;
+
+  color: #d14b4b;
+}
+
+
+/* Shipped */
+
+.status.shipped {
+  background: #edf7ff;
+
+  color: #2875a8;
+}
+
+
+/* Failed */
+
+.status.failed {
+  background: #fff0f0;
+
+  color: #d14b4b;
+}
+
+
+/* =====================================================
+   NO ORDERS
+===================================================== */
+
+.orders-card tbody tr td[colspan="10"] {
+  text-align: center;
+
+  padding: 70px 20px;
+
+  color: #8a93a3;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   LOADING / ERROR
+===================================================== */
+
+.admin-orders-page > h2 {
+  margin: 0 0 15px;
+
+  color: #1e2532;
+
+  font-size: 24px;
+}
+
+.admin-orders-page > p {
+  color: #8a93a3;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   RETRY BUTTON
+===================================================== */
+
+.admin-orders-page > button {
+  border: none;
+
+  background: #635bff;
+
+  color: #ffffff;
+
+  padding: 10px 18px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.admin-orders-page > button:hover {
+  background: #5047e8;
+}
+
+
+/* =====================================================
+   CUSTOM SCROLLBAR
+===================================================== */
+
+.orders-card::-webkit-scrollbar {
+  height: 7px;
+}
+
+.orders-card::-webkit-scrollbar-track {
+  background: #f5f6f8;
+}
+
+.orders-card::-webkit-scrollbar-thumb {
+  background: #d6dae2;
+
+  border-radius: 10px;
+}
+
+.orders-card::-webkit-scrollbar-thumb:hover {
+  background: #bfc4ce;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+  .admin-orders-page {
+    padding: 35px 20px 60px;
+  }
+
+  .orders-header h1 {
+    font-size: 27px;
+  }
+
+  .orders-card table {
+    min-width: 1050px;
+  }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .admin-orders-page {
+    padding: 25px 15px 50px;
+  }
+
+  .orders-header {
+    align-items: flex-start;
+  }
+
+  .orders-header h1 {
+    font-size: 25px;
+  }
+
+  .orders-header p {
+    font-size: 12px;
+  }
+
+  .orders-header button {
+    height: 36px;
+
+    padding: 0 13px;
+
+    font-size: 12px;
+  }
+
+  .orders-card {
+    border-radius: 9px;
+  }
+
+  .orders-card th {
+    padding: 13px 12px;
+
+    font-size: 10px;
+  }
+
+  .orders-card td {
+    padding: 13px 12px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+
+  .admin-orders-page {
+    padding: 20px 10px 40px;
+  }
+
+  .orders-header h1 {
+    font-size: 22px;
+  }
+
+  .orders-header p {
+    font-size: 11px;
+  }
+
+  .orders-header button {
+    padding: 0 10px;
+
+    font-size: 11px;
+  }
+}

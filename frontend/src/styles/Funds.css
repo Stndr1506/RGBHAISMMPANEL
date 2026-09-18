@@ -1,0 +1,1377 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================================
+   FUNDS PAGE
+========================================================= */
+
+.funds-page {
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(255, 105, 180, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(120, 90, 255, 0.10),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #fff3f8 0%,
+      #f5f0ff 50%,
+      #eef7ff 100%
+    );
+}
+
+
+/* =========================================================
+   HOME NAVBAR AREA
+   Your Home component should have width: 230px
+========================================================= */
+
+.funds-page .vertical-nav {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 230px;
+  height: 100vh;
+
+  z-index: 1000;
+}
+
+
+/* =========================================================
+   FUNDS MAIN CONTENT
+
+   IMPORTANT:
+   230px is reserved for the Home sidebar.
+========================================================= */
+
+.funds-container {
+  width: calc(100% - 230px);
+
+  min-height: 100vh;
+
+  margin-left: 230px;
+
+  padding: 25px 30px 35px;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.funds-heading {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto 20px;
+}
+
+.funds-heading h1 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.funds-heading p {
+  margin: 6px 0 0;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   MAIN TWO COLUMN LAYOUT
+========================================================= */
+
+.funds-layout {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    320px;
+
+  gap: 20px;
+
+  align-items: start;
+}
+
+
+/* =========================================================
+   LEFT PAYMENT CARD
+========================================================= */
+
+.payment-card {
+  width: 100%;
+
+  padding: 24px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 35px rgba(70, 45, 100, 0.10);
+}
+
+
+/* =========================================================
+   PAYMENT CARD HEADER
+========================================================= */
+
+.payment-card-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  padding-bottom: 17px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.wallet-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff69ad
+    );
+
+  color: white;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  box-shadow:
+    0 7px 18px rgba(255, 61, 145, 0.22);
+}
+
+.payment-card-heading h2 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 19px;
+}
+
+.payment-card-heading p {
+  margin: 4px 0 0;
+
+  color: #888;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.fund-form-group {
+  margin-bottom: 16px;
+}
+
+.fund-form-group > label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #333;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.fund-form-group select {
+  width: 100%;
+
+  height: 44px;
+
+  padding: 0 12px;
+
+  border: 1px solid #dddddd;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  background: white;
+
+  color: #333;
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.fund-form-group select:focus {
+  border-color: #ff3d91;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 61, 145, 0.10);
+}
+
+
+/* =========================================================
+   AMOUNT INPUT
+========================================================= */
+
+.amount-input {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  border: 1px solid #dddddd;
+
+  border-radius: 9px;
+
+  background: white;
+
+  transition: 0.2s ease;
+}
+
+.amount-input:focus-within {
+  border-color: #ff3d91;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 61, 145, 0.10);
+}
+
+.amount-input span {
+  width: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #ff3d91;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+.amount-input input {
+  flex: 1;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0 10px;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #333;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   QUICK AMOUNTS
+========================================================= */
+
+.quick-amounts {
+  margin-bottom: 18px;
+}
+
+.quick-amounts > label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #333;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.quick-buttons {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.quick-btn {
+  min-width: 65px;
+  height: 34px;
+
+  padding: 0 11px;
+
+  border: 1px solid #eadde4;
+
+  border-radius: 8px;
+
+  background: white;
+
+  color: #555;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.quick-btn:hover {
+  border-color: #ff3d91;
+
+  color: #ff3d91;
+
+  background: #fff4f8;
+}
+
+.quick-btn.selected {
+  border-color: #ff3d91;
+
+  background: #ff3d91;
+
+  color: white;
+
+  box-shadow:
+    0 5px 12px rgba(255, 61, 145, 0.20);
+}
+
+
+/* =========================================================
+   PAYMENT METHODS
+========================================================= */
+
+.payment-section {
+  margin-bottom: 16px;
+}
+
+.payment-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #333;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.payment-methods {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+.payment-method {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 10px;
+
+  border: 1px solid #e4e4e4;
+
+  border-radius: 10px;
+
+  background: white;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.payment-method:hover {
+  border-color: #ff9fc5;
+
+  background: #fff8fb;
+}
+
+.payment-method.selected {
+  border-color: #ff3d91;
+
+  background: #fff3f8;
+
+  box-shadow:
+    0 4px 12px rgba(255, 61, 145, 0.08);
+}
+
+.method-icon {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #ffe5f0;
+
+  color: #ff3d91;
+
+  font-size: 16px;
+
+  font-weight: 700;
+}
+
+.method-content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.method-content strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #333;
+
+  font-size: 11px;
+}
+
+.method-content span {
+  display: block;
+
+  color: #999;
+
+  font-size: 9px;
+
+  line-height: 1.3;
+}
+
+.method-radio {
+  width: 19px;
+  height: 19px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #ddd;
+
+  border-radius: 50%;
+
+  color: white;
+
+  font-size: 9px;
+}
+
+.payment-method.selected .method-radio {
+  border-color: #ff3d91;
+
+  background: #ff3d91;
+}
+
+
+/* =========================================================
+   PAYMENT NOTICE
+========================================================= */
+
+.payment-notice {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin: 14px 0;
+
+  padding: 10px;
+
+  border: 1px solid #e9e3ff;
+
+  border-radius: 9px;
+
+  background: #f7f5ff;
+}
+
+.notice-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #7564d8;
+
+  color: white;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.payment-notice p {
+  margin: 0;
+
+  color: #777;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   CONTINUE BUTTON
+========================================================= */
+
+.add-money-button {
+  width: 100%;
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff63aa
+    );
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 18px rgba(255, 61, 145, 0.23);
+
+  transition: 0.2s ease;
+}
+
+.add-money-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 11px 23px rgba(255, 61, 145, 0.30);
+}
+
+.add-money-button span {
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   RIGHT SIDEBAR
+========================================================= */
+
+.funds-sidebar {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  position: sticky;
+
+  top: 20px;
+}
+
+
+/* =========================================================
+   CURRENT BALANCE
+========================================================= */
+
+.current-balance-card {
+  padding: 18px;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff3d91,
+      #ff69ad
+    );
+
+  color: white;
+
+  box-shadow:
+    0 10px 25px rgba(255, 61, 145, 0.22);
+}
+
+.balance-card-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.balance-card-top span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 10px;
+}
+
+.balance-card-top strong {
+  display: block;
+
+  font-size: 22px;
+}
+
+.big-wallet {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.18);
+
+  font-size: 20px;
+
+  font-weight: 700;
+}
+
+.balance-line {
+  height: 1px;
+
+  margin: 14px 0 10px;
+
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.current-balance-card p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   PAYMENT SUMMARY
+========================================================= */
+
+.fund-summary-card {
+  padding: 18px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow:
+    0 8px 25px rgba(70, 45, 100, 0.08);
+}
+
+.fund-summary-card h3 {
+  margin: 0 0 12px;
+
+  color: #222;
+
+  font-size: 15px;
+}
+
+.fund-summary-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 7px 0;
+
+  font-size: 10px;
+}
+
+.fund-summary-row span {
+  color: #888;
+}
+
+.fund-summary-row strong {
+  max-width: 150px;
+
+  overflow: hidden;
+
+  color: #444;
+
+  font-size: 10px;
+
+  text-align: right;
+}
+
+.fund-summary-row .green {
+  color: #1da157;
+}
+
+.summary-separator {
+  height: 1px;
+
+  margin: 7px 0;
+
+  background: #eeeeee;
+}
+
+.fund-total {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 4px;
+}
+
+.fund-total span {
+  color: #333;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.fund-total strong {
+  color: #ff3d91;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   HELP CARD
+========================================================= */
+
+.fund-help-card {
+  padding: 16px;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 8px 25px rgba(70, 45, 100, 0.08);
+}
+
+.help-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 7px;
+}
+
+.help-question {
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffe5f0;
+
+  color: #ff3d91;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.help-title h3 {
+  margin: 0;
+
+  color: #333;
+
+  font-size: 13px;
+}
+
+.fund-help-card p {
+  margin: 0 0 9px;
+
+  color: #777;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+.fund-help-card a {
+  color: #ff3d91;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.fund-help-card a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   PAYMENT HISTORY
+========================================================= */
+
+.payment-history {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 20px auto 0;
+
+  padding: 18px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow:
+    0 8px 28px rgba(70, 45, 100, 0.08);
+}
+
+.history-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.history-heading h2 {
+  margin: 0;
+
+  color: #222;
+
+  font-size: 16px;
+}
+
+.history-heading p {
+  margin: 4px 0 0;
+
+  color: #888;
+
+  font-size: 10px;
+}
+
+.history-heading a {
+  color: #ff3d91;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   HISTORY TABLE
+========================================================= */
+
+.history-table {
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid #eeeeee;
+
+  border-radius: 9px;
+}
+
+.history-row {
+  display: grid;
+
+  grid-template-columns:
+    1.3fr
+    1fr
+    0.8fr
+    0.8fr
+    0.7fr;
+
+  align-items: center;
+
+  min-height: 40px;
+
+  padding: 0 11px;
+
+  border-bottom: 1px solid #eeeeee;
+
+  color: #555;
+
+  font-size: 9px;
+}
+
+.history-row:last-child {
+  border-bottom: none;
+}
+
+.history-header {
+  background: #fff1f7;
+
+  color: #df2474;
+
+  font-size: 8px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   PAYMENT STATUS
+========================================================= */
+
+.payment-success,
+.payment-pending {
+  display: inline-block;
+
+  padding: 4px 7px;
+
+  border-radius: 20px;
+
+  font-size: 7px;
+}
+
+.payment-success {
+  background: #dcfce7;
+
+  color: #16803c;
+}
+
+.payment-pending {
+  background: #fff3cd;
+
+  color: #a87500;
+}
+
+
+/* =========================================================
+   QR MODAL
+========================================================= */
+
+.qr-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 5000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(20, 15, 30, 0.65);
+
+  backdrop-filter: blur(5px);
+}
+
+.qr-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 380px;
+
+  padding: 26px;
+
+  border-radius: 18px;
+
+  background: white;
+
+  text-align: center;
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.25);
+
+  animation: qrModalIn 0.2s ease;
+}
+
+@keyframes qrModalIn {
+  from {
+    opacity: 0;
+
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: scale(1);
+  }
+}
+
+.qr-close {
+  position: absolute;
+
+  top: 10px;
+  right: 10px;
+
+  width: 30px;
+  height: 30px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f5f5f5;
+
+  color: #555;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.qr-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 10px;
+
+  border-radius: 10px;
+
+  background: #ffe5f0;
+
+  color: #ff3d91;
+
+  font-size: 22px;
+}
+
+.qr-modal h2 {
+  margin: 0 0 7px;
+
+  color: #222;
+
+  font-size: 20px;
+}
+
+.qr-modal > p {
+  max-width: 280px;
+
+  margin: 0 auto 16px;
+
+  color: #777;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.fake-qr {
+  width: 175px;
+  height: 175px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 14px;
+
+  border: 7px solid white;
+
+  outline: 1px solid #ddd;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #111 0,
+      #111 5px,
+      white 5px,
+      white 10px
+    );
+}
+
+.qr-pattern {
+  width: 65px;
+  height: 65px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+
+  color: #111;
+
+  font-size: 40px;
+}
+
+.qr-amount {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #ff3d91;
+
+  font-size: 20px;
+}
+
+.qr-note {
+  font-size: 10px !important;
+
+  color: #999 !important;
+}
+
+.qr-done {
+  width: 100%;
+  height: 42px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #ff3d91;
+
+  color: white;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   LARGE TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .funds-page .vertical-nav {
+    width: 200px;
+  }
+
+  .funds-container {
+    width: calc(100% - 200px);
+
+    margin-left: 200px;
+
+    padding: 20px;
+  }
+
+  .funds-layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      280px;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .funds-page .vertical-nav {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+  }
+
+  .funds-container {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding: 16px;
+  }
+
+  .funds-heading h1 {
+    font-size: 25px;
+  }
+
+  .funds-layout {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .funds-sidebar {
+    position: static;
+  }
+
+  .payment-methods {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .payment-history {
+    overflow-x: auto;
+  }
+
+  .history-table {
+    min-width: 650px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .funds-container {
+    padding: 12px;
+  }
+
+  .funds-heading h1 {
+    font-size: 22px;
+  }
+
+  .funds-heading p {
+    font-size: 11px;
+  }
+
+  .payment-card {
+    padding: 16px;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-btn {
+    flex: 1;
+  }
+
+  .payment-history {
+    padding: 14px;
+  }
+}

@@ -1,0 +1,445 @@
+/* ================================
+   LOGIN PAGE
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+.home-page {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 70px 20px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 104, 170, 0.25), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(123, 92, 255, 0.22), transparent 30%),
+    linear-gradient(135deg, #fff0f7 0%, #f4efff 50%, #eef7ff 100%);
+}
+
+
+/* ================================
+   HERO SECTION
+================================ */
+
+.hero-section {
+  max-width: 850px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-section h1 {
+  margin: 0 0 20px;
+  color: #222;
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.hero-section h1 span {
+  color: #ff3d91;
+}
+
+.hero-section p {
+  max-width: 750px;
+  margin: 0 auto;
+
+  color: #666;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+
+/* ================================
+   LOGIN CARD
+================================ */
+
+.login-card {
+  width: 100%;
+  max-width: 700px;
+
+  margin-top: 45px;
+  padding: 35px;
+
+  position: relative;
+  z-index: 5;
+
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 60px rgba(90, 60, 120, 0.15),
+    0 5px 20px rgba(0, 0, 0, 0.05);
+
+  backdrop-filter: blur(15px);
+}
+
+
+/* ================================
+   INPUT ROW
+================================ */
+
+.input-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 9px;
+
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-group input {
+  width: 100%;
+  height: 52px;
+
+  padding: 0 16px;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  outline: none;
+
+  background: #fff;
+  color: #222;
+
+  font-size: 15px;
+
+  transition: all 0.25s ease;
+}
+
+.input-group input:focus {
+  border-color: #ff3d91;
+
+  box-shadow:
+    0 0 0 4px rgba(255, 61, 145, 0.1);
+}
+
+.input-group input:hover {
+  border-color: #bbb;
+}
+
+
+/* ================================
+   FORGOT PASSWORD
+================================ */
+
+.forgot-password {
+  margin-top: 16px;
+
+  color: #ff3d91;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: right;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: #d91f72;
+  text-decoration: underline;
+}
+
+
+/* ================================
+   SIGN IN BUTTON
+================================ */
+
+.signin-btn {
+  width: 100%;
+  height: 54px;
+
+  margin-top: 25px;
+
+  border: none;
+  border-radius: 13px;
+
+  background: linear-gradient(
+    135deg,
+    #ff3d91,
+    #ff5fa7
+  );
+
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px rgba(255, 61, 145, 0.3);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.signin-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 30px rgba(255, 61, 145, 0.4);
+}
+
+.signin-btn:active {
+  transform: translateY(0);
+}
+
+.signin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   SIGN UP TEXT
+================================ */
+
+.signup-text {
+  margin-top: 22px;
+
+  text-align: center;
+
+  color: #666;
+
+  font-size: 14px;
+}
+
+.signup-text span {
+  margin-left: 5px;
+
+  color: #ff3d91;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.signup-text span:hover {
+  text-decoration: underline;
+}
+
+
+/* ================================
+   DECORATIVE HEARTS
+================================ */
+
+.heart {
+  position: absolute;
+
+  color: rgba(255, 61, 145, 0.2);
+
+  font-size: 80px;
+
+  pointer-events: none;
+
+  animation: floatingHeart 4s ease-in-out infinite;
+}
+
+.heart-1 {
+  top: 8%;
+  left: 7%;
+  font-size: 65px;
+}
+
+.heart-2 {
+  top: 30%;
+  right: 8%;
+  font-size: 90px;
+
+  animation-delay: 1s;
+}
+
+.heart-3 {
+  bottom: 15%;
+  left: 12%;
+  font-size: 55px;
+
+  animation-delay: 2s;
+}
+
+.heart-4 {
+  bottom: 8%;
+  right: 20%;
+  font-size: 70px;
+
+  animation-delay: 1.5s;
+}
+
+.heart-5 {
+  top: 15%;
+  right: 30%;
+  font-size: 40px;
+
+  animation-delay: 0.5s;
+}
+
+@keyframes floatingHeart {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+
+/* ================================
+   WHATSAPP / CONTACT BUTTON
+================================ */
+
+.whatsapp-btn {
+  position: fixed;
+
+  right: 25px;
+  bottom: 25px;
+
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #25d366;
+
+  color: white;
+
+  font-size: 27px;
+
+  cursor: pointer;
+
+  z-index: 20;
+
+  box-shadow:
+    0 8px 25px rgba(37, 211, 102, 0.35);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: scale(1.1);
+
+  box-shadow:
+    0 12px 30px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-btn span {
+  transform: rotate(-20deg);
+}
+
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+
+@media (max-width: 768px) {
+  .home-page {
+    padding: 50px 18px;
+  }
+
+  .hero-section h1 {
+    font-size: 32px;
+  }
+
+  .hero-section p {
+    font-size: 14px;
+  }
+
+  .login-card {
+    margin-top: 35px;
+    padding: 25px 20px;
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .heart-1 {
+    left: -10px;
+  }
+
+  .heart-2 {
+    right: -20px;
+  }
+
+  .heart-3 {
+    left: -15px;
+  }
+
+  .heart-4 {
+    right: -10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: 40px 15px;
+  }
+
+  .hero-section h1 {
+    font-size: 27px;
+  }
+
+  .hero-section p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .login-card {
+    border-radius: 18px;
+    padding: 22px 16px;
+  }
+
+  .signin-btn {
+    height: 50px;
+  }
+
+  .whatsapp-btn {
+    width: 52px;
+    height: 52px;
+
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .heart {
+    opacity: 0.5;
+  }
+}
