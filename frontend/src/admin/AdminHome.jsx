@@ -101,7 +101,7 @@ export default function AdminHome() {
 
         {/* Logout */}
         <li>
-          <NavLink to="/login">
+          <NavLink to="/">
             Logout
           </NavLink>
         </li>
