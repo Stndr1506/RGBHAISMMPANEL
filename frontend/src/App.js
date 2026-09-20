@@ -5,7 +5,7 @@ import Signup from "./components/Signup";
 import Login from './components/Login';
 import Services from "./pages/Services";
 import NewOrder from "./dashboard/NewOrder";
-import Announcement from "./dashboard/Announcement";
+
 import DashboardServices from "./dashboard/DashboardService";
 import Funds from "./dashboard/Funds";
 import API from "./dashboard/Api";
@@ -33,7 +33,7 @@ function App() {
         <Route path="/api" element={<h1>API</h1>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/new-order" element={<NewOrder/>}/>
-        <Route path="/announcement" element={<Announcement/>}/>
+        
         <Route path="/dashboard-services" element={<DashboardServices/>}/>
         <Route path="/add-funds" element={<Funds/>}/>
         <Route path="/api-integration" element={<API/>}/>
