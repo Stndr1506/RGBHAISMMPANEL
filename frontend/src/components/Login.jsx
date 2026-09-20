@@ -43,7 +43,7 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect after successful login
-      window.location.href = "/";
+      window.location.href = "/dashboard-services";
 
     } catch (error) {
       console.error(error);
