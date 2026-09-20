@@ -17,7 +17,7 @@ export default function AdminHome() {
 
         {/* View as Member */}
         <li>
-          <NavLink to="/">
+          <NavLink to="/new-order">
             View as Member
           </NavLink>
         </li>

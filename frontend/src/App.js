@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from './pages/Home';
 import Signup from "./components/Signup";
 import Login from './components/Login';
-import Services from "./pages/Services";
+// import Services from "./pages/Services";
 import NewOrder from "./dashboard/NewOrder";
 
 import DashboardServices from "./dashboard/DashboardService";
@@ -28,8 +28,8 @@ function App() {
       
       <Routes>
         <Route path="/home" element={<Home/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/" element={<Services/>} />
+        <Route path="/" element={<Login/>} />
+        {/* <Route path="/" element={<Services/>} /> */}
         <Route path="/api" element={<h1>API</h1>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/new-order" element={<NewOrder/>}/>
