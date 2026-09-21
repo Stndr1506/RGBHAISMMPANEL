@@ -154,17 +154,33 @@ select {
   background: #5148e8;
 }
 
+
+/* =========================================
+   HOME SIDEBAR COMPATIBILITY
+   Same responsive behavior as New Order
+========================================= */
+
+.services-page .vertical-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 100vh;
+  z-index: 1000;
+}
+
 /* =========================
    MAIN
 ========================= */
 
 .container {
-  width: calc(100% - 340px);
+  width: calc(100% - 230px);
   max-width: 1280px;
-  margin-left: 340px;
+  margin-left: 230px;
   margin-right: auto;
   padding: 45px 25px 80px;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Heading */
@@ -306,6 +322,34 @@ select {
   color: #8b94a3;
 
   margin: 20px 0 12px;
+}
+
+
+/* =========================
+   SERVICE TOOLBAR
+========================= */
+
+.service-toolbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 0 0 15px;
+}
+
+.service-toolbar .service-count {
+  margin: 0;
+}
+
+.service-toolbar .currency-select {
+  flex: 0 0 auto;
+}
+
+/* Prevent long service text from forcing the layout wider */
+.service-name {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* =========================
@@ -773,58 +817,64 @@ select {
    RESPONSIVE
 ========================= */
 
-@media (max-width: 900px) {
+/* =========================================
+   TABLET
+========================================= */
 
-  .navigation {
-    display: none;
-  }
-
-  .header-inner {
-    padding: 0 15px;
+@media (max-width: 1100px) {
+  .services-page .vertical-nav {
+    width: 200px;
   }
 
   .container {
-    padding: 30px 15px 60px;
+    width: calc(100% - 200px);
+    max-width: 1280px;
+    margin-left: 200px;
+    padding: 30px 20px 60px;
   }
 
-  .table-container {
-    display: none;
+  .page-heading h1 {
+    font-size: 28px;
   }
 
-  .mobile-services {
-    display: block;
+  .services-table {
+    min-width: 850px;
   }
 
+  .services-table th,
+  .services-table td {
+    padding: 14px 10px;
+  }
+
+  .service-name {
+    max-width: 320px;
+  }
 }
 
-@media (max-width: 600px) {
+/* =========================================
+   MOBILE
+========================================= */
 
-  .top-header {
-    height: 62px;
+@media (max-width: 768px) {
+  .services-page .vertical-nav {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
   }
 
-  .logo {
-    font-size: 19px;
+  .container {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 15px;
+    min-width: 0;
   }
 
-  .logo-area span {
-    display: none;
-  }
-
-  .currency-select {
-    height: 36px;
-
-    padding: 0 7px;
-
-    font-size: 11px;
-  }
-
-  .login-btn {
-    height: 36px;
-
-    padding: 0 13px;
-
-    font-size: 12px;
+  .page-heading {
+    margin-bottom: 18px;
   }
 
   .page-heading h1 {
@@ -832,31 +882,239 @@ select {
   }
 
   .page-heading p {
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .search-box {
+    width: 100%;
+    height: 48px;
+    margin-bottom: 15px;
+  }
+
+  .category-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 
   .category-btn {
-    padding: 8px 12px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
 
+  .service-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .service-count {
+    margin: 0;
+  }
+
+  /* Desktop table becomes mobile cards */
+  .table-container {
+    display: none;
+  }
+
+  .mobile-services {
+    display: block;
+    width: 100%;
+  }
+
+  .service-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .order-btn,
+  .view-btn {
+    touch-action: manipulation;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  .page-heading {
+    margin-bottom: 15px;
+  }
+
+  .page-heading h1 {
+    font-size: 22px;
+  }
+
+  .page-heading p {
+    font-size: 12px;
+  }
+
+  .search-box {
+    height: 46px;
+    padding: 0 12px;
+  }
+
+  .search-icon {
+    font-size: 22px;
+    margin-right: 8px;
+  }
+
+  .search-box input {
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .category-wrapper {
+    gap: 7px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  .category-btn {
+    padding: 8px 11px;
     font-size: 11px;
+    border-radius: 6px;
+  }
+
+  .service-toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .service-count {
+    font-size: 12px;
+  }
+
+  .service-toolbar .currency-select {
+    width: 100%;
+    max-width: 120px;
+    height: 42px;
   }
 
   .service-card {
     padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
   }
 
   .card-top {
     display: block;
   }
 
+  .card-id {
+    font-size: 10px;
+  }
+
+  .card-top h3 {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   .card-category {
     display: inline-block;
-
     margin-top: 9px;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .card-details {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 15px;
+    padding-top: 13px;
+  }
+
+  .card-details div {
+    min-width: 0;
+    padding: 9px;
+  }
+
+  .card-details span {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .card-details strong {
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-view-btn {
+    margin-top: 12px;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .service-modal {
+    max-width: 100%;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    padding: 22px 17px;
+    border-radius: 12px;
+  }
+
+  .service-modal h2 {
+    font-size: 18px;
+    padding-right: 30px;
+  }
+
+  .modal-service-name {
+    font-size: 13px;
   }
 
   .modal-details {
     grid-template-columns: 1fr;
   }
+}
 
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .card-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   LAYOUT SAFETY
+========================= */
+
+.services-page {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.services-page .container,
+.services-page .search-box,
+.services-page .category-wrapper,
+.services-page .table-container,
+.services-page .mobile-services {
+  max-width: 100%;
 }
