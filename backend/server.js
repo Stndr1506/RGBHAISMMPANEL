@@ -16,6 +16,7 @@ const adminUserRoutes = require("./routes/adminUserRoutes");
 const adminPaymentRoutes = require("./routes/adminPaymentRoutes");
 const paytmRoutes = require("./routes/paytmRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 
 
@@ -69,6 +70,7 @@ app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/admin/payments", adminPaymentRoutes);
 app.use("/api/payments/paytm", paytmRoutes);
 app.use("/api/dashboard-service", serviceRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.listen(PORT, () => {
   console.log(

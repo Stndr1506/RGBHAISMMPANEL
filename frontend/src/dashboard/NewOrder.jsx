@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "../styles/NewOrder.css";
-import Home from "../pages/Home";
+// import Home from "../pages/Home";
 
 function NewOrder() {
   const [services, setServices] = useState([]);
@@ -420,7 +420,7 @@ Please add funds.`
 
     <div className="order-page">
 
-      <Home />
+      {/* <Home /> */}
 
       <main className="order-container">
 
