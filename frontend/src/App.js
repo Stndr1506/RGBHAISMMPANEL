@@ -22,6 +22,7 @@ import AdminUsers from "./admin/AdminUsers";
 import AdminRoute from "./components/AdminRoute";
 
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -48,7 +49,6 @@ function App() {
         <Route path="/admin/payments" element={<Payments/>}/>
         <Route path="/admin/users" element={<AdminUsers/>}/>
         <Route path="/admin" element={<AdminRoute><AdminHome/></AdminRoute>}/>
-
       </Routes>
     </BrowserRouter>
   );

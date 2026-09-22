@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Signup.css";
+import WhatsAppButton from "./WhatsappButton";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -136,16 +137,13 @@ const Signup = () => {
 
         <div className="already-account">
           Already have an account?
-          <Link to="/login"> Sign in</Link>
+          <Link to="/"> Sign in</Link>
         </div>
 
       </form>
 
       {/* WhatsApp floating button */}
-      <div className="whatsapp-btn">
-        <span>☎</span>
-      </div>
-
+      <WhatsAppButton/>
     </div>
   );
 };

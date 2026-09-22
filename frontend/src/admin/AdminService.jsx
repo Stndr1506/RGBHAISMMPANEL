@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/DashboardServices.css";
-// import Home from "../pages/Home";
-import AdminHome from "./AdminHome";
+
 
 // Change this if your backend is hosted somewhere else
 const API_URL = `${process.env.REACT_APP_API_URL}/api/admin-service`;
@@ -288,7 +287,7 @@ function AdminService() {
 
   return (
     <div className="services-page">
-      <AdminHome/>
+      {/* <AdminHome/> */}
 
       {/* =========================
           MAIN

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Home.css";
+import WhatsAppButton from "../components/WhatsappButton";
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -92,11 +93,11 @@ useEffect(() => {
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link to="/admin" onClick={() => setMenuOpen(false)}>
               View as Admin
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/" onClick={() => setMenuOpen(false)}>
@@ -202,7 +203,7 @@ useEffect(() => {
           </div>
 
         </section>
-
+        <WhatsAppButton/>
 
         
       </main>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Funds.css";
 // import Home from "../pages/Home";
+import WhatsAppButton from "../components/WhatsappButton";
 
 const quickAmounts = [100, 250, 500, 1000, 2500, 5000];
 
@@ -666,6 +667,7 @@ useEffect(() => {
           </aside>
         </div>
       </main>
+      <WhatsAppButton/>
     </div>
   );
 }

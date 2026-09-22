@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import WhatsAppButton from "./WhatsappButton";
 import '../styles/Login.css';
 
 
@@ -9,6 +10,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [, setLoading] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async ()=>{
     if(!username || !password){
@@ -43,7 +45,16 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect after successful login
-      window.location.href = "/dashboard-services";
+      // window.location.href = "/dashboard-services";
+       // Redirect based on role
+  if (data.user.role === "admin") {
+    navigate("/admin");
+  } else if (data.user.role === "user") {
+    navigate("/home");
+  } else {
+    alert("Invalid user role");
+  }
+
 
     } catch (error) {
       console.error(error);
@@ -127,17 +138,15 @@ const Login = () => {
           Sign in
         </button>
 
-        <div className="signup-text">
-          Do not have an account?
+        <div className="already-account">
+          Create new account?
           <a href="/signup">Signup</a>
         </div>
 
       </div>
 
       {/* WhatsApp button */}
-      <div className="whatsapp-btn">
-        <span>☎</span>
-      </div>
+      <WhatsAppButton/>
 
     </div>
   );

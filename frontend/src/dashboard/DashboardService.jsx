@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/DashboardServices.css";
 import Home from "../pages/Home";
+import WhatsAppButton from "../components/WhatsappButton";
 
 // Backend API
 const API_URL = `${process.env.REACT_APP_API_URL}/api/dashboard-service`;
@@ -617,6 +618,7 @@ function DashboardServices() {
 
         </div>
       )}
+      <WhatsAppButton/>
 
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "../styles/NewOrder.css";
 // import Home from "../pages/Home";
+import WhatsAppButton from "../components/WhatsappButton";
 
 function NewOrder() {
   const [services, setServices] = useState([]);
@@ -1002,6 +1003,7 @@ Please add funds.`
         </div>
 
       </main>
+      <WhatsAppButton/>
 
     </div>
 
