@@ -235,14 +235,20 @@ function AdminService() {
   // =========================
 
   const handleAdd = async (newService) => {
+    const token =
+        localStorage.getItem("token");
+
     try {
       setSaving(true);
       setError("");
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_URL, 
+        
+        {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           category: newService.category,

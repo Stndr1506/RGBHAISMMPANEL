@@ -2,6 +2,7 @@
 
 // dotenv.config();
 require("dotenv").config();
+const {connectRedis} = require("./config/redis");
 const express = require("express");
 const cors = require("cors");
 
@@ -72,9 +73,23 @@ app.use("/api/payments/paytm", paytmRoutes);
 app.use("/api/dashboard-service", serviceRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-app.listen(PORT, () => {
-  console.log(
-    `Server running on port ${PORT}`
-  );
-});
 
+// app.listen(PORT, () => {
+//   console.log(
+//     `Server running on port ${PORT}`
+//   );
+// });
+const startServer = async () => {
+  try {
+    await connectRedis();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("Server startup error:", error);
+  }
+};
+
+startServer();

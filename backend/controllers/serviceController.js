@@ -1,4 +1,5 @@
 const serviceModel = require("../models/adminServiceModel");
+const {getCache, setCache} = require('../utils/cache');
 
 // =====================================================
 // GET ALL SERVICES
@@ -6,9 +7,27 @@ const serviceModel = require("../models/adminServiceModel");
 
 const getServices = async (req, res) => {
   try {
+    //check redis first
+    const cachedServices = await getCache('services');
+    
+    if(cachedServices){
+      console.log("Services fetched from Redis memory")
+      return res.json(cachedServices);
+    }
+    
+    //redis miss cache
+    console.log("Redis miss, fetched from SQL server");
+
     const services =
       await serviceModel.getAllServices();
-
+    
+    //store redis in memory
+    await setCache(
+      "services",
+      services,
+      300
+    )
+    console.log("services stored in cache memory")
     res.status(200).json(services);
   } catch (error) {
     console.error("GET SERVICES ERROR:", error);
