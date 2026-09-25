@@ -98,22 +98,9 @@ useEffect(() => {
               View as Admin
             </Link>
           </li> */}
-
-          <li>
-            <Link to="/" onClick={() => setMenuOpen(false)}>
-              Logout
-            </Link>
-          </li>
-
-          <li>
-            <Link to="/announcement" onClick={() => setMenuOpen(false)}>
-              Announcement group
-            </Link>
-          </li>
-
           <li>
             <Link to="/api-integration" onClick={() => setMenuOpen(false)}>
-              API
+              API 
             </Link>
           </li>
 
@@ -122,24 +109,41 @@ useEffect(() => {
               Affiliates
             </Link>
           </li>
-
           <li>
+            {/* <Link to="/announcement" onClick={() => setMenuOpen(false)}>
+              Announcement
+            </Link> */}
+            <a
+              href="https://chat.whatsapp.com/YOUR_GROUP_CODE"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Announcement
+            </a>
+          </li>
+
+          {/* <li>
             <Link to="/child-panel" onClick={() => setMenuOpen(false)}>
               Child Panel
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/tickets" onClick={() => setMenuOpen(false)}>
               Tickets
             </Link>
           </li>
-
           <li>
+            <Link to="/" onClick={() => setMenuOpen(false)}>
+              Logout
+            </Link>
+          </li>
+
+          {/* <li>
             <Link to="/" onClick={() => setMenuOpen(false)}>
               Mass Order
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/updates" onClick={() => setMenuOpen(false)}>

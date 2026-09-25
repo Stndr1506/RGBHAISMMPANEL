@@ -237,20 +237,13 @@ function AdminOrders() {
                   <td>
 
                     <strong>
-                      {order.username}
+                      {order.user_id}
                     </strong>
-
-                    <br />
-
-                    <small>
-                      {order.email}
-                    </small>
-
                   </td>
 
 
                   <td>
-                    {order.service_name}
+                    {order.service_id}
                   </td>
 
 

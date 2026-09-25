@@ -20,6 +20,7 @@ import AdminOrders from "./admin/AdminOrders";
 import Payments from "./admin/Payments";
 import AdminUsers from "./admin/AdminUsers";
 import AdminRoute from "./components/AdminRoute";
+import Announcement from "./dashboard/Announcement";
 
 
 
@@ -34,7 +35,7 @@ function App() {
         <Route path="/api" element={<h1>API</h1>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/new-order" element={<NewOrder/>}/>
-        
+        <Route path="/announcement" element={<Announcement/>}/>
         <Route path="/dashboard-services" element={<DashboardServices/>}/>
         <Route path="/add-funds" element={<Funds/>}/>
         <Route path="/api-integration" element={<API/>}/>

@@ -5,8 +5,8 @@ const { sql, getDB } = require("../config/db");
 // =====================================================
 
 const createOrder = async ({
-  userId,
-  serviceId,
+  username,
+  service,
   link,
   quantity,
 }) => {
@@ -111,14 +111,14 @@ const createOrder = async ({
 
     const orderResult = await new sql.Request(transaction)
       .input(
-        "user_id",
-        sql.Int,
-        userId
+        "username",
+        sql.VarChar,
+        username
       )
       .input(
-        "service_id",
-        sql.Int,
-        serviceId
+        "service",
+        sql.VarChar,
+        service
       )
       .input(
         "link",
@@ -143,8 +143,8 @@ const createOrder = async ({
       .query(`
         INSERT INTO orders
         (
-          user_id,
-          service_id,
+          username,
+          service,
           link,
           quantity,
           rate,
@@ -156,8 +156,8 @@ const createOrder = async ({
 
         OUTPUT
           INSERTED.id,
-          INSERTED.user_id,
-          INSERTED.service_id,
+          INSERTED.username,
+          INSERTED.service,
           INSERTED.link,
           INSERTED.quantity,
           INSERTED.rate,
@@ -167,8 +167,8 @@ const createOrder = async ({
 
         VALUES
         (
-          @user_id,
-          @service_id,
+          @username,
+          @service,
           @link,
           @quantity,
           @rate,
@@ -227,8 +227,8 @@ const getOrdersByUserId = async (userId) => {
     .query(`
       SELECT
         o.id,
-        o.user_id,
-        o.service_id,
+        o.username,
+        o.service,
         s.category,
         s.service,
         o.link,
@@ -279,8 +279,8 @@ const getOrderById = async (
     .query(`
       SELECT
         o.id,
-        o.user_id,
-        o.service_id,
+        o.username,
+        o.service,
         s.category,
         s.service,
         o.link,

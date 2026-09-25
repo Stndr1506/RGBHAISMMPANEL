@@ -12,8 +12,8 @@ const getAllOrders = async () => {
     const result = await pool.request().query(`
       SELECT
         id,
-        user_id,
-        service_id,
+        username,
+        service,
         link,
         quantity,
         rate,

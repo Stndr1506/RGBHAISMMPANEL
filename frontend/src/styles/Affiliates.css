@@ -1,0 +1,485 @@
+/* =====================================================
+   AFFILIATE PAGE
+===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+.affiliate-page {
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 255, 255, 0.10),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #20b6d0,
+      #69d1cb
+    );
+
+  padding-bottom: 60px;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.affiliate-navbar {
+  width: 100%;
+  height: 65px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.affiliate-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.affiliate-logo-circle {
+  width: 43px;
+  height: 43px;
+
+  border-radius: 50%;
+
+  background: #ef4b23;
+
+  border: 3px solid rgba(255, 255, 255, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.affiliate-logo-text {
+  display: flex;
+  flex-direction: column;
+
+  color: white;
+
+  line-height: 1;
+}
+
+.affiliate-logo-text strong {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.affiliate-logo-text span {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+
+/* =====================================================
+   HAMBURGER
+===================================================== */
+
+.affiliate-menu {
+  width: 35px;
+  height: 35px;
+
+  border: none;
+  background: transparent;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 5px;
+
+  cursor: pointer;
+}
+
+.affiliate-menu span {
+  width: 27px;
+  height: 2px;
+
+  background: white;
+
+  display: block;
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.affiliate-container {
+  width: calc(100% - 30px);
+
+  max-width: 1100px;
+
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   BASIC CARDS
+===================================================== */
+
+.affiliate-card {
+  width: 100%;
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 28px;
+
+  margin-bottom: 34px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.04);
+}
+
+.affiliate-card h3 {
+  margin: 0 0 14px;
+
+  color: #173d78;
+
+  font-size: 15px;
+
+  font-weight: 600;
+}
+
+.affiliate-card p {
+  margin: 0;
+
+  color: #173d78;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+
+/* =====================================================
+   REFERRAL LINK
+===================================================== */
+
+.referral-link-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  width: 100%;
+}
+
+.referral-link {
+  color: #173d78;
+
+  font-size: 15px;
+
+  word-break: break-all;
+}
+
+.copy-referral-btn {
+  border: none;
+
+  background: transparent;
+
+  color: #ed111b;
+
+  font-size: 20px;
+
+  padding: 0;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+.copied-message {
+  display: block;
+
+  margin-top: 10px;
+
+  color: #16a05d;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   STATISTICS TABLE
+===================================================== */
+
+.affiliate-table-card {
+  width: 100%;
+
+  background: white;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  margin-bottom: 54px;
+}
+
+.affiliate-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.affiliate-stats-table {
+  width: 100%;
+
+  min-width: 700px;
+
+  border-collapse: collapse;
+
+  color: #173d78;
+}
+
+.affiliate-stats-table th {
+  background: white;
+
+  text-align: left;
+
+  padding: 22px 18px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.affiliate-stats-table td {
+  background: #e6f4f3;
+
+  padding: 13px 18px;
+
+  font-size: 14px;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   PAYOUT TABLE
+===================================================== */
+
+.payout-card {
+  margin-bottom: 0;
+}
+
+.payout-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.payout-table {
+  width: 100%;
+
+  min-width: 600px;
+
+  border-collapse: collapse;
+
+  color: #173d78;
+}
+
+.payout-table th {
+  text-align: left;
+
+  padding: 22px 18px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.payout-table td {
+  background: #e6f4f3;
+
+  padding: 18px;
+
+  font-size: 14px;
+}
+
+.no-payouts {
+  text-align: center;
+
+  color: #8294a5;
+
+  padding: 8px;
+}
+
+
+/* =====================================================
+   WHATSAPP
+===================================================== */
+
+.affiliate-whatsapp {
+  position: fixed;
+
+  right: 27px;
+  bottom: 28px;
+
+  width: 61px;
+  height: 61px;
+
+  border-radius: 50%;
+
+  background: #25d366;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+
+  font-size: 30px;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.16);
+
+  z-index: 1000;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 900px) {
+
+  .affiliate-navbar {
+    height: 80px;
+
+    padding: 0 5%;
+  }
+
+  .affiliate-container {
+    margin-top: 20px;
+  }
+
+  .affiliate-card {
+    padding: 32px 40px;
+
+    margin-bottom: 34px;
+  }
+
+  .affiliate-table-card {
+    margin-bottom: 54px;
+  }
+
+  .affiliate-stats-table th,
+  .affiliate-stats-table td,
+  .payout-table th,
+  .payout-table td {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .affiliate-page {
+    padding-bottom: 25px;
+  }
+
+  .affiliate-navbar {
+    height: 65px;
+
+    padding: 0 24px;
+  }
+
+  .affiliate-container {
+    width: calc(100% - 30px);
+
+    margin-top: 0;
+  }
+
+  .affiliate-card {
+    padding: 28px;
+
+    border-radius: 18px;
+
+    margin-bottom: 34px;
+  }
+
+  .affiliate-card h3 {
+    font-size: 15px;
+
+    margin-bottom: 15px;
+  }
+
+  .referral-link {
+    font-size: 14px;
+  }
+
+  .affiliate-table-card {
+    border-radius: 18px;
+
+    margin-bottom: 54px;
+  }
+
+  .affiliate-stats-table {
+    min-width: 700px;
+  }
+
+  .affiliate-stats-table th {
+    padding: 20px 18px;
+  }
+
+  .affiliate-stats-table td {
+    padding: 12px 18px;
+  }
+
+  .payout-table {
+    min-width: 600px;
+  }
+
+  .payout-table th {
+    padding: 20px 18px;
+  }
+
+  .affiliate-whatsapp {
+    right: 27px;
+    bottom: 27px;
+
+    width: 60px;
+    height: 60px;
+  }
+}
