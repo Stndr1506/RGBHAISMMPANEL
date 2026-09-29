@@ -546,7 +546,8 @@ Please add funds.`
                       >
 
                         {service.id} -{" "}
-                        {service.service}
+                        {service.service} - {" "}
+                        ₹ {service.rate}
 
                       </option>
 
@@ -581,17 +582,21 @@ Please add funds.`
 
                   </div>
 
-
+                  {/* <p>
+                    Name:
+                  </p>
                   <h3>
-                    {selectedService.name}
-                  </h3>
-
+                    {selectedService.service}
+                  </h3> */}
 
                   <p>
+                    Desciption
+                  </p>
+                  <h3>
                     {
                       selectedService.description
                     }
-                  </p>
+                  </h3>
 
 
                   <div className="service-limits">
@@ -615,12 +620,12 @@ Please add funds.`
                     <div>
 
                       <span>
-                        Min
+                        Min Order
                       </span>
 
                       <strong>
                         {Number(
-                          selectedService.min
+                          selectedService.min_order
                         ).toLocaleString()}
                       </strong>
 
@@ -630,12 +635,12 @@ Please add funds.`
                     <div>
 
                       <span>
-                        Max
+                        Max Order
                       </span>
 
                       <strong>
                         {Number(
-                          selectedService.max
+                          selectedService.max_order
                         ).toLocaleString()}
                       </strong>
 

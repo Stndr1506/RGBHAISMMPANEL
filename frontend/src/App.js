@@ -21,6 +21,7 @@ import Payments from "./admin/Payments";
 import AdminUsers from "./admin/AdminUsers";
 import AdminRoute from "./components/AdminRoute";
 import Announcement from "./dashboard/Announcement";
+import Services from "./pages/Services";
 
 
 
@@ -36,7 +37,8 @@ function App() {
         <Route path="/signup" element={<Signup/>} />
         <Route path="/new-order" element={<NewOrder/>}/>
         <Route path="/announcement" element={<Announcement/>}/>
-        <Route path="/dashboard-services" element={<DashboardServices/>}/>
+        {/* <Route path="/dashboard-services" element={<DashboardServices/>}/> */}
+        <Route path="/dashboard-services" element={<Services/>}/>
         <Route path="/add-funds" element={<Funds/>}/>
         <Route path="/api-integration" element={<API/>}/>
         <Route path="/affiliates" element={<Affiliates/>}/>

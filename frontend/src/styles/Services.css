@@ -407,7 +407,7 @@
 
   min-height: 60px;
 
-  padding: 7px 15px;
+  padding: 7px 45px;
 
   border-bottom: 1px solid #eee;
 
@@ -421,17 +421,18 @@
 }
 
 .service-id {
-  color: #999;
+  /* color: #999; */
 
   font-weight: 600;
 }
 
 .service-name {
-  padding-right: 10px;
+  padding-left: 50px;
+  padding-right: 50px;
 
   color: #333;
 
-  font-weight: 600;
+  font-weight: 300;
 
   line-height: 1.35;
 }
@@ -634,7 +635,12 @@
 
     padding: 12px;
   }
-
+  /* .table-header{
+    padding-left: 50px;
+  } */
+  .header-service{
+    padding-left: 75px;
+  }
 
   /* Filters */
 

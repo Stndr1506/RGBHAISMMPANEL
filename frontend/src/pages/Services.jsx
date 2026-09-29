@@ -1,258 +1,541 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "../styles/Services.css";
 import Home from "./Home";
 
-const servicesData = [
-  {
-    id: 5414,
-    category: "Telegram Services",
-    icon: "⭐",
-    service: "Growfastsmm.Com",
-    rate: "₹100000000.00",
-    min: "1 000",
-    max: "1 000",
-    time: "1 hour",
-  },
-  {
-    id: 35,
-    category: "Instagram Views",
-    icon: "📷",
-    service: "Instagram Views [ Reels / Videos / TV ] [ Instant ] [ Cheapest ]",
-    rate: "₹0.16",
-    min: "100",
-    max: "100 000 000",
-    time: "1 hour 2 minutes",
-  },
-  {
-    id: 4505,
-    category: "Instagram Views",
-    icon: "📷",
-    service: "Instagram Views - Reels - Instant",
-    rate: "₹0.32",
-    min: "100",
-    max: "100 000 000",
-    time: "32 minutes",
-  },
-  {
-    id: 2721,
-    category: "Instagram Views",
-    icon: "📷",
-    service: "Instagram Views [ Super fast ] 🚀 [ Working After Update ]",
-    rate: "₹1.35",
-    min: "100",
-    max: "100 000 000",
-    time: "27 minutes",
-  },
-  {
-    id: 4990,
-    category: "Instagram | Followers [ No Refill ]",
-    icon: "📷",
-    service:
-      "Instagram Followers [High Quality + Real] [No Refill] [50-100K/D] [Instant]",
-    rate: "₹36.21",
-    min: "50",
-    max: "100 000",
-    time: "1 hour 31 minutes",
-  },
-  {
-    id: 5001,
-    category: "Instagram | Followers [ Non Drop ]",
-    icon: "📷",
-    service: "Instagram Followers [ Non Drop ] ⚠️",
-    rate: "₹42.50",
-    min: "100",
-    max: "50 000",
-    time: "2 hours",
-  },
-  {
-    id: 6001,
-    category: "YouTube Views",
-    icon: "▶️",
-    service: "YouTube Views [ High Retention ] [ Instant ]",
-    rate: "₹5.50",
-    min: "100",
-    max: "1 000 000",
-    time: "30 minutes",
-  },
-  {
-    id: 7001,
-    category: "Facebook Services",
-    icon: "🔵",
-    service: "Facebook Page Followers [ Real ]",
-    rate: "₹25.00",
-    min: "100",
-    max: "100 000",
-    time: "1 hour",
-  },
-];
-
 const Services = () => {
+
+  // ================================
+  // STATE
+  // ================================
+
+  const [servicesData, setServicesData] = useState([]);
   const [search, setSearch] = useState("");
   const [currency, setCurrency] = useState("INR ₹");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+
+  // ================================
+  // FETCH SERVICES FROM BACKEND
+  // ================================
+
+  useEffect(() => {
+
+    const fetchServices = async () => {
+
+      try {
+
+        setLoading(true);
+        setError("");
+
+        const response = await axios.get(
+          // `${process.env.REACT_APP_API_URL}/api/dashboard-services`
+          'http://localhost:5000/api/dashboard-service'
+        );
+
+        console.log("Services API response:", response.data);
+
+        if (response.data.success) {
+
+          setServicesData(response.data.services || []);
+
+        } else {
+
+          setError("Failed to load services.");
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Error fetching services:",
+          error
+        );
+
+        setError(
+          "Unable to load services. Please try again."
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    fetchServices();
+
+  }, []);
+
+
+  // ================================
+  // GET UNIQUE CATEGORIES
+  // ================================
 
   const categories = [
     "All",
-    ...new Set(servicesData.map((item) => item.category)),
+    ...new Set(
+      servicesData.map(
+        (item) => item.category
+      )
+    ),
   ];
 
-  const filteredServices = servicesData.filter((service) => {
-    const searchText = search.toLowerCase();
 
-    const matchesSearch =
-      service.service.toLowerCase().includes(searchText) ||
-      service.category.toLowerCase().includes(searchText) ||
-      service.id.toString().includes(searchText);
+  // ================================
+  // SEARCH + CATEGORY FILTER
+  // ================================
 
-    const matchesCategory =
-      selectedCategory === "All" ||
-      service.category === selectedCategory;
+  const filteredServices = servicesData.filter(
+    (service) => {
 
-    return matchesSearch && matchesCategory;
-  });
+      const searchText =
+        search.toLowerCase().trim();
+
+
+      const serviceName =
+        (service.service || "").toLowerCase();
+
+      const category =
+        (service.category || "").toLowerCase();
+
+
+      const matchesSearch =
+        serviceName.includes(searchText) ||
+        category.includes(searchText) ||
+        service.id
+          ?.toString()
+          .includes(searchText);
+
+
+      const matchesCategory =
+        selectedCategory === "All" ||
+        service.category === selectedCategory;
+
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+
+    }
+  );
+
+
+  // ================================
+  // FORMAT NUMBERS
+  // ================================
+
+  const formatNumber = (number) => {
+
+    if (
+      number === null ||
+      number === undefined
+    ) {
+      return "0";
+    }
+
+    return Number(number).toLocaleString("en-IN");
+
+  };
+
+
+  // ================================
+  // RATE DISPLAY
+  // ================================
+
+  const getRate = (rate) => {
+
+    const numericRate = Number(rate || 0);
+
+
+    if (currency === "INR ₹") {
+
+      return `₹${numericRate.toFixed(2)}`;
+
+    }
+
+
+    if (currency === "USD $") {
+
+      return `$${numericRate.toFixed(4)}`;
+
+    }
+
+
+    if (currency === "EUR €") {
+
+      return `€${numericRate.toFixed(4)}`;
+
+    }
+
+
+    return numericRate.toFixed(2);
+
+  };
+
+
+  // ================================
+  // VIEW DESCRIPTION
+  // ================================
+
+  const handleView = (service) => {
+
+    alert(
+      
+      `Service Name: ${service.service}\n` +
+      `Service ID: ${service.id}\n` +
+      `Service Rate: ${service.rate}\n`+
+      `Service Time: ${service.average_time}\n`+
+      `Description: ${
+        service.description ||
+        "No description available."
+      }`
+    );
+
+  };
+
+
+  // ================================
+  // UI
+  // ================================
 
   return (
-    
+
     <div className="services-page">
-      <Home/>
-      {/* Search / Filter Area */}
+
+      {/* HOME / NAVBAR */}
+
+      <Home />
+
+
+      {/* =================================
+          SEARCH / FILTER AREA
+      ================================= */}
+
       <div className="services-filter-card">
+
+
+        {/* CATEGORY */}
 
         <select
           className="filter-select"
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={(e) =>
+            setSelectedCategory(
+              e.target.value
+            )
+          }
         >
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
+
+          {categories.map(
+            (category) => (
+
+              <option
+                key={category}
+                value={category}
+              >
+                {category}
+              </option>
+
+            )
+          )}
+
         </select>
+
+
+        {/* CURRENCY */}
 
         <select
           className="currency-select"
           value={currency}
-          onChange={(e) => setCurrency(e.target.value)}
+          onChange={(e) =>
+            setCurrency(
+              e.target.value
+            )
+          }
         >
-          <option value="INR ₹">INR ₹</option>
-          <option value="USD $">USD $</option>
-          <option value="EUR €">EUR €</option>
+
+          <option value="INR ₹">
+            INR ₹
+          </option>
+
+          <option value="USD $">
+            USD $
+          </option>
+
+          <option value="EUR €">
+            EUR €
+          </option>
+
         </select>
 
-        <div className="search-box"> 
+
+        {/* SEARCH */}
+
+        <div className="search-box">
+
           <input
             type="text"
             placeholder="Search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
           />
 
-          <button className="search-btn">
+          <button
+            className="search-btn"
+            type="button"
+          >
             🔍
           </button>
+
         </div>
 
       </div>
 
-      {/* Services Table */}
+
+      {/* =================================
+          SERVICES TABLE
+      ================================= */}
+
       <div className="services-table-card">
 
-        {/* Table Header */}
+
+        {/* TABLE HEADER */}
+
         <div className="table-header">
+
           <div>ID</div>
-          <div>Service</div>
+
+          <div className="header-service">Service</div>
+
           <div>Rate per 1000</div>
+
           <div>Min order</div>
+
           <div>Max order</div>
+
           <div>Average time ⓘ</div>
+
           <div>Description</div>
+
         </div>
 
-        {/* Services */}
-        {filteredServices.length > 0 ? (
-          filteredServices.map((service, index) => {
 
-            const previousCategory =
-              index > 0
-                ? filteredServices[index - 1].category
-                : null;
+        {/* =================================
+            LOADING
+        ================================= */}
 
-            const showCategory =
-              index === 0 || previousCategory !== service.category;
+        {loading && (
 
-            return (
-              <React.Fragment key={service.id}>
-
-                {/* Category */}
-                {showCategory && (
-                  <div className="category-row">
-                    <span className="category-icon">
-                      {service.icon}
-                    </span>
-
-                    <span>{service.category}</span>
-                  </div>
-                )}
-
-                {/* Service Row */}
-                <div className="service-row">
-
-                  <div className="service-id">
-                    {service.id}
-                  </div>
-
-                  <div className="service-name">
-                    {service.service}
-                  </div>
-
-                  <div className="service-rate">
-                    {currency === "INR ₹"
-                      ? service.rate
-                      : currency === "USD $"
-                      ? "$0.01"
-                      : "€0.01"}
-                  </div>
-
-                  <div>{service.min}</div>
-
-                  <div>{service.max}</div>
-
-                  <div>{service.time}</div>
-
-                  <div className="view-column">
-                    <button
-                      className="view-btn"
-                      onClick={() =>
-                        alert(
-                          `Service ID: ${service.id}\n${service.service}`
-                        )
-                      }
-                    >
-                      View
-                    </button>
-                  </div>
-
-                </div>
-
-              </React.Fragment>
-            );
-          })
-        ) : (
           <div className="no-services">
-            No services found.
+
+            Loading services...
+
           </div>
+
         )}
 
-      </div>
 
-      {/* WhatsApp Button */}
-      <div className="services-whatsapp">
-        ☎
+        {/* =================================
+            ERROR
+        ================================= */}
+
+        {!loading && error && (
+
+          <div className="no-services">
+
+            {error}
+
+          </div>
+
+        )}
+
+
+        {/* =================================
+            SERVICES
+        ================================= */}
+
+        {!loading &&
+          !error &&
+          filteredServices.length > 0 &&
+
+          filteredServices.map(
+            (service, index) => {
+
+              const previousCategory =
+                index > 0
+                  ? filteredServices[
+                      index - 1
+                    ].category
+                  : null;
+
+
+              const showCategory =
+                index === 0 ||
+                previousCategory !==
+                  service.category;
+
+
+              return (
+
+                <React.Fragment
+                  key={service.id}
+                >
+
+
+                  {/* ==========================
+                      CATEGORY ROW
+                  ========================== */}
+
+                  {showCategory && (
+
+                    <div className="category-row">
+
+                      <span className="category-icon">
+
+                        {service.icon || "⭐"}
+
+                      </span>
+
+
+                      <span>
+
+                        {service.category}
+
+                      </span>
+
+                    </div>
+
+                  )}
+
+
+                  {/* ==========================
+                      SERVICE ROW
+                  ========================== */}
+
+                  <div className="service-row">
+
+
+                    {/* ID */}
+
+                    <div className="service-id">
+
+                      {service.id}
+
+                    </div>
+
+
+                    {/* SERVICE NAME */}
+
+                    <div className="service-name">
+
+                      {service.service}
+
+                    </div>
+
+
+                    {/* RATE */}
+
+                    <div className="service-rate">
+
+                      {getRate(
+                        service.rate
+                      )}
+
+                    </div>
+
+
+                    {/* MIN ORDER */}
+
+                    <div>
+
+                      {formatNumber(
+                        service.min_order
+                      )}
+
+                    </div>
+
+
+                    {/* MAX ORDER */}
+
+                    <div>
+
+                      {formatNumber(
+                        service.max_order
+                      )}
+
+                    </div>
+
+
+                    {/* AVERAGE TIME */}
+
+                    <div>
+
+                      {service.average_time ||
+                        "Not available"}
+
+                    </div>
+
+
+                    {/* DESCRIPTION */}
+
+                    <div className="view-column">
+
+                      <button
+                        type="button"
+                        className="view-btn"
+                        onClick={() =>
+                          handleView(
+                            service
+                          )
+                        }
+                      >
+                        View
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </React.Fragment>
+
+              );
+
+            }
+
+          )}
+
+
+        {/* =================================
+            NO SERVICES
+        ================================= */}
+
+        {!loading &&
+          !error &&
+          filteredServices.length === 0 && (
+
+            <div className="no-services">
+
+              No services found.
+
+            </div>
+
+          )}
+
       </div>
 
     </div>
+
   );
+
 };
 
 export default Services;

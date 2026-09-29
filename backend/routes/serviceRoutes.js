@@ -3,17 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getServices,
-  getService,
-} = require("../controllers/adminServiceController");
+    getServices
+} = require("../controllers/serviceController");
 
-// GET all services
-router.get("/", 
-  getServices);
-
-// GET one service
-router.get("/:id", 
-  getService);
-
+router.get("/", getServices);
 
 module.exports = router;

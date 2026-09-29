@@ -33,24 +33,14 @@ function formatNumber(number) {
 }
 
 function DashboardServices() {
-  // =========================
-  // STATE
-  // =========================
-
   const [services, setServices] = useState([]);
-
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
-  const [currency, setCurrency] = useState("INR");
-
+  const [currency, ] = useState("INR");
   const [selectedService, setSelectedService] = useState(null);
-
+  const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // =========================
-  // LOAD SERVICES
-  // =========================
 
   useEffect(() => {
     fetchServices();
@@ -69,22 +59,6 @@ function DashboardServices() {
 
       const data = await response.json();
 
-      /*
-        If your backend returns:
-        {
-          success: true,
-          services: [...]
-        }
-
-        use:
-        setServices(data.services);
-
-        If your backend returns:
-        [...]
-        then use:
-        setServices(data);
-      */
-
       setServices(
         Array.isArray(data)
           ? data
@@ -92,534 +66,288 @@ function DashboardServices() {
       );
     } catch (err) {
       console.error("Fetch services error:", err);
-
-      setError(
-        "Unable to load services. Please try again."
-      );
+      setError("Unable to load services. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // =========================
-  // FILTER SERVICES
-  // =========================
-
   const filteredServices = useMemo(() => {
+    const searchText = search.toLowerCase().trim();
+
     return services.filter((item) => {
       const categoryMatch =
-        category === "All" ||
-        item.category === category;
-
-      const searchText = search
-        .toLowerCase()
-        .trim();
+        category === "All" || item.category === category;
 
       const searchMatch =
-        item.service
-          ?.toLowerCase()
-          .includes(searchText) ||
-        item.category
-          ?.toLowerCase()
-          .includes(searchText) ||
+        !searchText ||
+        item.service?.toLowerCase().includes(searchText) ||
+        item.category?.toLowerCase().includes(searchText) ||
         String(item.id).includes(searchText);
 
       return categoryMatch && searchMatch;
     });
   }, [services, category, search]);
 
+  // Group filtered services by category so the page looks like the screenshot.
+  const groupedServices = useMemo(() => {
+    return filteredServices.reduce((groups, item) => {
+      const groupName = item.category || "Other Services";
+
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
+
+      groups[groupName].push(item);
+      return groups;
+    }, {});
+  }, [filteredServices]);
+
+  const toggleFavorite = (id) => {
+    setFavorites((current) =>
+      current.includes(id)
+        ? current.filter((itemId) => itemId !== id)
+        : [...current, id]
+    );
+  };
+
   return (
     <div className="services-page">
       <Home />
 
-      {/* =========================
-          MAIN
-      ========================= */}
+      <main className="services-main">
 
-      <main className="container">
+        {/* Search / Filter card */}
+        <section className="services-filter-card">
 
-        {/* =========================
-            HEADING
-        ========================= */}
+          <div className="category-select-wrap">
+            <span className="filter-icon">▽</span>
 
-        <div className="page-heading">
-          <div>
-            <h1>Services</h1>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="category-select"
+            >
+              {categories.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
 
-            <p>
-              Choose from our wide range of
-              social media services.
-            </p>
+            <span className="select-arrow">⌄</span>
           </div>
-        </div>
 
-        {/* =========================
-            ERROR
-        ========================= */}
+          <div className="services-search">
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <button
+              type="button"
+              aria-label="Search"
+              onClick={() => setSearch(search.trim())}
+            >
+              🔍
+            </button>
+          </div>
+
+        </section>
 
         {error && (
           <div className="error-message">
-            {error}
-
-            <button
-              onClick={fetchServices}
-              className="retry-btn"
-            >
+            <span>{error}</span>
+            <button onClick={fetchServices} className="retry-btn">
               Retry
             </button>
           </div>
         )}
 
-        {/* =========================
-            SEARCH
-        ========================= */}
-
-        <div className="search-box">
-          <span className="search-icon">
-            ⌕
-          </span>
-
-          <input
-            type="text"
-            placeholder="Search service..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-          />
-        </div>
-
-        {/* =========================
-            CATEGORY
-        ========================= */}
-
-        <div className="category-wrapper">
-          {categories.map((item) => (
-            <button
-              key={item}
-              className={
-                category === item
-                  ? "category-btn selected"
-                  : "category-btn"
-              }
-              onClick={() =>
-                setCategory(item)
-              }
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-
-        {/* =========================
-            TOOLBAR
-        ========================= */}
-
-        <div className="service-toolbar">
-
-          <div className="service-count">
-            Showing{" "}
-            <strong>
-              {filteredServices.length}
-            </strong>{" "}
-            services
-          </div>
-
-          <select
-            value={currency}
-            onChange={(e) =>
-              setCurrency(e.target.value)
-            }
-            className="currency-select"
-          >
-            <option value="INR">
-              INR ₹
-            </option>
-
-            <option value="USD">
-              USD $
-            </option>
-
-            <option value="EUR">
-              EUR €
-            </option>
-          </select>
-
-        </div>
-
-        {/* =========================
-            LOADING
-        ========================= */}
-
-        {loading && (
-          <div className="loading">
+        {loading ? (
+          <div className="services-loading-card">
             Loading services...
           </div>
-        )}
+        ) : (
+          <section className="services-list-card">
 
-        {/* =========================
-            DESKTOP TABLE
-        ========================= */}
+            {/* Table heading */}
+            <div className="services-table-header">
+              <div className="header-id">ID</div>
+              <div className="header-service">Service</div>
+              <div className="header-rate">Rate per 1000</div>
+              <div className="header-min">Min order</div>
+              <div className="header-min">Max order</div>
+              <div className="header-min">Average time</div>
+              <div className="header-min">Description</div>
+            </div>
 
-        {!loading && (
-          <div className="table-container">
+            {Object.keys(groupedServices).length === 0 ? (
+              <div className="no-results">
+                <div className="no-results-icon">🔍</div>
+                <h3>No services found</h3>
+                <p>Try searching for another service or category.</p>
+              </div>
+            ) : (
+              Object.entries(groupedServices).map(
+                ([groupName, groupServices]) => (
+                  <div className="service-group" key={groupName}>
 
-            <table className="services-table">
+                    {/* Category heading */}
+                    <div className="service-category-heading">
+                      <span className="category-platform-icon">
+                        {groupName.toLowerCase().includes("instagram")
+                          ? "◎"
+                          : groupName.toLowerCase().includes("telegram")
+                          ? "✦"
+                          : groupName.toLowerCase().includes("youtube")
+                          ? "▶"
+                          : groupName.toLowerCase().includes("facebook")
+                          ? "f"
+                          : groupName.toLowerCase().includes("tiktok")
+                          ? "♪"
+                          : "✦"}
+                      </span>
 
-              <thead>
-                <tr>
-                  <th>ID</th>
+                      <h2>{groupName}</h2>
+                    </div>
 
-                  <th>Service</th>
+                    {/* Service rows */}
+                    {groupServices.map((item) => (
+                      <div className="service-row" key={item.id}>
 
-                  <th>Rate per 1000</th>
+                        <div className="service-favorite">
+                          <button
+                            type="button"
+                            className={
+                              favorites.includes(item.id)
+                                ? "favorite-btn active"
+                                : "favorite-btn"
+                            }
+                            onClick={() => toggleFavorite(item.id)}
+                            aria-label="Favorite service"
+                          >
+                            {favorites.includes(item.id) ? "★" : "☆"}
+                          </button>
+                        </div>
 
-                  <th>Min order</th>
+                        <div className="service-id">
+                          {item.id}
+                        </div>
 
-                  <th>Max order</th>
-
-                  <th>Average time</th>
-
-                  <th></th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {filteredServices.map(
-                  (item) => (
-                    <tr key={item.id}>
-
-                      {/* ID */}
-
-                      <td className="service-id">
-                        {item.id}
-                      </td>
-
-                      {/* SERVICE */}
-
-                      <td>
-                        <div className="service-name">
+                        <div className="service-title">
                           {item.service}
                         </div>
 
-                        <span className="service-category">
-                          {item.category}
-                        </span>
-                      </td>
+                        <div className="service-rate">
+                          {currencySymbols[currency]}
+                          {Number(item.rate).toFixed(2)}
+                        </div>
 
-                      {/* RATE */}
+                        <div className="service-min">
+                          {formatNumber(item.min_order)}
+                        </div>
+                        <div className="service-min">
+                          {formatNumber(item.max_order)}
+                        </div>
+                        <div className="service-min">
+                          {formatNumber(item.average_time)}
+                        </div>
+                        <div className="service-min">
+                          {formatNumber(item.min_order)}
+                        </div>
 
-                      <td className="rate">
-                        {
-                          currencySymbols[
-                            currency
-                          ]
-                        }
-
-                        {Number(
-                          item.rate
-                        ).toFixed(2)}
-                      </td>
-
-                      {/* MIN */}
-
-                      <td>
-                        {formatNumber(
-                          item.min_order
-                        )}
-                      </td>
-
-                      {/* MAX */}
-
-                      <td>
-                        {formatNumber(
-                          item.max_order
-                        )}
-                      </td>
-
-                      {/* TIME */}
-
-                      <td className="time">
-                        {
-                          item.average_time
-                        }
-                      </td>
-
-                      {/* VIEW */}
-
-                      <td>
+                        {/* Click row to view complete service details */}
                         <button
-                          className="view-btn"
-                          onClick={() =>
-                            setSelectedService(
-                              item
-                            )
-                          }
-                        >
-                          View
-                        </button>
-                      </td>
-
-                    </tr>
-                  )
-                )}
-
-              </tbody>
-
-            </table>
-
-            {/* =========================
-                NO RESULTS
-            ========================= */}
-
-            {filteredServices.length ===
-              0 && (
-              <div className="no-results">
-
-                <div className="no-results-icon">
-                  🔍
-                </div>
-
-                <h3>
-                  No services found
-                </h3>
-
-                <p>
-                  Try searching for another
-                  service or category.
-                </p>
-
-              </div>
-            )}
-
-          </div>
-        )}
-
-        {/* =========================
-            MOBILE CARDS
-        ========================= */}
-
-        {!loading && (
-          <div className="mobile-services">
-
-            {filteredServices.map(
-              (item) => (
-                <div
-                  className="service-card"
-                  key={item.id}
-                >
-
-                  <div className="card-top">
-
-                    <div>
-                      <span className="card-id">
-                        ID #{item.id}
-                      </span>
-
-                      <h3>
-                        {item.service}
-                      </h3>
-                    </div>
-
-                    <span className="card-category">
-                      {item.category}
-                    </span>
-
+                          type="button"
+                          className="service-row-click"
+                          onClick={() => setSelectedService(item)}
+                          aria-label={`View service ${item.id}`}
+                        />
+                      </div>
+                    ))}
                   </div>
-
-                  <div className="card-details">
-
-                    <div>
-                      <span>
-                        Rate / 1000
-                      </span>
-
-                      <strong>
-                        {
-                          currencySymbols[
-                            currency
-                          ]
-                        }
-
-                        {Number(
-                          item.rate
-                        ).toFixed(2)}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>
-                        Min Order
-                      </span>
-
-                      <strong>
-                        {formatNumber(
-                          item.min_order
-                        )}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>
-                        Max Order
-                      </span>
-
-                      <strong>
-                        {formatNumber(
-                          item.max_order
-                        )}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>
-                        Average Time
-                      </span>
-
-                      <strong>
-                        {
-                          item.average_time
-                        }
-                      </strong>
-                    </div>
-
-                  </div>
-
-                  <button
-                    className="mobile-view-btn"
-                    onClick={() =>
-                      setSelectedService(
-                        item
-                      )
-                    }
-                  >
-                    View Service
-                  </button>
-
-                </div>
+                )
               )
             )}
-
-          </div>
+          </section>
         )}
 
       </main>
 
-      {/* =========================
-          VIEW MODAL
-      ========================= */}
-
+      {/* Service details modal */}
       {selectedService && (
         <div
           className="modal-overlay"
-          onClick={() =>
-            setSelectedService(null)
-          }
+          onClick={() => setSelectedService(null)}
         >
-
           <div
             className="service-modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
+            onClick={(e) => e.stopPropagation()}
           >
-
             <button
               className="close-modal"
-              onClick={() =>
-                setSelectedService(null)
-              }
+              onClick={() => setSelectedService(null)}
+              type="button"
             >
               ×
             </button>
 
             <span className="modal-id">
-              Service #
-              {selectedService.id}
+              Service #{selectedService.id}
             </span>
 
-            <h2>
-              {selectedService.category}
-            </h2>
+            <h2>{selectedService.category}</h2>
 
             <p className="modal-service-name">
               {selectedService.service}
             </p>
 
             <div className="modal-details">
-
               <div>
-                <span>
-                  Rate / 1000
-                </span>
-
+                <span>Rate / 1000</span>
                 <strong>
-                  {
-                    currencySymbols[
-                      currency
-                    ]
-                  }
-
-                  {Number(
-                    selectedService.rate
-                  ).toFixed(2)}
+                  {currencySymbols[currency]}
+                  {Number(selectedService.rate).toFixed(2)}
                 </strong>
               </div>
 
               <div>
-                <span>
-                  Minimum Order
-                </span>
-
+                <span>Minimum Order</span>
                 <strong>
-                  {formatNumber(
-                    selectedService.min_order
-                  )}
+                  {formatNumber(selectedService.min_order)}
                 </strong>
               </div>
 
               <div>
-                <span>
-                  Maximum Order
-                </span>
-
+                <span>Maximum Order</span>
                 <strong>
-                  {formatNumber(
-                    selectedService.max_order
-                  )}
+                  {formatNumber(selectedService.max_order)}
                 </strong>
               </div>
 
               <div>
-                <span>
-                  Average Time
-                </span>
-
+                <span>Average Time</span>
                 <strong>
-                  {
-                    selectedService.average_time
-                  }
+                  {selectedService.average_time || "—"}
                 </strong>
               </div>
-
             </div>
 
             <button
               className="modal-close-btn"
-              onClick={() =>
-                setSelectedService(null)
-              }
+              onClick={() => setSelectedService(null)}
+              type="button"
             >
               Close
             </button>
-
           </div>
-
         </div>
       )}
-      <WhatsAppButton/>
 
+      <WhatsAppButton />
     </div>
   );
 }
