@@ -6,7 +6,7 @@ import Login from './components/Login';
 // import Services from "./pages/Services";
 import NewOrder from "./dashboard/NewOrder";
 
-import DashboardServices from "./dashboard/DashboardService";
+// import DashboardServices from "./dashboard/DashboardService";
 import Funds from "./dashboard/Funds";
 import API from "./dashboard/Api";
 import Affiliates from "./dashboard/Affiliates";
