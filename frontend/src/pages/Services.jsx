@@ -31,8 +31,8 @@ const Services = () => {
         setError("");
 
         const response = await axios.get(
-          // `${process.env.REACT_APP_API_URL}/api/dashboard-services`
-          'http://localhost:5000/api/dashboard-service'
+          `${process.env.REACT_APP_API_URL}/api/dashboard-services`
+          // 'http://localhost:5000/api/dashboard-service'
         );
 
         console.log("Services API response:", response.data);
