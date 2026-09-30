@@ -1,7 +1,18 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/Services.css";
 import Home from "./Home";
+import {
+  faInstagram,
+  faYoutube,
+  faTelegram,
+  faTwitter,
+  faFacebook,
+  faTiktok,
+  faSnapchat,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 
 const Services = () => {
 
@@ -198,6 +209,52 @@ const Services = () => {
 
   };
 
+  // CATEGORY SOCIAL ICON
+  // =====================================
+  
+  const getCategoryIcon = (category) => {
+    const name = (category || "").toLowerCase();
+  
+    if (name.includes("instagram")) {
+      return faInstagram;
+    }
+  
+    if (
+      name.includes("youtube") ||
+      name.includes("you tube")
+    ) {
+      return faYoutube;
+    }
+  
+    if (name.includes("telegram")) {
+      return faTelegram;
+    }
+  
+    if (
+      name.includes("twitter") ||
+      name.includes("x")
+    ) {
+      return faTwitter;
+    }
+  
+    if (name.includes("facebook")) {
+      return faFacebook;
+    }
+  
+    if (name.includes("tiktok")) {
+      return faTiktok;
+    }
+  
+    if (name.includes("snapchat")) {
+      return faSnapchat;
+    }
+  
+    if (name.includes("linkedin")) {
+      return faLinkedin;
+    }
+  
+    return null;
+  };
 
   // ================================
   // UI
