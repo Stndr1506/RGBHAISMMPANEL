@@ -34,7 +34,7 @@ function NewOrder() {
 
       console.log("Services:", response.data);
 
-      setServices(response.data);
+      setServices(response.data.services || []);
 
     } catch (error) {
       console.error(
