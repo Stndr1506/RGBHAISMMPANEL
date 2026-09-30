@@ -63,6 +63,7 @@ const createService = async (req, res) => {
     const {
       category,
       service,
+      description,
       rate,
       min_order,
       max_order,
@@ -74,6 +75,7 @@ const createService = async (req, res) => {
     if (
       !category ||
       !service ||
+      !description ||
       rate === undefined ||
       min_order === undefined ||
       max_order === undefined ||
@@ -114,6 +116,7 @@ const createService = async (req, res) => {
       await serviceModel.createService({
         category: category.trim(),
         service: service.trim(),
+        description: description.trim(),
         rate: numericRate,
         min_order: numericMin,
         max_order: numericMax,

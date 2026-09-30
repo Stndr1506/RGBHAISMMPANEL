@@ -1,84 +1,430 @@
-import React, { useEffect, useMemo, useState } from "react";
-import "../styles/DashboardServices.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../styles/Services.css";
+import Home from "../pages/Home";
+// import Home from "./Home";
+import {
+  faInstagram,
+  faYoutube,
+  faTelegram,
+  faTwitter,
+  faFacebook,
+  faTiktok,
+  faSnapchat,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 
+const API_URL = process.env.REACT_APP_API_URL;
 
-// Change this if your backend is hosted somewhere else
-const API_URL = `${process.env.REACT_APP_API_URL}/api/admin-service`;
-
-const categories = [
-  "All",
-  "Telegram Services",
-  "Instagram Views",
-  "Instagram Followers",
-  "Instagram Followers India",
-  "Instagram Likes",
-  "Instagram Comments",
-  "Instagram Channel",
-  "YouTube Views",
-  "YouTube Subscribers",
-  "Facebook",
-  "TikTok",
-  "Website Traffic",
-];
-
-const currencySymbols = {
-  INR: "₹",
-  USD: "$",
-  EUR: "€",
-};
-
-function formatNumber(number) {
-  return new Intl.NumberFormat("en-IN").format(number);
-}
-
-function AdminService() {
-  // =========================
+const AdminService = () => {
+  // ================================
   // STATE
-  // =========================
+  // ================================
 
-  const [services, setServices] = useState([]);
-
-  const [category, setCategory] = useState("All");
+  const [servicesData, setServicesData] = useState([]);
   const [search, setSearch] = useState("");
-  const [currency, setCurrency] = useState("INR");
-
-  const [selectedService, setSelectedService] = useState(null);
-
-  const [editingService, setEditingService] = useState(null);
-
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [currency, setCurrency] = useState("INR ₹");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // =========================
-  // LOAD SERVICES
-  // =========================
+  // Modal
+  const [showModal, setShowModal] = useState(false);
+
+  // Edit mode
+  const [editingService, setEditingService] = useState(null);
+
+  // Form
+  const [formData, setFormData] = useState({
+    category: "",
+    service: "",
+    rate: "",
+    min_order: "",
+    max_order: "",
+    average_time: "",
+    description: "",
+    icon: "⭐",
+  });
+
+  const [saving, setSaving] = useState(false);
+
+//   const getAuthConfig = () => {
+//   const token = localStorage.getItem("token");
+
+//   return {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   };
+// };
+  // ================================
+  // FETCH SERVICES
+  // ================================
+
+  
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${API_URL}/api/admin-service`,    //${API_URL}
+        {
+          headers:{
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      // if (response.data.success) {
+      //   setServicesData(response.data.services || []);
+      // } else {
+      //   setError("Failed to load services.");
+      // }
+      if (Array.isArray(response.data)) {
+      setServicesData(response.data);
+    } else {
+      setServicesData([]);
+      setError("Invalid services response from server.");
+    }
+
+    } catch (err) {
+      console.error("Error fetching services:", err);
+
+      setError(
+        "Unable to load services. Please try again."
+      );
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     fetchServices();
   }, []);
 
-  const fetchServices = async () => {
-    try {
-      setLoading(true);
-      setError("");
+
+  // ================================
+  // CATEGORIES
+  // ================================
+
+  const categories = [
+    "All",
+    ...new Set(
+      servicesData
+        .map((item) => item.category)
+        .filter(Boolean)
+    ),
+  ];
+
+
+  // ================================
+  // SEARCH + CATEGORY
+  // ================================
+
+  const filteredServices = servicesData.filter(
+    (service) => {
+
+      const searchText =
+        search.toLowerCase().trim();
+
+      const serviceName =
+        (service.service || "").toLowerCase();
+
+      const category =
+        (service.category || "").toLowerCase();
+
+      const id =
+        service.id?.toString() || "";
+
+      const matchesSearch =
+        serviceName.includes(searchText) ||
+        category.includes(searchText) ||
+        id.includes(searchText);
+
+      const matchesCategory =
+        selectedCategory === "All" ||
+        service.category === selectedCategory;
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+    }
+  );
+
+
+  // ================================
+  // FORMAT NUMBER
+  // ================================
+
+  const formatNumber = (number) => {
+
+    if (
+      number === null ||
+      number === undefined
+    ) {
+      return "0";
+    }
+
+    return Number(number).toLocaleString("en-IN");
+  };
+
+
+  // ================================
+  // RATE
+  // ================================
+
+  const getRate = (rate) => {
+
+    const numericRate =
+      Number(rate || 0);
+
+    if (currency === "INR ₹") {
+      return `₹${numericRate.toFixed(2)}`;
+    }
+
+    if (currency === "USD $") {
+      return `$${numericRate.toFixed(4)}`;
+    }
+
+    if (currency === "EUR €") {
+      return `€${numericRate.toFixed(4)}`;
+    }
+
+    return numericRate.toFixed(2);
+  };
+
+
+  // ================================
+  // VIEW DESCRIPTION
+  // ================================
+
+  const handleView = (service) => {
+
+    alert(
+      `Service Name: ${service.service}\n\n` +
+      `Service ID: ${service.id}\n\n` +
+      `Rate: ${service.rate}\n\n` +
+      `Average Time: ${
+        service.average_time || "Not available"
+      }\n\n` +
+      `Description: ${
+        service.description ||
+        "No description available."
+      }`
+    );
+  };
+
+
+  // ================================
+  // OPEN ADD MODAL
+  // ================================
+
+  const handleAddService = () => {
+
+    setEditingService(null);
+
+    setFormData({
+      category: "",
+      service: "",
+      rate: "",
+      min_order: "",
+      max_order: "",
+      average_time: "",
+      description: "",
       
-      const token =
-        localStorage.getItem("token");
+    });
+
+    setShowModal(true);
+  };
 
 
-      if (!token) {
+  // ================================
+  // OPEN EDIT MODAL
+  // ================================
 
-        setError(
-          "Authentication required. Please login again."
-        );
+  const handleEditService = (service) => {
 
-        return;
-      }
+    setEditingService(service);
 
-      const response = await fetch(API_URL,
+    setFormData({
+      category: service.category || "",
+      service: service.service || "",
+      description: service.description || "",
+      rate: service.rate || "",
+      min_order: service.min_order || "",
+      max_order: service.max_order || "",
+      average_time: service.average_time || "",
+      
+      icon: service.icon || "⭐",
+    });
+
+    setShowModal(true);
+  };
+
+
+  // ================================
+  // FORM CHANGE
+  // ================================
+
+  const handleChange = (e) => {
+
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+
+  // ================================
+  // SAVE SERVICE
+  // ================================
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // ================================
+  // VALIDATION
+  // ================================
+
+  if (
+    !formData.category.trim() ||
+    !formData.service.trim() ||
+    formData.rate === "" ||
+    formData.min_order === "" ||
+    formData.max_order === ""
+  ) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Session expired. Please login again.");
+      return;
+    }
+
+    let response;
+
+    // ================================
+    // UPDATE SERVICE
+    // ================================
+
+    if (editingService) {
+      response = await axios.put(
+        `${API_URL}/api/admin-service/${editingService.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    }
+
+    // ================================
+    // ADD SERVICE
+    // ================================
+
+    else {
+      
+      response = await axios.post(
+        `${API_URL}/api/admin-service`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    }
+
+    console.log("SAVE API RESPONSE:", response.data);
+
+    // Axios considers 2xx responses successful.
+    // So don't depend on response.data.success.
+    if (response.status >= 200 && response.status < 300) {
+      
+      alert(
+        editingService
+          ? "Service updated successfully."
+          : "Service added successfully."
+      );
+
+      setShowModal(false);
+      setEditingService(null);
+
+      setFormData({
+        category: "",
+        service: "",
+        rate: "",
+        min_order: "",
+        max_order: "",
+        average_time: "",
+        description: "",
+        icon: "⭐",
+      });
+
+      // Refresh service list
+      await fetchServices();
+
+    } else {
+      alert(
+        response.data?.message ||
+        "Operation failed."
+      );
+    }
+
+  } catch (err) {
+    console.error("Service save error:", err);
+
+    console.error("Status:", err.response?.status);
+    console.error("API response:", err.response?.data);
+
+    alert(
+      err.response?.data?.message ||
+      "Something went wrong while saving service."
+    );
+
+  } finally {
+    setSaving(false);
+  }
+};
+  // ================================
+  // DELETE SERVICE
+  // ================================
+
+  const handleDeleteService = async (service) => {
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${service.service}"?`
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Session expired. Please login again.");
+      return;
+    }
+
+      const response = await axios.delete(
+        `${API_URL}/api/admin-service/${service.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -86,993 +432,663 @@ function AdminService() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to load services");
+      if (response.data.success) {
+
+        alert(
+          "Service deleted successfully."
+        );
+
+        fetchServices();
+
+      } else {
+
+        alert(
+          response.data.message ||
+          "Unable to delete service."
+        );
       }
 
-      const data = await response.json();
-
-      setServices(data);
     } catch (err) {
-      console.error(err);
-      setError("Unable to load services. Please check your backend.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // =========================
-  // FILTER SERVICES
-  // =========================
-
-  const filteredServices = useMemo(() => {
-    return services.filter((item) => {
-      const categoryMatch =
-        category === "All" || item.category === category;
-
-      const searchText = search.toLowerCase().trim();
-
-      const searchMatch =
-        item.service?.toLowerCase().includes(searchText) ||
-        item.category?.toLowerCase().includes(searchText) ||
-        String(item.id).includes(searchText);
-
-      return categoryMatch && searchMatch;
-    });
-  }, [services, category, search]);
-
-  // =========================
-  // DELETE SERVICE
-  // =========================
-
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this service?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      setSaving(true);
-      setError("");
-
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete service");
-      }
-
-      // Remove service from frontend immediately
-      setServices((prevServices) =>
-        prevServices.filter((service) => service.id !== id)
+      console.error(
+        "Delete service error:",
+        err
       );
 
-      // Close view modal if the deleted service is open
-      if (selectedService?.id === id) {
-        setSelectedService(null);
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Unable to delete service.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // =========================
-  // OPEN EDIT MODAL
-  // =========================
-
-  const handleEdit = (service) => {
-    setEditingService({
-      ...service,
-    });
-
-    setSelectedService(null);
-  };
-
-  // =========================
-  // UPDATE SERVICE
-  // =========================
-
-  const handleUpdate = async () => {
-    if (!editingService) {
-      return;
-    }
-
-    try {
-      setSaving(true);
-      setError("");
-
-      const response = await fetch(
-        `${API_URL}/${editingService.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            category: editingService.category,
-            service: editingService.service,
-            rate: Number(editingService.rate),
-            min_order: Number(editingService.min_order),
-            max_order: Number(editingService.max_order),
-            average_time: editingService.average_time,
-          }),
-        }
+      alert(
+        err.response?.data?.message ||
+        "Something went wrong while deleting service."
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to update service");
-      }
-
-      const updatedService = await response.json();
-
-      // Update frontend state
-      setServices((prevServices) =>
-        prevServices.map((service) =>
-          service.id === updatedService.id
-            ? updatedService
-            : service
-        )
-      );
-
-      setEditingService(null);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to update service.");
-    } finally {
-      setSaving(false);
     }
   };
 
-  // =========================
-  // ADD SERVICE
-  // =========================
+  // =====================================
+// CATEGORY SOCIAL ICON
+// =====================================
 
-  const handleAdd = async (newService) => {
-    const token =
-        localStorage.getItem("token");
+const getCategoryIcon = (category) => {
+  const name = (category || "").toLowerCase();
 
-    try {
-      setSaving(true);
-      setError("");
+  if (name.includes("instagram")) {
+    return faInstagram;
+  }
 
-      const response = await fetch(API_URL, 
-        
-        {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          category: newService.category,
-          service: newService.service,
-          rate: Number(newService.rate),
-          min_order: Number(newService.min_order),
-          max_order: Number(newService.max_order),
-          average_time: newService.average_time,
-        }),
-      });
+  if (
+    name.includes("youtube") ||
+    name.includes("you tube")
+  ) {
+    return faYoutube;
+  }
 
-      if (!response.ok) {
-        throw new Error("Failed to add service");
-      }
+  if (name.includes("telegram")) {
+    return faTelegram;
+  }
 
-      const createdService = await response.json();
+  if (
+    name.includes("twitter") ||
+    name.includes("x")
+  ) {
+    return faTwitter;
+  }
 
-      setServices((prevServices) => [
-        createdService,
-        ...prevServices,
-      ]);
+  if (name.includes("facebook")) {
+    return faFacebook;
+  }
 
-      setShowAddModal(false);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to add service.");
-    } finally {
-      setSaving(false);
-    }
-  };
+  if (name.includes("tiktok")) {
+    return faTiktok;
+  }
 
-  // =========================
-  // INPUT UPDATE HELPER
-  // =========================
+  if (name.includes("snapchat")) {
+    return faSnapchat;
+  }
 
-  const updateEditingField = (field, value) => {
-    setEditingService((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  if (name.includes("linkedin")) {
+    return faLinkedin;
+  }
+
+  return null;
+};
+
+
+  // ================================
+  // UI
+  // ================================
 
   return (
+
     <div className="services-page">
-      {/* <AdminHome/> */}
 
-      {/* =========================
-          MAIN
-      ========================= */}
+      <Home/>
 
-      <main className="container">
-        {/* Heading */}
 
-        <div className="page-heading">
-          <div>
-            <h1>Services</h1>
+      {/* =================================
+          ADMIN HEADER
+      ================================= */}
 
-            <p>
-              Manage your social media services.
-            </p>
-          </div>
+      <div className="services-admin-header">
 
-          <button
-            className="add-service-btn"
-            onClick={() => setShowAddModal(true)}
-          >
-            + Add Service
-          </button>
+        <div>
+
+          <h1>
+            Service Management
+          </h1>
+
+          <p>
+            Add, update and manage your SMM services.
+          </p>
+
         </div>
 
-        {/* Error */}
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+        <button
+          className="add-service-btn"
+          onClick={handleAddService}
+        >
+          ＋ Add Service
+        </button>
 
-        {/* Search */}
+      </div>
+
+
+      {/* =================================
+          FILTER AREA
+      ================================= */}
+
+      <div className="services-filter-card">
+
+        <select
+          className="filter-select"
+          value={selectedCategory}
+          onChange={(e) =>
+            setSelectedCategory(
+              e.target.value
+            )
+          }
+        >
+
+          {categories.map((category) => (
+
+            <option
+              key={category}
+              value={category}
+            >
+              {category}
+            </option>
+
+          ))}
+
+        </select>
+
+
+        <select
+          className="currency-select"
+          value={currency}
+          onChange={(e) =>
+            setCurrency(e.target.value)
+          }
+        >
+
+          <option value="INR ₹">
+            INR ₹
+          </option>
+
+          <option value="USD $">
+            USD $
+          </option>
+
+          <option value="EUR €">
+            EUR €
+          </option>
+
+        </select>
+
 
         <div className="search-box">
-          <span className="search-icon">⌕</span>
 
           <input
             type="text"
             placeholder="Search service..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
           />
+
+          <button
+            className="search-btn"
+            type="button"
+          >
+            🔍
+          </button>
+
         </div>
 
-        {/* Category */}
+      </div>
 
-        <div className="category-wrapper">
-          {categories.map((item) => (
-            <button
-              key={item}
-              className={
-                category === item
-                  ? "category-btn selected"
-                  : "category-btn"
-              }
-              onClick={() => setCategory(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
 
-        {/* Service count */}
+      {/* =================================
+          SERVICES TABLE
+      ================================= */}
 
-        <div className="service-toolbar">
-          <div className="service-count">
-            Showing{" "}
-            <strong>{filteredServices.length}</strong>{" "}
-            services
+      <div className="services-table-card">
+
+        <div className="table-header">
+
+          <div>ID</div>
+
+          <div className="header-service">
+            Service
           </div>
 
-          <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="currency-select"
-          >
-            <option value="INR">INR ₹</option>
-            <option value="USD">USD $</option>
-            <option value="EUR">EUR €</option>
-          </select>
+          <div>
+            Rate per 1000
+          </div>
+
+          <div>
+            Min order
+          </div>
+
+          <div>
+            Max order
+          </div>
+
+          <div>
+            Average time
+          </div>
+
+          <div>
+            Description
+          </div>
+
+          <div>
+            Actions
+          </div>
+
         </div>
 
-        {/* =========================
-            LOADING
-        ========================= */}
+
+        {/* LOADING */}
 
         {loading && (
-          <div className="loading">
+
+          <div className="no-services">
             Loading services...
           </div>
+
         )}
 
-        {/* =========================
-            DESKTOP TABLE
-        ========================= */}
 
-        {!loading && (
-          <div className="table-container">
-            <table className="services-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Service</th>
-                  <th>Rate per 1000</th>
-                  <th>Min order</th>
-                  <th>Max order</th>
-                  <th>Average time</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+        {/* ERROR */}
 
-              <tbody>
-                {filteredServices.map((item) => (
-                  <tr key={item.id}>
-                    {/* ID */}
+        {!loading && error && (
 
-                    <td className="service-id">
-                      {item.id}
-                    </td>
+          <div className="no-services">
+            {error}
+          </div>
 
-                    {/* Service */}
+        )}
 
-                    <td>
-                      <div className="service-name">
-                        {item.service}
-                      </div>
 
-                      <span className="service-category">
-                        {item.category}
+        {/* SERVICES */}
+
+        {!loading &&
+          !error &&
+          filteredServices.length > 0 &&
+          filteredServices.map(
+            (service, index) => {
+
+              const previousCategory =
+                index > 0
+                  ? filteredServices[
+                      index - 1
+                    ].category
+                  : null;
+
+              const showCategory =
+                index === 0 ||
+                previousCategory !==
+                  service.category;
+
+              return (
+
+                <React.Fragment
+                  key={service.id}
+                >
+
+                  {/* CATEGORY */}
+
+                  {showCategory && (
+
+                    <div className="category-row">
+
+                      {/* <span className="category-icon">
+
+                        {service.icon || "⭐"}
+
+                      </span> */}
+                      <span className="category-icon">
+                        {getCategoryIcon(service.category) ? (
+                        <FontAwesomeIcon
+                        icon={getCategoryIcon(service.category)}
+                        />
+                      ) : (
+                        "⭐"
+                        )}
                       </span>
-                    </td>
 
-                    {/* Rate */}
+                      <span>
+                        {service.category}
+                      </span>
 
-                    <td className="rate">
-                      {currencySymbols[currency]}
-                      {Number(item.rate).toFixed(2)}
-                    </td>
+                    </div>
 
-                    {/* Min */}
+                  )}
 
-                    <td>
-                      {formatNumber(item.min_order)}
-                    </td>
 
-                    {/* Max */}
+                  {/* SERVICE */}
 
-                    <td>
-                      {formatNumber(item.max_order)}
-                    </td>
+                  <div className="service-row">
 
-                    {/* Time */}
+                    <div className="service-id">
+                      {service.id}
+                    </div>
 
-                    <td className="time">
-                      {item.average_time}
-                    </td>
 
-                    {/* Actions */}
+                    <div className="service-name">
+                      {service.service}
+                    </div>
 
-                    <td>
-                      <div className="action-buttons">
-                        <button
-                          className="view-btn"
-                          onClick={() =>
-                            setSelectedService(item)
-                          }
-                        >
-                          View
-                        </button>
 
-                        <button
-                          className="edit-btn"
-                          onClick={() =>
-                            handleEdit(item)
-                          }
-                        >
-                          Edit
-                        </button>
+                    <div className="service-rate">
+                      {getRate(service.rate)}
+                    </div>
 
-                        <button
-                          className="delete-btn"
-                          onClick={() =>
-                            handleDelete(item.id)
-                          }
-                          disabled={saving}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
 
-            {/* No results */}
+                    <div>
+                      {formatNumber(
+                        service.min_order
+                      )}
+                    </div>
 
-            {filteredServices.length === 0 && (
-              <div className="no-results">
-                <div className="no-results-icon">
-                  🔍
-                </div>
 
-                <h3>No services found</h3>
+                    <div>
+                      {formatNumber(
+                        service.max_order
+                      )}
+                    </div>
 
-                <p>
-                  Try searching for another service or
-                  category.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
 
-        {/* =========================
-            MOBILE CARDS
-        ========================= */}
+                    <div>
+                      {service.average_time ||
+                        "Not available"}
+                    </div>
 
-        {!loading && (
-          <div className="mobile-services">
-            {filteredServices.map((item) => (
-              <div
-                className="service-card"
-                key={item.id}
-              >
-                <div className="card-top">
-                  <div>
-                    <span className="card-id">
-                      ID #{item.id}
-                    </span>
 
-                    <h3>{item.service}</h3>
+                    <div className="view-column">
+
+                      <button
+                        type="button"
+                        className="view-btn"
+                        onClick={() =>
+                          handleView(service)
+                        }
+                      >
+                        View
+                      </button>
+
+                    </div>
+
+
+                    {/* ACTIONS */}
+
+                    <div className="service-actions">
+
+                      <button
+                        className="edit-btn"
+                        onClick={() =>
+                          handleEditService(
+                            service
+                          )
+                        }
+                      >
+                        📝Edit
+                      </button>
+
+
+                      <button
+                        className="delete-btn"
+                        onClick={() =>
+                          handleDeleteService(
+                            service
+                          )
+                        }
+                      >
+                        ❌ Delete
+                      </button>
+
+                    </div>
+
                   </div>
 
-                  <span className="card-category">
-                    {item.category}
-                  </span>
-                </div>
-
-                <div className="card-details">
-                  <div>
-                    <span>Rate / 1000</span>
-
-                    <strong>
-                      {currencySymbols[currency]}
-                      {Number(item.rate).toFixed(2)}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>Min Order</span>
-
-                    <strong>
-                      {formatNumber(item.min_order)}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>Max Order</span>
-
-                    <strong>
-                      {formatNumber(item.max_order)}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>Average Time</span>
-
-                    <strong>
-                      {item.average_time}
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="mobile-action-buttons">
-                  <button
-                    className="mobile-view-btn"
-                    onClick={() =>
-                      setSelectedService(item)
-                    }
-                  >
-                    View
-                  </button>
-
-                  <button
-                    className="edit-btn"
-                    onClick={() =>
-                      handleEdit(item)
-                    }
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="delete-btn"
-                    onClick={() =>
-                      handleDelete(item.id)
-                    }
-                    disabled={saving}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-
-      {/* =========================
-          VIEW MODAL
-      ========================= */}
-
-      {selectedService && (
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setSelectedService(null)
-          }
-        >
-          <div
-            className="service-modal"
-            onClick={(e) =>
-              e.stopPropagation()
+                </React.Fragment>
+              );
             }
-          >
-            <button
-              className="close-modal"
-              onClick={() =>
-                setSelectedService(null)
-              }
-            >
-              ×
-            </button>
+          )}
 
-            <span className="modal-id">
-              Service #{selectedService.id}
-            </span>
 
-            <h2>
-              {selectedService.category}
-            </h2>
+        {/* NO SERVICES */}
 
-            <p className="modal-service-name">
-              {selectedService.service}
-            </p>
+        {!loading &&
+          !error &&
+          filteredServices.length === 0 && (
 
-            <div className="modal-details">
-              <div>
-                <span>Rate / 1000</span>
-
-                <strong>
-                  {currencySymbols[currency]}
-                  {Number(
-                    selectedService.rate
-                  ).toFixed(2)}
-                </strong>
-              </div>
-
-              <div>
-                <span>Minimum Order</span>
-
-                <strong>
-                  {formatNumber(
-                    selectedService.min_order
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <span>Maximum Order</span>
-
-                <strong>
-                  {formatNumber(
-                    selectedService.max_order
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <span>Average Time</span>
-
-                <strong>
-                  {selectedService.average_time}
-                </strong>
-              </div>
+            <div className="no-services">
+              No services found.
             </div>
 
-            <div className="modal-actions">
-              <button
-                className="edit-btn"
-                onClick={() =>
-                  handleEdit(selectedService)
-                }
-              >
-                Edit Service
-              </button>
+          )}
+
+      </div>
+
+
+      {/* =================================
+          ADD / EDIT MODAL
+      ================================= */}
+
+      {showModal && (
+
+        <div className="service-modal-overlay">
+
+          <div className="service-modal">
+
+            <div className="modal-header">
+
+              <h2>
+                {editingService
+                  ? "Update Service"
+                  : "Add New Service"}
+              </h2>
 
               <button
-                className="delete-btn"
+                className="modal-close"
                 onClick={() =>
-                  handleDelete(
-                    selectedService.id
-                  )
+                  setShowModal(false)
                 }
               >
-                Delete Service
+                ✕
               </button>
+
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* =========================
-          EDIT MODAL
-      ========================= */}
 
-      {editingService && (
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setEditingService(null)
-          }
-        >
-          <div
-            className="service-modal edit-modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-            <button
-              className="close-modal"
-              onClick={() =>
-                setEditingService(null)
-              }
+            <form
+              onSubmit={handleSubmit}
+              className="service-form"
             >
-              ×
-            </button>
 
-            <span className="modal-id">
-              Editing Service #{editingService.id}
-            </span>
-
-            <h2>Edit Service</h2>
-
-            <div className="form-group">
-              <label>Category</label>
-
-              <input
-                type="text"
-                value={
-                  editingService.category || ""
-                }
-                onChange={(e) =>
-                  updateEditingField(
-                    "category",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Service Name</label>
-
-              <textarea
-                value={
-                  editingService.service || ""
-                }
-                onChange={(e) =>
-                  updateEditingField(
-                    "service",
-                    e.target.value
-                  )
-                }
-                rows="3"
-              />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Rate / 1000</label>
-
-                <input
-                  type="number"
-                  step="0.01"
-                  value={
-                    editingService.rate ?? ""
-                  }
-                  onChange={(e) =>
-                    updateEditingField(
-                      "rate",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
+              {/* CATEGORY */}
 
               <div className="form-group">
-                <label>Minimum Order</label>
 
-                <input
-                  type="number"
-                  value={
-                    editingService.min_order ?? ""
-                  }
-                  onChange={(e) =>
-                    updateEditingField(
-                      "min_order",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Maximum Order</label>
-
-                <input
-                  type="number"
-                  value={
-                    editingService.max_order ?? ""
-                  }
-                  onChange={(e) =>
-                    updateEditingField(
-                      "max_order",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Average Time</label>
+                <label>
+                  Category *
+                </label>
 
                 <input
                   type="text"
-                  value={
-                    editingService.average_time ||
-                    ""
-                  }
-                  onChange={(e) =>
-                    updateEditingField(
-                      "average_time",
-                      e.target.value
-                    )
-                  }
+                  name="category"
+                  placeholder="Instagram"
+                  value={formData.category}
+                  onChange={handleChange}
                 />
+
               </div>
-            </div>
 
-            <div className="modal-actions">
-              <button
-                className="cancel-btn"
-                onClick={() =>
-                  setEditingService(null)
-                }
-              >
-                Cancel
-              </button>
 
-              <button
-                className="save-btn"
-                onClick={handleUpdate}
-                disabled={saving}
-              >
-                {saving
-                  ? "Saving..."
-                  : "Save Changes"}
-              </button>
-            </div>
+              {/* SERVICE */}
+
+              <div className="form-group">
+
+                <label>
+                  Service Name *
+                </label>
+
+                <input
+                  type="text"
+                  name="service"
+                  placeholder="Instagram Followers"
+                  value={formData.service}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+              {/* DESCRIPTION */}
+
+              <div className="form-group">
+
+                <label>
+                  Description
+                </label>
+
+                <textarea
+                  name="description"
+                  placeholder="Enter service description..."
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows="4"
+                />
+
+              </div>
+
+
+              <div className="form-row">
+
+                {/* RATE */}
+
+                <div className="form-group">
+
+                  <label>
+                    Rate per 1000 *
+                  </label>
+
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="rate"
+                    placeholder="36.17"
+                    value={formData.rate}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+
+                {/* ICON */}
+
+                {/* <div className="form-group">
+
+                  <label>
+                    Category Icon
+                  </label>
+
+                  <input
+                    type="text"
+                    name="icon"
+                    placeholder="⭐"
+                    value={formData.icon}
+                    onChange={handleChange}
+                  />
+
+                </div> */}
+
+              </div>
+
+
+              <div className="form-row">
+
+                {/* MIN */}
+
+                <div className="form-group">
+
+                  <label>
+                    Minimum Order *
+                  </label>
+
+                  <input
+                    type="number"
+                    name="min_order"
+                    placeholder="100"
+                    value={formData.min_order}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+
+                {/* MAX */}
+
+                <div className="form-group">
+
+                  <label>
+                    Maximum Order *
+                  </label>
+
+                  <input
+                    type="number"
+                    name="max_order"
+                    placeholder="50000"
+                    value={formData.max_order}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+              </div>
+
+
+              {/* AVERAGE TIME */}
+
+              <div className="form-group">
+
+                <label>
+                  Average Time
+                </label>
+
+                <input
+                  type="text"
+                  name="average_time"
+                  placeholder="0-24 hours"
+                  value={formData.average_time}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+
+              
+
+
+              {/* BUTTONS */}
+
+              <div className="modal-actions">
+
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() =>
+                    setShowModal(false)
+                  }
+                >
+                  Cancel
+                </button>
+
+
+                <button
+                  type="submit"
+                  className="save-service-btn"
+                  disabled={saving}
+                >
+                  {saving
+                    ? "Saving..."
+                    : editingService
+                    ? "Update Service"
+                    : "Add Service"}
+                </button>
+
+              </div>
+
+            </form>
+
           </div>
+
         </div>
+
       )}
 
-      {/* =========================
-          ADD MODAL
-      ========================= */}
-
-      {showAddModal && (
-        <AddServiceModal
-          onClose={() =>
-            setShowAddModal(false)
-          }
-          onAdd={handleAdd}
-          saving={saving}
-        />
-      )}
     </div>
   );
-}
-
-// =====================================================
-// ADD SERVICE MODAL
-// =====================================================
-
-function AddServiceModal({
-  onClose,
-  onAdd,
-  saving,
-}) {
-  const [form, setForm] = useState({
-    category: "",
-    service: "",
-    rate: "",
-    min_order: "",
-    max_order: "",
-    average_time: "",
-  });
-
-  const handleChange = (field, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSubmit = () => {
-    if (
-      !form.category ||
-      !form.service ||
-      !form.rate ||
-      !form.min_order ||
-      !form.max_order ||
-      !form.average_time
-    ) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    onAdd(form);
-  };
-
-  return (
-    <div
-      className="modal-overlay"
-      onClick={onClose}
-    >
-      <div
-        className="service-modal edit-modal"
-        onClick={(e) =>
-          e.stopPropagation()
-        }
-      >
-        <button
-          className="close-modal"
-          onClick={onClose}
-        >
-          ×
-        </button>
-
-        <h2>Add New Service</h2>
-
-        <div className="form-group">
-          <label>Category</label>
-
-          <input
-            type="text"
-            placeholder="Instagram Views"
-            value={form.category}
-            onChange={(e) =>
-              handleChange(
-                "category",
-                e.target.value
-              )
-            }
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Service Name</label>
-
-          <textarea
-            rows="3"
-            placeholder="Instagram Views [Instant]"
-            value={form.service}
-            onChange={(e) =>
-              handleChange(
-                "service",
-                e.target.value
-              )
-            }
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label>Rate / 1000</label>
-
-            <input
-              type="number"
-              step="0.01"
-              placeholder="0.16"
-              value={form.rate}
-              onChange={(e) =>
-                handleChange(
-                  "rate",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Minimum Order</label>
-
-            <input
-              type="number"
-              placeholder="100"
-              value={form.min_order}
-              onChange={(e) =>
-                handleChange(
-                  "min_order",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label>Maximum Order</label>
-
-            <input
-              type="number"
-              placeholder="1000000"
-              value={form.max_order}
-              onChange={(e) =>
-                handleChange(
-                  "max_order",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Average Time</label>
-
-            <input
-              type="text"
-              placeholder="30 minutes"
-              value={form.average_time}
-              onChange={(e) =>
-                handleChange(
-                  "average_time",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-        </div>
-
-        <div className="modal-actions">
-          <button
-            className="cancel-btn"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-
-          <button
-            className="save-btn"
-            onClick={handleSubmit}
-            disabled={saving}
-          >
-            {saving
-              ? "Adding..."
-              : "Add Service"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+};
 
 export default AdminService;

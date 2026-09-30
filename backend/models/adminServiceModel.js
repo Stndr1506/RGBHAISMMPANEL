@@ -63,6 +63,7 @@ const createService = async (serviceData) => {
   const {
     category,
     service,
+    description,
     rate,
     min_order,
     max_order,
@@ -75,13 +76,18 @@ const createService = async (serviceData) => {
     .request()
     .input(
       "category",
-      sql.VarChar(255),
+      sql.NVarChar(255),
       category
     )
     .input(
       "service",
-      sql.VarChar(500),
+      sql.NVarChar(500),
       service
+    )
+    .input(
+      "description",
+      sql.NVarChar(1000),
+      description
     )
     .input(
       "rate",
@@ -107,6 +113,7 @@ const createService = async (serviceData) => {
       INSERT INTO services (
         category,
         service,
+        description,
         rate,
         min_order,
         max_order,
@@ -116,6 +123,7 @@ const createService = async (serviceData) => {
         INSERTED.id,
         INSERTED.category,
         INSERTED.service,
+        INSERTED.description,
         INSERTED.rate,
         INSERTED.min_order,
         INSERTED.max_order,
@@ -125,6 +133,7 @@ const createService = async (serviceData) => {
       VALUES (
         @category,
         @service,
+        @description,
         @rate,
         @min_order,
         @max_order,
@@ -143,6 +152,7 @@ const updateService = async (id, serviceData) => {
   const {
     category,
     service,
+    description,
     rate,
     min_order,
     max_order,
@@ -156,13 +166,18 @@ const updateService = async (id, serviceData) => {
     .input("id", sql.Int, id)
     .input(
       "category",
-      sql.VarChar(255),
+      sql.NVarChar(300),
       category
     )
     .input(
       "service",
-      sql.VarChar(500),
+      sql.NVarChar(500),
       service
+    )
+    .input(
+      "description",
+      sql.NVarChar(1000),
+      description
     )
     .input(
       "rate",
@@ -189,6 +204,7 @@ const updateService = async (id, serviceData) => {
       SET
         category = @category,
         service = @service,
+        description = @description,
         rate = @rate,
         min_order = @min_order,
         max_order = @max_order,
@@ -198,6 +214,7 @@ const updateService = async (id, serviceData) => {
         INSERTED.id,
         INSERTED.category,
         INSERTED.service,
+        INSERTED.description,
         INSERTED.rate,
         INSERTED.min_order,
         INSERTED.max_order,
