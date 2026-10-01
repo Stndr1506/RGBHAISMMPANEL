@@ -2,8 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/Services.css";
-import Home from "../pages/Home";
-// import Home from "./Home";
+
+
 import {
   faInstagram,
   faYoutube,
@@ -14,6 +14,7 @@ import {
   faSnapchat,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+import AdminHome from "./AdminHome";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -519,7 +520,7 @@ const getCategoryIcon = (category) => {
 
     <div className="services-page">
 
-      <Home/>
+      <AdminHome/>
 
 
       {/* =================================
