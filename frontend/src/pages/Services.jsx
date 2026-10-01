@@ -457,10 +457,15 @@ const Services = () => {
                     <div className="category-row">
 
                       <span className="category-icon">
-
-                        {service.icon || "⭐"}
-
-                      </span>
+                                              {getCategoryIcon(service.category) ? (
+                                              <FontAwesomeIcon
+                                              icon={getCategoryIcon(service.category)}
+                                              />
+                                            ) : (
+                                              "⭐"
+                                              )}
+                                            </span>
+                      
 
 
                       <span>
