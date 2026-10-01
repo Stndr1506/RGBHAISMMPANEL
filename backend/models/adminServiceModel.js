@@ -86,7 +86,7 @@ const createService = async (serviceData) => {
     )
     .input(
       "description",
-      sql.NVarChar(1000),
+      sql.NVarChar(2500),
       description
     )
     .input(
@@ -176,7 +176,7 @@ const updateService = async (id, serviceData) => {
     )
     .input(
       "description",
-      sql.NVarChar(1000),
+      sql.NVarChar(2500),
       description
     )
     .input(

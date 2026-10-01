@@ -2,7 +2,7 @@ const {
   getAllUsers,
   getUserByIdAdmin,
 } = require("../models/adminUserModel");
-const {getCache, setCache} = require('../utils/cache');
+
 
 
 // =====================================================
@@ -12,30 +12,16 @@ const {getCache, setCache} = require('../utils/cache');
 const getAdminUsers = async (req, res) => {
 
   try {
-    //check redis cache memory
-    const cachedUsers = await getCache('users');
-    
-    if(cachedUsers){
-      console.log('Users fetched from redis cache memory')
-      return res.json(cachedUsers);
-    }
-    
-    //redis miss
-    console.log('cache miss fetched from sql server')
+    console.log("Fetching users from SQL Server...");
+
     const users = await getAllUsers();
 
-    //store in redis cache memory
-    await setCache(
-      "users",
-      users,
-      300
-    )
-    
     return res.status(200).json({
       success: true,
       count: users.length,
       users,
     });
+  
 
   } catch (error) {
 

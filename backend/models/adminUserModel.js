@@ -9,13 +9,16 @@ const getAllUsers = async () => {
 
   const result = await pool.request().query(`
     SELECT
-      id,
-      username,
-      email,
-      whatsapp,
-      created_at
-    FROM users
-    ORDER BY id DESC
+    u.id,
+    u.username,
+    u.email,
+    u.whatsapp,
+    u.created_at,
+    ISNULL(w.balance, 0) AS balance
+FROM users u
+LEFT JOIN wallets w
+    ON w.user_id = u.id
+ORDER BY u.id DESC;
   `);
 
   return result.recordset;

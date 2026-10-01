@@ -62,7 +62,7 @@ const Signup = () => {
       alert("Account created successfully!");
 
       // Redirect to login
-      navigate("/");
+      navigate("/home");
 
     } catch (error) {
       console.error("Signup error:", error);

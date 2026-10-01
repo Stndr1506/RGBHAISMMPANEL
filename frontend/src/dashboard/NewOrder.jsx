@@ -168,7 +168,7 @@ const fetchWalletBalance = async () => {
 
   const totalPrice = selectedService
     ? ((Number(quantity) || 0)) *
-      Number(selectedService.rate)
+      Number(selectedService.rate/1000)
     : 0;
 
 

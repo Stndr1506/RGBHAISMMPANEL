@@ -35,7 +35,7 @@ function AdminUsers() {
 
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/admin/users`,
+        `${process.env.REACT_APP_API_URL}/api/admin/users`, //${process.env.REACT_APP_API_URL}
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -226,13 +226,16 @@ function AdminUsers() {
                 <th>
                   Username
                 </th>
-
                 <th>
-                  Email
+                  Wallet Funds
                 </th>
 
                 <th>
                   WhatsApp
+                </th>
+
+                <th>
+                  Email
                 </th>
 
                 <th>
@@ -302,15 +305,30 @@ function AdminUsers() {
                       </div>
 
                     </td>
+                    {/* WALLET BALANCE */}
 
+            <td>
 
-                    <td>
-                      {user.email}
-                    </td>
+              <span className="wallet-balance">
 
+                ₹
+                {Number(user.balance || 0).toLocaleString(
+                  "en-IN",
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }
+                )}
 
+              </span>
+
+            </td>
+                
                     <td>
                       {user.whatsapp || "—"}
+                    </td>
+                    <td>
+                      {user.email}
                     </td>
 
 
@@ -321,17 +339,6 @@ function AdminUsers() {
                           ).toLocaleString()
                         : "—"}
                     </td>
-
-
-                    <td>
-                      {user.updated_at
-                        ? new Date(
-                            user.updated_at
-                          ).toLocaleString()
-                        : "—"}
-                    </td>
-
-
                     <td>
 
                       <button
