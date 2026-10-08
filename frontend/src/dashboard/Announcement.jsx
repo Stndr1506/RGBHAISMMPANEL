@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/Announcement.css";
 
-// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Announcement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -18,7 +18,7 @@ const Announcement = () => {
       setError("");
 
       const response = await fetch(
-        `http://localhost:5000/api/announcements`
+        `${API_URL}/api/announcements`
       );
 
       const data = await response.json();

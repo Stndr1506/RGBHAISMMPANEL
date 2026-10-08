@@ -34,7 +34,7 @@ const AdminAnnouncement = () => {
   const fetchServices = async () => {
   try {
     const response = await fetch(
-      "http://localhost:5000/api/dashboard-service"
+      "${API_URL}/api/dashboard-service"
     );
 
     const data = await response.json();
@@ -62,7 +62,7 @@ const AdminAnnouncement = () => {
       const token = getToken();
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/announcements`,
+        `${API_URL}/api/admin/announcements`,
         {
           method: "GET",
           headers: {
@@ -204,8 +204,8 @@ ${announcement.message}
       const token = getToken();
 
       const url = editingId
-        ? `http://localhost:5000/api/admin/announcements/${editingId}` //${API_URL}
-        : `http://localhost:5000/api/admin/announcements`;
+        ? `${API_URL}/api/admin/announcements/${editingId}`
+        : `${API_URL}/api/admin/announcements`;
 
       const method = editingId ? "PUT" : "POST";
 
@@ -266,7 +266,7 @@ ${announcement.message}
       const token = getToken();
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/announcements/${id}`,
+        `${API_URL}/api/admin/announcements/${id}`,
         {
           method: "DELETE",
           headers: {
