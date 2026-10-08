@@ -879,6 +879,16 @@ button {
     max-width: 850px;
   }
 }
+
+.vertical-navmenu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between icon and menu name */
+}
+
+.vertical-navmenu li a svg {
+  flex-shrink: 0;
+}
 /* =========================
    MOBILE
 ========================= */
@@ -1046,7 +1056,7 @@ button {
 
 
   .vertical-navmenu li a {
-    display: block !important;
+    display: flex !important;
 
     width: 100% !important;
 
@@ -1081,3 +1091,4 @@ button {
     border-bottom: none;
   }
 }
+

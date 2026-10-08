@@ -22,6 +22,7 @@ import AdminUsers from "./admin/AdminUsers";
 import AdminRoute from "./components/AdminRoute";
 import Announcement from "./dashboard/Announcement";
 import Services from "./pages/Services";
+import AdminAnnouncement from "./admin/AdminAnnouncement";
 
 
 
@@ -36,7 +37,8 @@ function App() {
         <Route path="/api" element={<h1>API</h1>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/new-order" element={<NewOrder/>}/>
-        <Route path="/announcement" element={<Announcement/>}/>
+        <Route path="/announcements" element={<Announcement/>}/>
+        <Route path="/admin/announcements" element={<AdminAnnouncement/>}/>
         {/* <Route path="/dashboard-services" element={<DashboardServices/>}/> */}
         <Route path="/dashboard-services" element={<Services/>}/>
         <Route path="/add-funds" element={<Funds/>}/>

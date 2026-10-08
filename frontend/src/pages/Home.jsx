@@ -4,6 +4,18 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Home.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import {
+  ShoppingCart,
+  Layers,
+  Wallet,
+  Code2,
+  Users,
+  Megaphone,
+  Ticket,
+  BellRing,
+  LogOut,
+  ClipboardList
+} from "lucide-react";
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,7 +27,7 @@ function Home() {
   });
 
   const [, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
@@ -42,6 +54,7 @@ function Home() {
 
     fetchDashboard();
   }, []);
+  
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -95,6 +108,7 @@ function Home() {
               to="/new-order"
               onClick={closeMenu}
             >
+              <ShoppingCart size={19}/>
               New Order
             </Link>
           </li>
@@ -105,6 +119,7 @@ function Home() {
               to="/dashboard-services"
               onClick={closeMenu}
             >
+              <Layers size={19}/>
               Services
             </Link>
           </li>
@@ -115,6 +130,7 @@ function Home() {
               to="/add-funds"
               onClick={closeMenu}
             >
+              <Wallet size={19}/>
               Add Funds
             </Link>
           </li>
@@ -125,6 +141,7 @@ function Home() {
               to="/api-integration"
               onClick={closeMenu}
             >
+              <Code2 size={19}/>
               API
             </Link>
           </li>
@@ -135,21 +152,31 @@ function Home() {
               to="/affiliates"
               onClick={closeMenu}
             >
+              <Users size={19}/>
               Affiliates
             </Link>
           </li>
 
-
           <li>
+            <Link
+              to="/announcements"
+              onClick={closeMenu}
+            >
+              <Megaphone size={19}/>
+              Announcements
+            </Link>
+          </li>
+
+          {/* <li>
             <a
               href="https://chat.whatsapp.com/YOUR_GROUP_CODE"
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}
             >
-              Announcement
+              📢 Announcements
             </a>
-          </li>
+          </li> */}
 
 
           <li>
@@ -157,6 +184,7 @@ function Home() {
               to="/tickets"
               onClick={closeMenu}
             >
+              <Ticket size={19}/>
               Tickets
             </Link>
           </li>
@@ -167,6 +195,7 @@ function Home() {
               to="/updates"
               onClick={closeMenu}
             >
+              <BellRing size={19}/>
               Updates
             </Link>
           </li>
@@ -175,8 +204,13 @@ function Home() {
           <li>
             <Link
               to="/"
-              onClick={closeMenu}
+              onClick={() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      closeMenu();
+    }}
             >
+              <LogOut size={19}/>
               Logout
             </Link>
           </li>
@@ -196,7 +230,7 @@ function Home() {
         <section className="info-card">
 
           <div className="info-icon">
-            👤
+            <Users size={50}/>
           </div>
 
           <div className="info-content">
@@ -219,7 +253,8 @@ function Home() {
         <section className="info-card">
 
           <div className="info-icon">
-            ☷
+            
+            <ClipboardList size={50}/>
           </div>
 
           <div className="info-content">
@@ -242,7 +277,7 @@ function Home() {
         <section className="info-card">
 
           <div className="info-icon">
-            📋
+            <Wallet size={50}/>
           </div>
 
           <div className="info-content">

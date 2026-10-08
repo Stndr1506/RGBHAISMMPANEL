@@ -18,8 +18,8 @@ const adminPaymentRoutes = require("./routes/adminPaymentRoutes");
 const paytmRoutes = require("./routes/paytmRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-
-
+const announcementRoutes = require('./routes/announcementRoutes');
+const adminAnnouncementRoutes = require('./routes/adminAnnouncementRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -74,6 +74,8 @@ app.use("/api/admin/payments", adminPaymentRoutes);
 app.use("/api/payments/paytm", paytmRoutes);
 app.use("/api/dashboard-service", serviceRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/admin/announcements", adminAnnouncementRoutes);
 
 
 app.listen(PORT, () => {

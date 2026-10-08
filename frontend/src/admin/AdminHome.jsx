@@ -5,6 +5,18 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/AdminHome.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import {
+  ShoppingCart,
+  Layers,
+  // Wallet,
+  Code2,
+  Users,
+  Megaphone,
+  Ticket,
+  BellRing,
+  LogOut,
+  CircleDollarSign
+} from "lucide-react";
 
 function AdminHome() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,23 +89,27 @@ useEffect(() => {
 
           <li>
             <Link to="/admin/orders" onClick={() => setMenuOpen(false)}>
+            <ShoppingCart size={19}/>
               Orders
             </Link>
           </li>
 
           <li>
             <Link to="/admin/services" onClick={() => setMenuOpen(false)}>
+            <Layers size={19}/>
               Services
             </Link>
           </li>
 
           <li>
             <Link to="/admin/users" onClick={() => setMenuOpen(false)}>
+            <Users size={19}/>
              Users
             </Link>
           </li>
           <li>
             <Link to="/admin/payments" onClick={() => setMenuOpen(false)}>
+            <CircleDollarSign size={19}/>
              Payments
             </Link>
           </li>
@@ -105,49 +121,61 @@ useEffect(() => {
           </li> */}
 
           <li>
-            <Link to="/" onClick={() => setMenuOpen(false)}>
+            <Link to="/" 
+            onClick={() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setMenuOpen(false);
+    }}
+            >
+            <LogOut size={19}/>
               Logout
             </Link>
           </li>
 
           <li>
-            <Link to="/admin/announcement" onClick={() => setMenuOpen(false)}>
-              Announcement group
+            <Link to="/admin/announcements" onClick={() => setMenuOpen(false)}>
+            <Megaphone size={19}/>
+              Announcements
             </Link>
           </li>
 
           <li>
             <Link to="/admin/api-integration" onClick={() => setMenuOpen(false)}>
+            <Code2 size={19}/>
               API
             </Link>
           </li>
 
           <li>
             <Link to="/admin/affiliates" onClick={() => setMenuOpen(false)}>
+            <Users size={19}/>
               Affiliates
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link to="/admin/child-panel" onClick={() => setMenuOpen(false)}>
               Child Panel
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/admin/tickets" onClick={() => setMenuOpen(false)}>
+            <Ticket size={19}/>
               Tickets
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link to="/admin/mass-order" onClick={() => setMenuOpen(false)}>
               Mass Order
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/admin/updates" onClick={() => setMenuOpen(false)}>
+            <BellRing size={19}/>
               Updates
             </Link>
           </li>

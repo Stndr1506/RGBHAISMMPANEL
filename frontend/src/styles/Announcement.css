@@ -1,0 +1,535 @@
+/* =====================================================
+   MAIN PAGE
+===================================================== */
+
+.user-announcement-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 25px;
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.user-announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 25px;
+}
+
+.announcement-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.announcement-heading-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef2ff;
+  border-radius: 12px;
+
+  font-size: 23px;
+}
+
+.announcement-heading h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.announcement-heading p {
+  margin: 5px 0 0;
+
+  color: #777;
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+.refresh-announcement-btn {
+  border: 1px solid #e5e7eb;
+
+  background: white;
+  color: #374151;
+
+  padding: 9px 14px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.refresh-announcement-btn:hover {
+  background: #f9fafb;
+}
+
+.refresh-announcement-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.user-announcement-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 13px 15px;
+
+  background: #fee2e2;
+  color: #b91c1c;
+
+  border-radius: 8px;
+
+  margin-bottom: 20px;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.announcement-loading-box {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  min-height: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #777;
+}
+
+.announcement-spinner {
+  width: 28px;
+  height: 28px;
+
+  border: 3px solid #e5e7eb;
+  border-top-color: #4f46e5;
+
+  border-radius: 50%;
+
+  animation: announcementSpin 0.8s linear infinite;
+
+  margin-bottom: 12px;
+}
+
+@keyframes announcementSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =====================================================
+   ANNOUNCEMENT LIST
+===================================================== */
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.user-announcement-card {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 11px;
+
+  padding: 20px;
+
+  transition: box-shadow 0.2s ease,
+              transform 0.2s ease;
+}
+
+.user-announcement-card:hover {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   CARD TOP
+===================================================== */
+
+.announcement-card-top {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+}
+
+.announcement-icon {
+  width: 44px;
+  height: 44px;
+
+  min-width: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f3f4f6;
+
+  border-radius: 10px;
+
+  font-size: 20px;
+}
+
+.announcement-card-heading {
+  flex: 1;
+}
+
+.announcement-card-heading h3 {
+  margin: 0 0 7px;
+
+  font-size: 17px;
+
+  color: #111827;
+}
+
+
+/* =====================================================
+   META
+===================================================== */
+
+.announcement-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  flex-wrap: wrap;
+}
+
+.announcement-badge {
+  display: inline-flex;
+
+  padding: 4px 8px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.announcement-badge.price_change {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.announcement-badge.service_discontinued {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.announcement-badge.service_update {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.announcement-badge.maintenance {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.announcement-badge.important {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.announcement-date {
+  color: #999;
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.announcement-card-message {
+  margin-top: 17px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+
+  white-space: pre-line;
+}
+
+
+/* =====================================================
+   SERVICE
+===================================================== */
+
+.announcement-service {
+  margin-top: 16px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 7px 10px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 6px;
+}
+
+.service-label {
+  font-size: 11px;
+  color: #888;
+}
+
+.service-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.announcement-card-footer {
+  margin-top: 18px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid #f1f1f1;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+/* =====================================================
+   WHATSAPP BUTTON
+===================================================== */
+
+.whatsapp-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  border: none;
+
+  background: #25d366;
+  color: white;
+
+  padding: 9px 13px;
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: opacity 0.2s ease;
+}
+
+.whatsapp-share-btn:hover {
+  opacity: 0.9;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.no-announcements {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 30px;
+}
+
+.no-announcement-icon {
+  font-size: 50px;
+
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f3f4f6;
+
+  border-radius: 50%;
+
+  margin-bottom: 15px;
+}
+
+.no-announcements h3 {
+  margin: 0;
+
+  font-size: 18px;
+
+  color: #111827;
+}
+
+.no-announcements p {
+  margin: 7px 0 0;
+
+  color: #888;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .user-announcement-page {
+    padding: 15px;
+  }
+
+  .user-announcement-header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .announcement-heading {
+    align-items: flex-start;
+  }
+
+  .announcement-heading h2 {
+    font-size: 21px;
+  }
+
+  .announcement-heading p {
+    line-height: 1.5;
+  }
+
+  .refresh-announcement-btn {
+    width: 100%;
+  }
+
+  .user-announcement-card {
+    padding: 16px;
+  }
+
+  .announcement-card-heading h3 {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .announcement-card-message {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .announcement-card-footer {
+    justify-content: stretch;
+  }
+
+  .whatsapp-share-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+
+  .announcement-heading-icon {
+    width: 40px;
+    height: 40px;
+
+    font-size: 19px;
+  }
+
+  .announcement-icon {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    font-size: 17px;
+  }
+
+  .announcement-card-top {
+    gap: 10px;
+  }
+
+  .announcement-meta {
+    gap: 5px;
+  }
+
+}

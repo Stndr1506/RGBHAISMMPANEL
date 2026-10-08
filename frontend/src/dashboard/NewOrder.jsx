@@ -192,9 +192,31 @@ const fetchWalletBalance = async () => {
 
     setCategory(value);
 
-    setServiceId("");
+    // setServiceId("");
+    // setQuantity("");
 
+    // Get services belonging to selected category
+  const categoryServices =
+    value === "All Categories"
+      ? services
+      : services.filter(
+          (service) => service.category === value
+        );
+
+  // Automatically select first service
+  if (categoryServices.length > 0) {
+    const firstService = categoryServices[0];
+
+    setServiceId(String(firstService.id));
+
+    // Set minimum quantity automatically
+    setQuantity(
+      firstService.min ?? firstService.min_order ?? ""
+    );
+  } else {
+    setServiceId("");
     setQuantity("");
+  }
 
   };
 
@@ -604,7 +626,7 @@ Please add funds.`
                     <div>
 
                       <span>
-                        Rate
+                        Rate per 1000
                       </span>
 
                       <strong>
