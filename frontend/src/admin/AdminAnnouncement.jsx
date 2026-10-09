@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../styles/AdminAnnouncement.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -34,7 +34,7 @@ const AdminAnnouncement = () => {
   const fetchServices = async () => {
   try {
     const response = await fetch(
-      "${API_URL}/api/dashboard-service"
+      `${API_URL}/api/dashboard-service`
     );
 
     const data = await response.json();
@@ -54,7 +54,7 @@ const AdminAnnouncement = () => {
   // FETCH ANNOUNCEMENTS
   // =====================================================
 
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -86,12 +86,12 @@ const AdminAnnouncement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[]);
 
   useEffect(() => {
     fetchAnnouncements();
     fetchServices();
-  }, []);
+  }, [fetchAnnouncements]);
 
   // =====================================================
   // WHATSAPP SHARE

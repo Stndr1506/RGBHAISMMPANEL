@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../styles/Announcement.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -12,7 +12,7 @@ const Announcement = () => {
   // FETCH ANNOUNCEMENTS
   // =====================================================
 
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -36,11 +36,11 @@ const Announcement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[]);
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []);
+  }, [fetchAnnouncements]);
 
 //   // =====================================================
 //   // WHATSAPP SHARE
