@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/AdminAnnouncement.css";
 
-// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AdminAnnouncement = () => {
   const [announcements, setAnnouncements] = useState([]);
