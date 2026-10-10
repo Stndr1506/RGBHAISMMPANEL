@@ -20,6 +20,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const announcementRoutes = require('./routes/announcementRoutes');
 const adminAnnouncementRoutes = require('./routes/adminAnnouncementRoutes');
+const userOrderRoutes = require("./routes/userOrderRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -68,6 +69,7 @@ app.use('/api/admin-service', adminServiceRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/user-orders", userOrderRoutes);
 app.use("/api/admin", adminOrderRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/admin/payments", adminPaymentRoutes);

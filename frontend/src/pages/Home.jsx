@@ -14,8 +14,10 @@ import {
   Ticket,
   BellRing,
   LogOut,
-  ClipboardList
+  ClipboardList,
+  Package
 } from "lucide-react";
+import NewOrder from "../dashboard/NewOrder";
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,15 +33,15 @@ function Home() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "http://localhost:5000/api/dashboard",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          "http://localhost:5000/api/dashboard"
+          // {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // }
         );
 
         if (response.data.success) {
@@ -121,6 +123,16 @@ function Home() {
             >
               <Layers size={19}/>
               Services
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/orders"
+              onClick={closeMenu}
+            >
+              <Package size={19}/>
+              Orders
             </Link>
           </li>
 
@@ -230,7 +242,7 @@ function Home() {
         <section className="info-card">
 
           <div className="info-icon">
-            <Users size={50}/>
+            <Users size={24}/>
           </div>
 
           <div className="info-content">
@@ -254,7 +266,7 @@ function Home() {
 
           <div className="info-icon">
             
-            <ClipboardList size={50}/>
+            <ClipboardList size={24}/>
           </div>
 
           <div className="info-content">
@@ -277,7 +289,7 @@ function Home() {
         <section className="info-card">
 
           <div className="info-icon">
-            <Wallet size={50}/>
+            <Wallet size={24}/>
           </div>
 
           <div className="info-content">
@@ -306,6 +318,7 @@ function Home() {
         <WhatsAppButton />
 
       </main>
+      <NewOrder/>
 
     </div>
   );

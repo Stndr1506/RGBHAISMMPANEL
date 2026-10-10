@@ -64,7 +64,7 @@ const fetchWalletBalance = async () => {
     console.log("Token exists:", !!token);
 
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/wallet/balance`,
+      `http://localhost:5000/api/wallet/balance`,    //${process.env.REACT_APP_API_URL}
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -340,7 +340,7 @@ Please add funds.`
 
        const token = localStorage.getItem("token");
 
-  console.log("ORDER TOKEN:", token);
+  
 
   if (!token) {
     alert("Session expired. Please login again.");
@@ -355,7 +355,7 @@ Please add funds.`
 
       const response =
         await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/orders`,
+          `http://localhost:5000/api/orders`,
           {
 
             serviceId:
@@ -448,10 +448,6 @@ Please add funds.`
       <main className="order-container">
 
         <div className="order-title">
-
-          <h1>
-            New Order
-          </h1>
 
           <p>
             Select a service and place a new
