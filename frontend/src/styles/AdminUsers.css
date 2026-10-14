@@ -423,3 +423,341 @@
   font-size: 14px;
   white-space: nowrap;
 }
+
+/* User status badges */
+.status-active,
+.status-discontinued {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-discontinued {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Action buttons */
+.user-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.discontinue-user-btn,
+.reactivate-user-btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.discontinue-user-btn {
+  background: #dc2626;
+}
+
+.reactivate-user-btn {
+  background: #15803d;
+}
+
+.discontinue-user-btn:disabled,
+.reactivate-user-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.discontinue-user-btn:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.reactivate-user-btn:hover:not(:disabled) {
+  background: #166534;
+}
+
+
+/* ============================================
+   MANAGE FUNDS BUTTON
+============================================ */
+
+.manage-funds-btn {
+  padding: 8px 11px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.manage-funds-btn:hover {
+  background: #1d4ed8;
+}
+
+.user-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ============================================
+   FUND MODAL
+============================================ */
+
+.fund-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.62);
+  overflow-y: auto;
+}
+
+.fund-modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 14px;
+  background: #fff;
+  color: #1f2937;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+}
+
+.fund-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.fund-modal-header h2 {
+  margin: 0 0 6px;
+  font-size: 21px;
+}
+
+.fund-modal-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.fund-modal-close {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.fund-current-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 22px;
+  padding: 17px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+
+.fund-current-balance span {
+  color: #475569;
+  font-size: 13px;
+}
+
+.fund-current-balance strong {
+  color: #1d4ed8;
+  font-size: 27px;
+  overflow-wrap: anywhere;
+}
+
+.fund-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.fund-form-group > label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.fund-form-group input,
+.fund-form-group textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+}
+
+.fund-form-group input:focus,
+.fund-form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.fund-form-group textarea {
+  resize: vertical;
+}
+
+.fund-action-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fund-action-btn {
+  min-height: 42px;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fund-action-btn.add.selected {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.fund-action-btn.deduct.selected {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.fund-feedback {
+  margin: 12px 0;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.fund-feedback.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.fund-feedback.success {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.fund-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.fund-cancel-btn,
+.fund-submit-btn {
+  min-height: 40px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fund-cancel-btn {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.fund-submit-btn {
+  color: #fff;
+}
+
+.fund-submit-btn.add {
+  background: #15803d;
+}
+
+.fund-submit-btn.deduct {
+  background: #b91c1c;
+}
+
+.fund-cancel-btn:disabled,
+.fund-submit-btn:disabled,
+.fund-modal-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================
+   MOBILE
+============================================ */
+
+@media (max-width: 600px) {
+  .fund-modal {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .fund-modal-header h2 {
+    font-size: 18px;
+  }
+
+  .fund-current-balance strong {
+    font-size: 24px;
+  }
+
+  .fund-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .fund-cancel-btn,
+  .fund-submit-btn {
+    width: 100%;
+  }
+
+  .user-action-buttons {
+    min-width: 130px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-action-buttons button {
+    width: 100%;
+  }
+}

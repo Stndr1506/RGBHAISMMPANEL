@@ -1,3 +1,4 @@
+
 const express = require("express");
 
 const router = express.Router();
@@ -11,36 +12,55 @@ const {
   createService,
   updateService,
   deleteService,
+  createBulkServices,
 } = require("../controllers/adminServiceController");
 
 // GET all services
-router.get("/", 
+router.get(
+  "/",
   authMiddleware,
   adminMiddleware,
-  getServices);
+  getServices
+);
+
+// IMPORTANT: Register /bulk before /:id
+router.post(
+  "/bulk",
+  authMiddleware,
+  adminMiddleware,
+  createBulkServices
+);
 
 // GET one service
-router.get("/:id", 
+router.get(
+  "/:id",
   authMiddleware,
   adminMiddleware,
-  getService);
+  getService
+);
 
-// CREATE service
-router.post("/", 
+// CREATE one service
+router.post(
+  "/",
   authMiddleware,
   adminMiddleware,
-  createService);
+  createService
+);
 
 // UPDATE service
-router.put("/:id", 
+router.put(
+  "/:id",
   authMiddleware,
   adminMiddleware,
-  updateService);
+  updateService
+);
 
 // DELETE service
-router.delete("/:id", 
+router.delete(
+  "/:id",
   authMiddleware,
   adminMiddleware,
-  deleteService);
+  deleteService
+);
 
 module.exports = router;

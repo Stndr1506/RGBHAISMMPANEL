@@ -117,6 +117,11 @@ const login = async (req, res) => {
     const user =
       await findUserByUsernameOrEmail(username);
 
+      console.log("LOGIN CHECK:", {
+      username: user?.username,
+      account_status: user?.account_status,
+    });
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -136,6 +141,19 @@ const login = async (req, res) => {
         message: "Invalid username or password",
       });
     }
+
+    // Check account status BEFORE generating JWT
+      const accountStatus = String(user.account_status || "")
+        .trim()
+        .toLowerCase();
+
+      if (accountStatus !== "active") {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Your account has been discontinued. Please contact support.",
+        });
+      }
 
     // Create JWT
     const token = jwt.sign(

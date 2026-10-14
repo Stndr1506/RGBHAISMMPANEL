@@ -263,10 +263,111 @@ const deleteService = async (req, res) => {
   }
 };
 
+// =====================================================
+// BULK CREATE SERVICES
+// =====================================================
+
+const createBulkServices = async (req, res) => {
+  try {
+    const { services } = req.body;
+
+    if (!Array.isArray(services) || services.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide at least one service",
+      });
+    }
+
+    if (services.length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Maximum 100 services can be added at once",
+      });
+    }
+
+    // Validate the entire batch before inserting anything.
+    const validatedServices = [];
+
+    for (let i = 0; i < services.length; i++) {
+      const item = services[i];
+
+      const category =
+        typeof item.category === "string" ? item.category.trim() : "";
+
+      const service =
+        typeof item.service === "string" ? item.service.trim() : "";
+
+      const description =
+        typeof item.description === "string"
+          ? item.description.trim()
+          : "";
+
+      const average_time =
+        typeof item.average_time === "string"
+          ? item.average_time.trim()
+          : "";
+
+      const rate = Number(item.rate);
+      const min_order = Number(item.min_order);
+      const max_order = Number(item.max_order);
+
+      if (
+        !category ||
+        !service ||
+        !description ||
+        !average_time ||
+        item.rate === "" ||
+        item.min_order === "" ||
+        item.max_order === "" ||
+        !Number.isFinite(rate) ||
+        !Number.isInteger(min_order) ||
+        !Number.isInteger(max_order) ||
+        rate < 0 ||
+        min_order < 0 ||
+        max_order < min_order
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Please check the required fields and numeric values in service row ${i + 1}`,
+        });
+      }
+
+      validatedServices.push({
+        category,
+        service,
+        description,
+        rate,
+        min_order,
+        max_order,
+        average_time,
+      });
+    }
+
+    const createdServices =
+      await serviceModel.bulkCreateServices(validatedServices);
+
+    return res.status(201).json({
+      success: true,
+      count: createdServices.length,
+      message: "Services added successfully",
+      services: createdServices,
+    });
+  } catch (error) {
+    console.error("BULK CREATE SERVICES ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add services",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getServices,
   getService,
   createService,
   updateService,
   deleteService,
+  createBulkServices
 };

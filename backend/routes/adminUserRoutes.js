@@ -8,7 +8,12 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   getAdminUsers,
   getAdminUserById,
+  changeUserStatus
 } = require("../controllers/adminUserController");
+
+const {
+  updateUserFunds,
+} = require("../controllers/adminWalletController");
 
 
 // =====================================================
@@ -34,6 +39,26 @@ router.get(
   authMiddleware,
   adminMiddleware,
   getAdminUserById
+);
+
+
+router.patch(
+  "/:id/status",
+  authMiddleware,
+  adminMiddleware,
+  changeUserStatus
+);
+
+// =====================================================
+// ADMIN UPDATE USER FUNDS
+// POST /api/admin/users/:id/funds
+// =====================================================
+
+router.post(
+  "/:id/funds",
+  authMiddleware,
+  adminMiddleware,
+  updateUserFunds
 );
 
 

@@ -56,15 +56,22 @@ function NewOrder() {
   ==========================================
   */
 const fetchWalletBalance = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    localStorage.removeItem("user");
+    window.location.replace("/");
+    return;
+  }
+
   try {
     setWalletLoading(true);
 
-    const token = localStorage.getItem("token");
-
-    console.log("Token exists:", !!token);
+    const API_URL =
+      process.env.REACT_APP_API_URL || "http://localhost:5000";
 
     const response = await axios.get(
-      `http://localhost:5000/api/wallet/balance`,    //${process.env.REACT_APP_API_URL}
+      `${API_URL}/api/wallet/balance`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -72,24 +79,28 @@ const fetchWalletBalance = async () => {
       }
     );
 
-    console.log("Wallet response:", response.data);
-
-    setWalletBalance(
-      Number(response.data.balance) || 0
-    );
-
+    setWalletBalance(Number(response.data.balance) || 0);
   } catch (error) {
-    console.error("Wallet error:", error);
-    console.log("Status:", error.response?.status);
-    console.log("Response:", error.response?.data);
+    const status = error.response?.status;
+    const message = error.response?.data?.message || "";
+
+    console.error("Wallet request failed:", status, message);
+
+    if (
+      status === 401 ||
+      status === 403
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.replace("/");
+      return;
+    }
 
     setWalletBalance(0);
-
   } finally {
     setWalletLoading(false);
   }
-};
-  /*
+};  /*
   ==========================================
   LOAD PAGE DATA
   ==========================================

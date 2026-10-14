@@ -246,10 +246,93 @@ const deleteService = async (id) => {
   return result.recordset[0];
 };
 
+// =====================================================
+// BULK CREATE SERVICES
+// =====================================================
+
+const bulkCreateServices = async (services) => {
+  const pool = await getDB();
+  const transaction = new sql.Transaction(pool);
+
+  const insertedServices = [];
+
+  try {
+    await transaction.begin();
+
+    for (const serviceData of services) {
+      const {
+        category,
+        service,
+        description,
+        rate,
+        min_order,
+        max_order,
+        average_time,
+      } = serviceData;
+
+      const result = await transaction
+        .request()
+        .input("category", sql.NVarChar(255), category)
+        .input("service", sql.NVarChar(500), service)
+        .input("description", sql.NVarChar(2500), description)
+        .input("rate", sql.Decimal(10, 2), rate)
+        .input("min_order", sql.Int, min_order)
+        .input("max_order", sql.Int, max_order)
+        .input("average_time", sql.VarChar(100), average_time)
+        .query(`
+          INSERT INTO services (
+            category,
+            service,
+            description,
+            rate,
+            min_order,
+            max_order,
+            average_time
+          )
+          OUTPUT
+            INSERTED.id,
+            INSERTED.category,
+            INSERTED.service,
+            INSERTED.description,
+            INSERTED.rate,
+            INSERTED.min_order,
+            INSERTED.max_order,
+            INSERTED.average_time,
+            INSERTED.created_at,
+            INSERTED.updated_at
+          VALUES (
+            @category,
+            @service,
+            @description,
+            @rate,
+            @min_order,
+            @max_order,
+            @average_time
+          )
+        `);
+
+      insertedServices.push(result.recordset[0]);
+    }
+
+    await transaction.commit();
+
+    return insertedServices;
+  } catch (error) {
+    try {
+      await transaction.rollback();
+    } catch (rollbackError) {
+      console.error("BULK INSERT ROLLBACK ERROR:", rollbackError);
+    }
+
+    throw error;
+  }
+};
+
 module.exports = {
   getAllServices,
   getServiceById,
   createService,
   updateService,
   deleteService,
+  bulkCreateServices
 };

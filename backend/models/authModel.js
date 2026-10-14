@@ -59,11 +59,18 @@ const findUserByUsernameOrEmail = async (login) => {
         whatsapp,
         password,
         role,
+        account_status,
         created_at
       FROM Users
       WHERE username = @login
          OR email = @login
     `);
+
+    console.log("User returned from database:", {
+  username: result.recordset[0]?.username,
+  account_status: result.recordset[0]?.account_status,
+});
+
 
   return result.recordset[0];
 };

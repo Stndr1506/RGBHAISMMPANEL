@@ -1,8 +1,8 @@
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/Services.css";
-
 
 import {
   faInstagram,
@@ -14,14 +14,26 @@ import {
   faSnapchat,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+
 import AdminHome from "./AdminHome";
 
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+const createEmptyService = () => ({
+  category: "",
+  service: "",
+  rate: "",
+  min_order: "",
+  max_order: "",
+  average_time: "",
+  description: "",
+});
 
 const AdminService = () => {
-  // ================================
+  // =====================================
   // STATE
-  // ================================
+  // =====================================
 
   const [servicesData, setServicesData] = useState([]);
   const [search, setSearch] = useState("");
@@ -31,13 +43,21 @@ const AdminService = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Modal
+  // Single service modal
   const [showModal, setShowModal] = useState(false);
-
-  // Edit mode
   const [editingService, setEditingService] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  // Form
+  // Bulk service modal
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkError, setBulkError] = useState("");
+  const [bulkServices, setBulkServices] = useState([
+    createEmptyService(),
+    createEmptyService(),
+  ]);
+
+  // Single service form
   const [formData, setFormData] = useState({
     category: "",
     service: "",
@@ -49,69 +69,47 @@ const AdminService = () => {
     icon: "⭐",
   });
 
-  const [saving, setSaving] = useState(false);
-
-//   const getAuthConfig = () => {
-//   const token = localStorage.getItem("token");
-
-//   return {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   };
-// };
-  // ================================
+  // =====================================
   // FETCH SERVICES
-  // ================================
+  // =====================================
 
-  
   const fetchServices = async () => {
     try {
       setLoading(true);
       setError("");
+
       const token = localStorage.getItem("token");
+
       const response = await axios.get(
-        `${API_URL}/api/admin-service`,    //${API_URL}
+        `${API_URL}/api/admin-service`,
         {
-          headers:{
+          headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
 
-      // if (response.data.success) {
-      //   setServicesData(response.data.services || []);
-      // } else {
-      //   setError("Failed to load services.");
-      // }
       if (Array.isArray(response.data)) {
-      setServicesData(response.data);
-    } else {
-      setServicesData([]);
-      setError("Invalid services response from server.");
-    }
-
+        setServicesData(response.data);
+      } else {
+        setServicesData([]);
+        setError("Invalid services response from server.");
+      }
     } catch (err) {
       console.error("Error fetching services:", err);
-
-      setError(
-        "Unable to load services. Please try again."
-      );
-
+      setError("Unable to load services. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-
   useEffect(() => {
     fetchServices();
   }, []);
 
-
-  // ================================
+  // =====================================
   // CATEGORIES
-  // ================================
+  // =====================================
 
   const categories = [
     "All",
@@ -122,68 +120,46 @@ const AdminService = () => {
     ),
   ];
 
-
-  // ================================
+  // =====================================
   // SEARCH + CATEGORY
-  // ================================
+  // =====================================
 
-  const filteredServices = servicesData.filter(
-    (service) => {
+  const filteredServices = servicesData.filter((service) => {
+    const searchText = search.toLowerCase().trim();
+    const serviceName = (service.service || "").toLowerCase();
+    const category = (service.category || "").toLowerCase();
+    const id = service.id?.toString() || "";
 
-      const searchText =
-        search.toLowerCase().trim();
+    const matchesSearch =
+      serviceName.includes(searchText) ||
+      category.includes(searchText) ||
+      id.includes(searchText);
 
-      const serviceName =
-        (service.service || "").toLowerCase();
+    const matchesCategory =
+      selectedCategory === "All" ||
+      service.category === selectedCategory;
 
-      const category =
-        (service.category || "").toLowerCase();
+    return matchesSearch && matchesCategory;
+  });
 
-      const id =
-        service.id?.toString() || "";
-
-      const matchesSearch =
-        serviceName.includes(searchText) ||
-        category.includes(searchText) ||
-        id.includes(searchText);
-
-      const matchesCategory =
-        selectedCategory === "All" ||
-        service.category === selectedCategory;
-
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
-    }
-  );
-
-
-  // ================================
+  // =====================================
   // FORMAT NUMBER
-  // ================================
+  // =====================================
 
   const formatNumber = (number) => {
-
-    if (
-      number === null ||
-      number === undefined
-    ) {
+    if (number === null || number === undefined) {
       return "0";
     }
 
     return Number(number).toLocaleString("en-IN");
   };
 
-
-  // ================================
-  // RATE
-  // ================================
+  // =====================================
+  // FORMAT RATE
+  // =====================================
 
   const getRate = (rate) => {
-
-    const numericRate =
-      Number(rate || 0);
+    const numericRate = Number(rate || 0);
 
     if (currency === "INR ₹") {
       return `₹${numericRate.toFixed(2)}`;
@@ -200,34 +176,29 @@ const AdminService = () => {
     return numericRate.toFixed(2);
   };
 
-
-  // ================================
-  // VIEW DESCRIPTION
-  // ================================
+  // =====================================
+  // VIEW SERVICE DESCRIPTION
+  // =====================================
 
   const handleView = (service) => {
-
     alert(
       `Service Name: ${service.service}\n\n` +
-      `Service ID: ${service.id}\n\n` +
-      `Rate: ${service.rate}\n\n` +
-      `Average Time: ${
-        service.average_time || "Not available"
-      }\n\n` +
-      `Description: ${
-        service.description ||
-        "No description available."
-      }`
+        `Service ID: ${service.id}\n\n` +
+        `Rate: ${service.rate}\n\n` +
+        `Average Time: ${
+          service.average_time || "Not available"
+        }\n\n` +
+        `Description: ${
+          service.description || "No description available."
+        }`
     );
   };
 
-
-  // ================================
-  // OPEN ADD MODAL
-  // ================================
+  // =====================================
+  // OPEN ADD SERVICE MODAL
+  // =====================================
 
   const handleAddService = () => {
-
     setEditingService(null);
 
     setFormData({
@@ -238,43 +209,38 @@ const AdminService = () => {
       max_order: "",
       average_time: "",
       description: "",
-      
+      icon: "⭐",
     });
 
     setShowModal(true);
   };
 
-
-  // ================================
-  // OPEN EDIT MODAL
-  // ================================
+  // =====================================
+  // OPEN EDIT SERVICE MODAL
+  // =====================================
 
   const handleEditService = (service) => {
-
     setEditingService(service);
 
     setFormData({
       category: service.category || "",
       service: service.service || "",
       description: service.description || "",
-      rate: service.rate || "",
-      min_order: service.min_order || "",
-      max_order: service.max_order || "",
+      rate: service.rate ?? "",
+      min_order: service.min_order ?? "",
+      max_order: service.max_order ?? "",
       average_time: service.average_time || "",
-      
       icon: service.icon || "⭐",
     });
 
     setShowModal(true);
   };
 
-
-  // ================================
-  // FORM CHANGE
-  // ================================
+  // =====================================
+  // SINGLE FORM CHANGE
+  // =====================================
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -283,80 +249,74 @@ const AdminService = () => {
     }));
   };
 
-
-  // ================================
-  // SAVE SERVICE
-  // ================================
+  // =====================================
+  // SAVE SINGLE SERVICE
+  // =====================================
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // ================================
-  // VALIDATION
-  // ================================
-
-  if (
-    !formData.category.trim() ||
-    !formData.service.trim() ||
-    formData.rate === "" ||
-    formData.min_order === "" ||
-    formData.max_order === ""
-  ) {
-    alert("Please fill all required fields.");
-    return;
-  }
-
-  try {
-    setSaving(true);
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Session expired. Please login again.");
+    if (
+      !formData.category.trim() ||
+      !formData.service.trim() ||
+      formData.rate === "" ||
+      formData.min_order === "" ||
+      formData.max_order === ""
+    ) {
+      alert("Please fill all required fields.");
       return;
     }
 
-    let response;
+    const rate = Number(formData.rate);
+    const minOrder = Number(formData.min_order);
+    const maxOrder = Number(formData.max_order);
 
-    // ================================
-    // UPDATE SERVICE
-    // ================================
-
-    if (editingService) {
-      response = await axios.put(
-        `${API_URL}/api/admin-service/${editingService.id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (
+      !Number.isFinite(rate) ||
+      rate < 0 ||
+      !Number.isInteger(minOrder) ||
+      !Number.isInteger(maxOrder) ||
+      minOrder < 0 ||
+      maxOrder < minOrder
+    ) {
+      alert("Please enter valid rates and order limits.");
+      return;
     }
 
-    // ================================
-    // ADD SERVICE
-    // ================================
+    try {
+      setSaving(true);
 
-    else {
-      
-      response = await axios.post(
-        `${API_URL}/api/admin-service`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    }
+      const token = localStorage.getItem("token");
 
-    console.log("SAVE API RESPONSE:", response.data);
+      if (!token) {
+        alert("Session expired. Please login again.");
+        return;
+      }
 
-    // Axios considers 2xx responses successful.
-    // So don't depend on response.data.success.
-    if (response.status >= 200 && response.status < 300) {
-      
+      let response;
+
+      if (editingService) {
+        response = await axios.put(
+          `${API_URL}/api/admin-service/${editingService.id}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } else {
+        response = await axios.post(
+          `${API_URL}/api/admin-service`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+
       alert(
         editingService
           ? "Service updated successfully."
@@ -377,37 +337,146 @@ const AdminService = () => {
         icon: "⭐",
       });
 
-      // Refresh service list
       await fetchServices();
-
-    } else {
-      alert(
-        response.data?.message ||
-        "Operation failed."
+    } catch (err) {
+      console.error(
+        "Service save error:",
+        err.response?.data || err
       );
+
+      alert(
+        err.response?.data?.message ||
+          "Something went wrong while saving service."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // =====================================
+  // BULK SERVICE FORM FUNCTIONS
+  // =====================================
+
+  const handleBulkChange = (index, field, value) => {
+    setBulkServices((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  const addBulkRow = () => {
+    setBulkServices((prev) => [
+      ...prev,
+      createEmptyService(),
+    ]);
+  };
+
+  const removeBulkRow = (index) => {
+    setBulkServices((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
+  };
+
+  const handleBulkSubmit = async (e) => {
+    e.preventDefault();
+    setBulkError("");
+
+    const invalidService = bulkServices.some((item) => {
+      const rate = Number(item.rate);
+      const min = Number(item.min_order);
+      const max = Number(item.max_order);
+
+      return (
+        !item.category.trim() ||
+        !item.service.trim() ||
+        item.rate.trim() === "" ||
+        item.min_order.trim() === "" ||
+        item.max_order.trim() === "" ||
+        !Number.isFinite(rate) ||
+        !Number.isInteger(min) ||
+        !Number.isInteger(max) ||
+        rate < 0 ||
+        min < 0 ||
+        max < min
+      );
+    });
+
+    if (invalidService) {
+      setBulkError(
+        "Complete all required fields and check the numeric values."
+      );
+      return;
     }
 
-  } catch (err) {
-    console.error("Service save error:", err);
+    const token = localStorage.getItem("token");
 
-    console.error("Status:", err.response?.status);
-    console.error("API response:", err.response?.data);
+    if (!token) {
+      setBulkError("Session expired. Please log in again.");
+      return;
+    }
 
-    alert(
-      err.response?.data?.message ||
-      "Something went wrong while saving service."
-    );
+    const services = bulkServices.map((item) => ({
+      category: item.category.trim(),
+      service: item.service.trim(),
+      rate: Number(item.rate),
+      min_order: Number(item.min_order),
+      max_order: Number(item.max_order),
+      average_time: item.average_time.trim(),
+      description: item.description.trim(),
+    }));
 
-  } finally {
-    setSaving(false);
-  }
-};
-  // ================================
+    try {
+      setBulkSaving(true);
+
+      const response = await axios.post(
+        `${API_URL}/api/admin-service/bulk`,
+        { services },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.data?.success) {
+        setBulkError(
+          response.data?.message || "Unable to save services."
+        );
+        return;
+      }
+
+      alert(
+        `${response.data.count ?? services.length} services added successfully.`
+      );
+
+      setShowBulkModal(false);
+      setBulkServices([
+        createEmptyService(),
+        createEmptyService(),
+      ]);
+
+      await fetchServices();
+    } catch (err) {
+      console.error(
+        "Bulk service error:",
+        err.response?.data || err
+      );
+
+      setBulkError(
+        err.response?.data?.message ||
+          "Unable to save services. Check your backend endpoint."
+      );
+    } finally {
+      setBulkSaving(false);
+    }
+  };
+
+  // =====================================
   // DELETE SERVICE
-  // ================================
+  // =====================================
 
   const handleDeleteService = async (service) => {
-
     const confirmDelete = window.confirm(
       `Are you sure you want to delete "${service.service}"?`
     );
@@ -419,10 +488,10 @@ const AdminService = () => {
     try {
       const token = localStorage.getItem("token");
 
-    if (!token) {
-      alert("Session expired. Please login again.");
-      return;
-    }
+      if (!token) {
+        alert("Session expired. Please login again.");
+        return;
+      }
 
       const response = await axios.delete(
         `${API_URL}/api/admin-service/${service.id}`,
@@ -434,505 +503,489 @@ const AdminService = () => {
       );
 
       if (response.data.success) {
-
-        alert(
-          "Service deleted successfully."
-        );
-
-        fetchServices();
-
+        alert("Service deleted successfully.");
+        await fetchServices();
       } else {
-
         alert(
-          response.data.message ||
-          "Unable to delete service."
+          response.data.message || "Unable to delete service."
         );
       }
-
     } catch (err) {
-
-      console.error(
-        "Delete service error:",
-        err
-      );
+      console.error("Delete service error:", err);
 
       alert(
         err.response?.data?.message ||
-        "Something went wrong while deleting service."
+          "Something went wrong while deleting service."
       );
     }
   };
 
   // =====================================
-// CATEGORY SOCIAL ICON
-// =====================================
+  // CATEGORY SOCIAL ICON
+  // =====================================
 
-const getCategoryIcon = (category) => {
-  const name = (category || "").toLowerCase();
+  const getCategoryIcon = (category) => {
+    const name = (category || "").toLowerCase();
 
-  if (name.includes("instagram")) {
-    return faInstagram;
-  }
+    if (name.includes("instagram")) return faInstagram;
 
-  if (
-    name.includes("youtube") ||
-    name.includes("you tube")
-  ) {
-    return faYoutube;
-  }
+    if (name.includes("youtube") || name.includes("you tube")) {
+      return faYoutube;
+    }
 
-  if (name.includes("telegram")) {
-    return faTelegram;
-  }
+    if (name.includes("telegram")) return faTelegram;
 
-  if (
-    name.includes("twitter") ||
-    name.includes("x")
-  ) {
-    return faTwitter;
-  }
+    if (name.includes("twitter") || name === "x") {
+      return faTwitter;
+    }
 
-  if (name.includes("facebook")) {
-    return faFacebook;
-  }
+    if (name.includes("facebook")) return faFacebook;
+    if (name.includes("tiktok")) return faTiktok;
+    if (name.includes("snapchat")) return faSnapchat;
+    if (name.includes("linkedin")) return faLinkedin;
 
-  if (name.includes("tiktok")) {
-    return faTiktok;
-  }
+    return null;
+  };
 
-  if (name.includes("snapchat")) {
-    return faSnapchat;
-  }
-
-  if (name.includes("linkedin")) {
-    return faLinkedin;
-  }
-
-  return null;
-};
-
-
-  // ================================
+  // =====================================
   // UI
-  // ================================
+  // =====================================
 
   return (
-
     <div className="services-page">
+      <AdminHome />
 
-      <AdminHome/>
-
-
-      {/* =================================
-          ADMIN HEADER
-      ================================= */}
-
+      {/* ADMIN HEADER */}
       <div className="services-admin-header">
-
         <div>
-
-          <h1>
-            Service Management
-          </h1>
-
-          <p>
-            Add, update and manage your SMM services.
-          </p>
-
+          <h1>Service Management</h1>
+          <p>Add, update and manage your SMM services.</p>
         </div>
 
+        <div className="service-header-actions">
+          <button
+            type="button"
+            className="bulk-service-btn"
+            onClick={() => {
+              setBulkError("");
+              setShowBulkModal(true);
+            }}
+          >
+            + Add Multiple Services
+          </button>
 
-        <button
-          className="add-service-btn"
-          onClick={handleAddService}
-        >
-          ＋ Add Service
-        </button>
-
+          <button
+            type="button"
+            className="add-service-btn"
+            onClick={handleAddService}
+          >
+            + Add Service
+          </button>
+        </div>
       </div>
 
-
-      {/* =================================
-          FILTER AREA
-      ================================= */}
-
+      {/* FILTER AREA */}
       <div className="services-filter-card">
-
         <select
           className="filter-select"
           value={selectedCategory}
-          onChange={(e) =>
-            setSelectedCategory(
-              e.target.value
-            )
-          }
+          onChange={(e) => setSelectedCategory(e.target.value)}
         >
-
           {categories.map((category) => (
-
-            <option
-              key={category}
-              value={category}
-            >
+            <option key={category} value={category}>
               {category}
             </option>
-
           ))}
-
         </select>
-
 
         <select
           className="currency-select"
           value={currency}
-          onChange={(e) =>
-            setCurrency(e.target.value)
-          }
+          onChange={(e) => setCurrency(e.target.value)}
         >
-
-          <option value="INR ₹">
-            INR ₹
-          </option>
-
-          <option value="USD $">
-            USD $
-          </option>
-
-          <option value="EUR €">
-            EUR €
-          </option>
-
+          <option value="INR ₹">INR ₹</option>
+          <option value="USD $">USD $</option>
+          <option value="EUR €">EUR €</option>
         </select>
 
-
         <div className="search-box">
-
           <input
             type="text"
             placeholder="Search service..."
             value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
+            onChange={(e) => setSearch(e.target.value)}
           />
 
-          <button
-            className="search-btn"
-            type="button"
-          >
+          <button className="search-btn" type="button">
             🔍
           </button>
-
         </div>
-
       </div>
 
-
-      {/* =================================
-          SERVICES TABLE
-      ================================= */}
-
+      {/* SERVICES TABLE */}
       <div className="services-table-card">
-
         <div className="table-header">
-
           <div>ID</div>
-
-          <div className="header-service">
-            Service
-          </div>
-
-          <div>
-            Rate per 1000
-          </div>
-
-          <div>
-            Min order
-          </div>
-
-          <div>
-            Max order
-          </div>
-
-          <div>
-            Average time
-          </div>
-
-          <div>
-            Description
-          </div>
-
-          <div>
-            Actions
-          </div>
-
+          <div className="header-service">Service</div>
+          <div>Rate per 1000</div>
+          <div>Min order</div>
+          <div>Max order</div>
+          <div>Average time</div>
+          <div>Description</div>
+          <div>Actions</div>
         </div>
 
-
-        {/* LOADING */}
-
         {loading && (
-
-          <div className="no-services">
-            Loading services...
-          </div>
-
+          <div className="no-services">Loading services...</div>
         )}
-
-
-        {/* ERROR */}
 
         {!loading && error && (
-
-          <div className="no-services">
-            {error}
-          </div>
-
+          <div className="no-services">{error}</div>
         )}
-
-
-        {/* SERVICES */}
 
         {!loading &&
           !error &&
           filteredServices.length > 0 &&
-          filteredServices.map(
-            (service, index) => {
+          filteredServices.map((service, index) => {
+            const previousCategory =
+              index > 0
+                ? filteredServices[index - 1].category
+                : null;
 
-              const previousCategory =
-                index > 0
-                  ? filteredServices[
-                      index - 1
-                    ].category
-                  : null;
+            const showCategory =
+              index === 0 || previousCategory !== service.category;
 
-              const showCategory =
-                index === 0 ||
-                previousCategory !==
-                  service.category;
+            const categoryIcon = getCategoryIcon(service.category);
 
-              return (
-
-                <React.Fragment
-                  key={service.id}
-                >
-
-                  {/* CATEGORY */}
-
-                  {showCategory && (
-
-                    <div className="category-row">
-
-                      {/* <span className="category-icon">
-
-                        {service.icon || "⭐"}
-
-                      </span> */}
-                      <span className="category-icon">
-                        {getCategoryIcon(service.category) ? (
-                        <FontAwesomeIcon
-                        icon={getCategoryIcon(service.category)}
-                        />
+            return (
+              <React.Fragment key={service.id}>
+                {showCategory && (
+                  <div className="category-row">
+                    <span className="category-icon">
+                      {categoryIcon ? (
+                        <FontAwesomeIcon icon={categoryIcon} />
                       ) : (
                         "⭐"
-                        )}
-                      </span>
-
-                      <span>
-                        {service.category}
-                      </span>
-
-                    </div>
-
-                  )}
-
-
-                  {/* SERVICE */}
-
-                  <div className="service-row">
-
-                    <div className="service-id">
-                      {service.id}
-                    </div>
-
-
-                    <div className="service-name">
-                      {service.service}
-                    </div>
-
-
-                    <div className="service-rate">
-                      {getRate(service.rate)}
-                    </div>
-
-
-                    <div>
-                      {formatNumber(
-                        service.min_order
                       )}
-                    </div>
+                    </span>
 
+                    <span>{service.category}</span>
+                  </div>
+                )}
 
-                    <div>
-                      {formatNumber(
-                        service.max_order
-                      )}
-                    </div>
+                <div className="service-row">
+                  <div className="service-id">{service.id}</div>
 
-
-                    <div>
-                      {service.average_time ||
-                        "Not available"}
-                    </div>
-
-
-                    <div className="view-column">
-
-                      <button
-                        type="button"
-                        className="view-btn"
-                        onClick={() =>
-                          handleView(service)
-                        }
-                      >
-                        View
-                      </button>
-
-                    </div>
-
-
-                    {/* ACTIONS */}
-
-                    <div className="service-actions">
-
-                      <button
-                        className="edit-btn"
-                        onClick={() =>
-                          handleEditService(
-                            service
-                          )
-                        }
-                      >
-                        📝Edit
-                      </button>
-
-
-                      <button
-                        className="delete-btn"
-                        onClick={() =>
-                          handleDeleteService(
-                            service
-                          )
-                        }
-                      >
-                        ❌ Delete
-                      </button>
-
-                    </div>
-
+                  <div className="service-name">
+                    {service.service}
                   </div>
 
-                </React.Fragment>
-              );
-            }
-          )}
+                  <div className="service-rate">
+                    {getRate(service.rate)}
+                  </div>
 
+                  <div>{formatNumber(service.min_order)}</div>
+                  <div>{formatNumber(service.max_order)}</div>
 
-        {/* NO SERVICES */}
+                  <div>
+                    {service.average_time || "Not available"}
+                  </div>
+
+                  <div className="view-column">
+                    <button
+                      type="button"
+                      className="view-btn"
+                      onClick={() => handleView(service)}
+                    >
+                      View
+                    </button>
+                  </div>
+
+                  <div className="service-actions">
+                    <button
+                      type="button"
+                      className="edit-btn"
+                      onClick={() => handleEditService(service)}
+                    >
+                      📝 Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      className="delete-btn"
+                      onClick={() => handleDeleteService(service)}
+                    >
+                      ❌ Delete
+                    </button>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
 
         {!loading &&
           !error &&
           filteredServices.length === 0 && (
-
-            <div className="no-services">
-              No services found.
-            </div>
-
+            <div className="no-services">No services found.</div>
           )}
-
       </div>
 
-
-      {/* =================================
-          ADD / EDIT MODAL
-      ================================= */}
-
-      {showModal && (
-
+      {/* BULK ADD SERVICES MODAL */}
+      {showBulkModal && (
         <div className="service-modal-overlay">
-
-          <div className="service-modal">
-
+          <div className="service-modal bulk-service-modal">
             <div className="modal-header">
-
-              <h2>
-                {editingService
-                  ? "Update Service"
-                  : "Add New Service"}
-              </h2>
+              <h2>Add Multiple Services</h2>
 
               <button
+                type="button"
                 className="modal-close"
-                onClick={() =>
-                  setShowModal(false)
-                }
+                disabled={bulkSaving}
+                onClick={() => setShowBulkModal(false)}
               >
                 ✕
               </button>
-
             </div>
 
+            <form
+              className="service-form"
+              onSubmit={handleBulkSubmit}
+            >
+              <p className="bulk-service-help">
+                Fill each row for a separate service. Add or remove
+                rows before saving.
+              </p>
+
+              {bulkServices.map((item, index) => (
+                <div className="bulk-service-row" key={index}>
+                  <div className="bulk-row-heading">
+                    <strong>Service {index + 1}</strong>
+
+                    <button
+                      type="button"
+                      className="bulk-remove-btn"
+                      disabled={bulkServices.length === 1 || bulkSaving}
+                      onClick={() => removeBulkRow(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Category *</label>
+                    <input
+                      type="text"
+                      required
+                      value={item.category}
+                      placeholder="Instagram"
+                      onChange={(e) =>
+                        handleBulkChange(
+                          index,
+                          "category",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Service Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={item.service}
+                      placeholder="Instagram Followers"
+                      onChange={(e) =>
+                        handleBulkChange(
+                          index,
+                          "service",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="bulk-numeric-grid">
+                    <div className="form-group">
+                      <label>Rate per 1000 *</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        required
+                        value={item.rate}
+                        placeholder="36.17"
+                        onChange={(e) =>
+                          handleBulkChange(
+                            index,
+                            "rate",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Minimum Order *</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        required
+                        value={item.min_order}
+                        placeholder="100"
+                        onChange={(e) =>
+                          handleBulkChange(
+                            index,
+                            "min_order",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Maximum Order *</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        required
+                        value={item.max_order}
+                        placeholder="50000"
+                        onChange={(e) =>
+                          handleBulkChange(
+                            index,
+                            "max_order",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Average Time</label>
+                    <input
+                      type="text"
+                      value={item.average_time}
+                      placeholder="0-24 hours"
+                      onChange={(e) =>
+                        handleBulkChange(
+                          index,
+                          "average_time",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Description</label>
+                    <textarea
+                      rows="2"
+                      value={item.description}
+                      placeholder="Service description"
+                      onChange={(e) =>
+                        handleBulkChange(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {bulkError && (
+                <div className="bulk-service-error" role="alert">
+                  {bulkError}
+                </div>
+              )}
+
+              <button
+                type="button"
+                className="bulk-add-row-btn"
+                disabled={bulkSaving}
+                onClick={addBulkRow}
+              >
+                + Add Another Service
+              </button>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  disabled={bulkSaving}
+                  onClick={() => setShowBulkModal(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-service-btn"
+                  disabled={bulkSaving}
+                >
+                  {bulkSaving
+                    ? "Saving Services..."
+                    : `Save ${bulkServices.length} Services`}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD / EDIT SINGLE SERVICE MODAL */}
+      {showModal && (
+        <div className="service-modal-overlay">
+          <div className="service-modal">
+            <div className="modal-header">
+              <h2>
+                {editingService ? "Update Service" : "Add New Service"}
+              </h2>
+
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => setShowModal(false)}
+              >
+                ✕
+              </button>
+            </div>
 
             <form
               onSubmit={handleSubmit}
               className="service-form"
             >
-
-              {/* CATEGORY */}
-
               <div className="form-group">
-
-                <label>
-                  Category *
-                </label>
-
+                <label>Category *</label>
                 <input
                   type="text"
                   name="category"
                   placeholder="Instagram"
                   value={formData.category}
                   onChange={handleChange}
+                  required
                 />
-
               </div>
 
-
-              {/* SERVICE */}
-
               <div className="form-group">
-
-                <label>
-                  Service Name *
-                </label>
-
+                <label>Service Name *</label>
                 <input
                   type="text"
                   name="service"
                   placeholder="Instagram Followers"
                   value={formData.service}
                   onChange={handleChange}
+                  required
                 />
-
               </div>
 
-              {/* DESCRIPTION */}
-
               <div className="form-group">
-
-                <label>
-                  Description
-                </label>
-
+                <label>Description</label>
                 <textarea
                   name="description"
                   placeholder="Enter service description..."
@@ -940,103 +993,56 @@ const getCategoryIcon = (category) => {
                   onChange={handleChange}
                   rows="4"
                 />
-
               </div>
 
-
               <div className="form-row">
-
-                {/* RATE */}
-
                 <div className="form-group">
-
-                  <label>
-                    Rate per 1000 *
-                  </label>
-
+                  <label>Rate per 1000 *</label>
                   <input
                     type="number"
+                    min="0"
                     step="0.01"
                     name="rate"
                     placeholder="36.17"
                     value={formData.rate}
                     onChange={handleChange}
+                    required
                   />
-
                 </div>
-
-
-                {/* ICON */}
-
-                {/* <div className="form-group">
-
-                  <label>
-                    Category Icon
-                  </label>
-
-                  <input
-                    type="text"
-                    name="icon"
-                    placeholder="⭐"
-                    value={formData.icon}
-                    onChange={handleChange}
-                  />
-
-                </div> */}
-
               </div>
 
-
               <div className="form-row">
-
-                {/* MIN */}
-
                 <div className="form-group">
-
-                  <label>
-                    Minimum Order *
-                  </label>
-
+                  <label>Minimum Order *</label>
                   <input
                     type="number"
+                    min="0"
+                    step="1"
                     name="min_order"
                     placeholder="100"
                     value={formData.min_order}
                     onChange={handleChange}
+                    required
                   />
-
                 </div>
 
-
-                {/* MAX */}
-
                 <div className="form-group">
-
-                  <label>
-                    Maximum Order *
-                  </label>
-
+                  <label>Maximum Order *</label>
                   <input
                     type="number"
+                    min="0"
+                    step="1"
                     name="max_order"
                     placeholder="50000"
                     value={formData.max_order}
                     onChange={handleChange}
+                    required
                   />
-
                 </div>
-
               </div>
 
-
-              {/* AVERAGE TIME */}
-
               <div className="form-group">
-
-                <label>
-                  Average Time
-                </label>
-
+                <label>Average Time</label>
                 <input
                   type="text"
                   name="average_time"
@@ -1044,27 +1050,16 @@ const getCategoryIcon = (category) => {
                   value={formData.average_time}
                   onChange={handleChange}
                 />
-
               </div>
 
-
-              
-
-
-              {/* BUTTONS */}
-
               <div className="modal-actions">
-
                 <button
                   type="button"
                   className="cancel-btn"
-                  onClick={() =>
-                    setShowModal(false)
-                  }
+                  onClick={() => setShowModal(false)}
                 >
                   Cancel
                 </button>
-
 
                 <button
                   type="submit"
@@ -1077,17 +1072,11 @@ const getCategoryIcon = (category) => {
                     ? "Update Service"
                     : "Add Service"}
                 </button>
-
               </div>
-
             </form>
-
           </div>
-
         </div>
-
       )}
-
     </div>
   );
 };

@@ -50,7 +50,34 @@ const getUserByIdAdmin = async (id) => {
 };
 
 
+// ============================================
+// DISCONTINUE / REACTIVATE USER
+// ============================================
+
+const updateUserStatus = async (id, status) => {
+  const pool = await getDB();
+
+  const result = await pool
+    .request()
+    .input("id", sql.Int, id)
+    .input("status", sql.VarChar(20), status)
+    .query(`
+      UPDATE users
+      SET account_status = @status
+      OUTPUT
+        INSERTED.id,
+        INSERTED.username,
+        INSERTED.email,
+        INSERTED.account_status
+      WHERE id = @id;
+    `);
+
+  return result.recordset[0] || null;
+};
+
+
 module.exports = {
   getAllUsers,
   getUserByIdAdmin,
+  updateUserStatus
 };

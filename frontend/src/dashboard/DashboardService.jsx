@@ -113,7 +113,6 @@ function DashboardServices() {
 
   return (
     <div className="services-page">
-      <Home />
 
       <main className="services-main">
 
