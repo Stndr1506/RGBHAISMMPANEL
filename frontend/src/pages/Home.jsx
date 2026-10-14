@@ -22,7 +22,7 @@ import NewOrder from "../dashboard/NewOrder";
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [dashboard, setDashboard] = useState({

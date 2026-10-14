@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/AdminUsers.css";
 
@@ -27,7 +27,7 @@ function AdminUsers() {
   // FETCH USERS
   // ============================================
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -55,7 +55,7 @@ function AdminUsers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // ============================================
   // DISCONTINUE / REACTIVATE USER
@@ -227,7 +227,7 @@ function AdminUsers() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   // ============================================
   // LOADING

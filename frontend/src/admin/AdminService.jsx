@@ -293,30 +293,29 @@ const AdminService = () => {
         return;
       }
 
-      let response;
+      // let response;
 
-      if (editingService) {
-        response = await axios.put(
-          `${API_URL}/api/admin-service/${editingService.id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      } else {
-        response = await axios.post(
-          `${API_URL}/api/admin-service`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      }
-
+     if (editingService) {
+  await axios.put(
+    `${API_URL}/api/admin-service/${editingService.id}`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+} else {
+  await axios.post(
+    `${API_URL}/api/admin-service`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
       alert(
         editingService
           ? "Service updated successfully."
