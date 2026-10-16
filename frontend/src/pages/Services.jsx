@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/Services.css";
-
+// import Home from "./Home";
 import {
   faInstagram,
   faYoutube,

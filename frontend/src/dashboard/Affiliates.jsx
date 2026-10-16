@@ -22,8 +22,9 @@ function Affiliates() {
   };
 
   return (
+    
     <div className="affiliate-page">
-
+      
       {/* =========================================
           NAVBAR
       ========================================= */}

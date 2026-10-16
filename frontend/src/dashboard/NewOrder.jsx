@@ -248,15 +248,21 @@ const fetchWalletBalance = async () => {
         String(value)
     );
 
+    // if (service) {
+
+    //   setQuantity(service.min);
+
+    // } else {
+
+    //   setQuantity("");
+
+    // }
+
     if (service) {
-
-      setQuantity(service.min);
-
-    } else {
-
-      setQuantity("");
-
-    }
+  setQuantity(String(service.min_order ?? service.min ?? ""));
+} else {
+  setQuantity("");
+}
   };
 
 
@@ -305,20 +311,35 @@ const fetchWalletBalance = async () => {
     }
 
 
-    if (
-      orderQuantity <
-        Number(selectedService.min) ||
-      orderQuantity >
-        Number(selectedService.max)
-    ) {
+    // if (
+    //   orderQuantity <
+    //     Number(selectedService.min) ||
+    //   orderQuantity >
+    //     Number(selectedService.max)
+    // ) {
 
-      alert(
-        `Quantity must be between ${selectedService.min.toLocaleString()} and ${selectedService.max.toLocaleString()}.`
-      );
+    //   alert(
+    //     `Quantity must be between ${selectedService.min.toLocaleString()} and ${selectedService.max.toLocaleString()}.`
+    //   );
 
-      return;
-    }
+    //   return;
+    // }
 
+
+    const minOrder = Number(
+  selectedService.min_order ?? selectedService.min
+);
+
+const maxOrder = Number(
+  selectedService.max_order ?? selectedService.max
+);
+
+if (orderQuantity < minOrder || orderQuantity > maxOrder) {
+  alert(
+    `Invalid quantity! This service requires a quantity between ${minOrder.toLocaleString()} and ${maxOrder.toLocaleString()}.`
+  );
+  return;
+}
 
     /*
     ========================================

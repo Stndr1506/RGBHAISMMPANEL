@@ -1,229 +1,192 @@
-/* =====================================
-   NAVBAR
-===================================== */
 
-.nav-container {
-    width: 100%;
-    height: 75px;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    z-index: 1000;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 30px;
-
-    background: rgb(58, 190, 243);
+/* TOP NAVBAR */
+.top-header {
+  width: 100%;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1000;
 }
 
-
-/* =====================================
-   NAV MENU
-===================================== */
-
-.nav-menu {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-
-    gap: 5px;
+.logo-container img {
+  display: block;
+  width: 150px;
+  max-height: 48px;
+  object-fit: contain;
 }
 
-
-/* =====================================
-   ALL LI
-===================================== */
-
-.nav-menu li {
-    list-style: none;
+/* USERNAME + ORDER COUNT */
+.navbar-user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-left: auto;
+  margin-right: 12px;
 }
 
-
-/* =====================================
-   LOGO
-===================================== */
-
-.nav-menu .logo-item {
-    margin-right: auto;
+.navbar-user,
+.navbar-order-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-
-    height: 70px;
-
-    padding: 0;
-
-    text-decoration: none;
-
-    background: transparent;
+.navbar-user {
+  font-weight: 600;
 }
 
-.logo img {
-    width: 65px;
-    height: 65px;
-
-    display: block;
-
-    object-fit: contain;
-
-    border-radius: 50%;
+.navbar-order-count strong {
+  color: #2563eb;
+  font-size: 15px;
 }
 
-
-/* =====================================
-   NAV LINKS
-===================================== */
-
-.nav-menu li:not(.logo-item) a {
-    height: 48px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 17px;
-
-    color: #ffffff;
-
-    text-decoration: none;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 17px;
-    font-weight: 500;
-
-    border-radius: 15px;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease;
+/* MENU TOGGLE */
+.hamburger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-
-/* =====================================
-   HOVER
-===================================== */
-
-.nav-menu li:not(.logo-item) a:hover {
-    background: rgba(255, 255, 255, 0.18);
-
-    transform: translateY(-1px);
+.hamburger-btn:hover {
+  background: #f3f4f6;
 }
 
-
-/* =====================================
-   LOGIN ACTIVE STYLE
-===================================== */
-
-.nav-menu li:nth-child(3) a {
-    background: rgba(255, 255, 255, 0.18);
+/* NAVIGATION */
+.vertical-nav {
+  position: absolute;
+  top: 76px;
+  right: 16px;
+  width: 240px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
 }
 
-
-/* =====================================
-   SCREEN 1200px+
-===================================== */
-
-@media (min-width: 1200px) {
-
-    .nav-container {
-        height: 75px;
-        padding: 0 30px;
-    }
-
-    .logo img {
-        width: 65px;
-        height: 65px;
-    }
-
-    .nav-menu li:not(.logo-item) a {
-        font-size: 18px;
-        padding: 0 17px;
-    }
+.vertical-nav.menu-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-
-/* =====================================
-   TABLET
-===================================== */
-
-@media (max-width: 900px) {
-
-    .nav-container {
-        height: auto;
-        padding: 15px 20px;
-    }
-
-    .nav-menu {
-        flex-wrap: wrap;
-    }
-
-    .logo-item {
-        margin-right: auto;
-    }
-
-    .nav-menu li:not(.logo-item) a {
-        font-size: 15px;
-        padding: 0 10px;
-    }
-
+.vertical-navmenu {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
 }
 
+.vertical-navmenu li {
+  margin: 2px 0;
+}
 
-/* =====================================
-   MOBILE
-===================================== */
+.vertical-navmenu a,
+.nav-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
 
+.vertical-navmenu a:hover,
+.nav-logout-btn:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+}
+
+.nav-logout-btn {
+  font-family: inherit;
+}
+
+/* MOBILE VIEW */
 @media (max-width: 600px) {
+  .top-header {
+    min-height: 68px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
 
-    .nav-container {
-        position: relative;
+  .logo-container img {
+    width: 105px;
+    max-height: 40px;
+  }
 
-        padding: 10px 15px;
-    }
+  .navbar-user-info {
+    gap: 10px;
+    margin-right: 0;
+  }
 
-    .nav-menu {
-        justify-content: center;
-        gap: 3px;
-    }
+  .navbar-user,
+  .navbar-order-count {
+    gap: 4px;
+    font-size: 11px;
+  }
 
-    .nav-menu .logo-item {
-        width: 100%;
-        margin-right: 0;
+  .navbar-user svg,
+  .navbar-order-count svg {
+    width: 15px;
+    height: 15px;
+  }
 
-        display: flex;
-        justify-content: center;
+  .navbar-user span {
+    max-width: 78px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-        margin-bottom: 8px;
-    }
+  .navbar-order-count strong {
+    font-size: 12px;
+  }
 
-    .logo {
-        height: 55px;
-    }
+  .hamburger-btn {
+    width: 38px;
+    height: 38px;
+  }
 
-    .logo img {
-        width: 52px;
-        height: 52px;
-    }
-
-    .nav-menu li:not(.logo-item) a {
-        height: 38px;
-
-        padding: 0 9px;
-
-        font-size: 13px;
-
-        border-radius: 10px;
-    }
+  .vertical-nav {
+    top: 68px;
+    right: 10px;
+    width: min(260px, calc(100vw - 20px));
+  }
 }

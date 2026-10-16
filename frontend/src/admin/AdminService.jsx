@@ -198,22 +198,40 @@ const AdminService = () => {
   // OPEN ADD SERVICE MODAL
   // =====================================
 
-  const handleAddService = () => {
-    setEditingService(null);
+  // const handleAddService = () => {
+  //   setEditingService(null);
 
-    setFormData({
-      category: "",
-      service: "",
-      rate: "",
-      min_order: "",
-      max_order: "",
-      average_time: "",
-      description: "",
-      icon: "⭐",
-    });
+  //   setFormData({
+  //     category: "",
+  //     service: "",
+  //     rate: "",
+  //     min_order: "",
+  //     max_order: "",
+  //     average_time: "",
+  //     description: "",
+  //     icon: "⭐",
+  //   });
 
-    setShowModal(true);
-  };
+  //   setShowModal(true);
+  // };
+
+  
+const handleAddService = (category = "") => {
+  setEditingService(null);
+
+  setFormData({
+    category: category || categories.find((item) => item !== "All") || "",
+    service: "",
+    rate: "",
+    min_order: "",
+    max_order: "",
+    average_time: "",
+    description: "",
+    icon: "⭐",
+  });
+
+  setShowModal(true);
+};
 
   // =====================================
   // OPEN EDIT SERVICE MODAL
@@ -702,8 +720,16 @@ const AdminService = () => {
 
                   <div className="service-actions">
                     <button
+                        type="button"
+                        className="add-row-btn"
+                        onClick={() => handleAddService(service.category)}
+                        title={`Add service under ${service.category}`}
+                      >
+                        ➕ Add
+                      </button>
+                    <button
                       type="button"
-                      className="edit-btn"
+                      className="add-row-btn"
                       onClick={() => handleEditService(service)}
                     >
                       📝 Edit
@@ -711,7 +737,7 @@ const AdminService = () => {
 
                     <button
                       type="button"
-                      className="delete-btn"
+                      className="add-row-btn"
                       onClick={() => handleDeleteService(service)}
                     >
                       ❌ Delete
@@ -961,14 +987,39 @@ const AdminService = () => {
             >
               <div className="form-group">
                 <label>Category *</label>
-                <input
+                {/* <input
                   type="text"
                   name="category"
                   placeholder="Instagram"
                   value={formData.category}
                   onChange={handleChange}
                   required
-                />
+                /> */}
+                
+<div className="form-group">
+  <label>Category *</label>
+
+  <select
+    name="category"
+    value={formData.category}
+    onChange={handleChange}
+    required
+  >
+    <option value="" disabled>
+      Select category
+    </option>
+
+    {[...new Set([
+      ...categories.filter((category) => category !== "All"),
+      ...(formData.category ? [formData.category] : []),
+    ])].map((category) => (
+      <option key={category} value={category}>
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
               </div>
 
               <div className="form-group">
