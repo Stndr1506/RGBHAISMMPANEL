@@ -599,3 +599,118 @@
     padding: 7px 9px;
   }
 }
+
+
+/* Admin orders toolbar */
+.admin-orders-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-orders-toolbar .orders-search {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.admin-orders-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #d7dce3;
+  border-radius: 8px;
+  background: #fff;
+  color: #273449;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-orders-refresh-btn:hover {
+  background: #f4f6f9;
+}
+
+.admin-orders-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-orders-spinning {
+  animation: adminOrdersSpin 1s linear infinite;
+}
+
+@keyframes adminOrdersSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Start count field inside edit modal */
+.admin-order-start-count-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.admin-order-start-count-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #273449;
+}
+
+.admin-order-start-count-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d7dce3;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2937;
+  font-size: 14px;
+  outline: none;
+}
+
+.admin-order-start-count-field input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.admin-order-start-count-field .admin-order-save-btn {
+  align-self: flex-start;
+}
+
+.admin-order-modal-actions button,
+.admin-order-start-count-field button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.admin-order-modal-actions button:disabled,
+.admin-order-start-count-field button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .admin-orders-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-orders-refresh-btn {
+    width: 100%;
+  }
+
+  .admin-order-start-count-field .admin-order-save-btn {
+    width: 100%;
+    align-self: stretch;
+  }
+}

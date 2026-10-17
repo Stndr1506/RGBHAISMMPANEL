@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "../styles/Announcement.css";
+import Navbar from "../components/Navbar";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -131,6 +132,9 @@ const Announcement = () => {
   // =====================================================
 
   return (
+    <>
+    <Navbar/>
+    
     <div className="user-announcement-page">
 
       {/* ================================
@@ -305,6 +309,7 @@ const Announcement = () => {
       )}
 
     </div>
+    </>
   );
 };
 

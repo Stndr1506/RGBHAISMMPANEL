@@ -13,7 +13,7 @@ import Tickets from "./dashboard/Tickets";
 import Updates from "./dashboard/Updates";
 import AdminHome from "./admin/AdminHome";
 import AdminService from "./admin/AdminService";
-import Users from "./admin/Users";
+// import Users from "./admin/Users";
 import AdminOrders from "./admin/AdminOrders";
 import Payments from "./admin/Payments";
 import AdminUsers from "./admin/AdminUsers";
@@ -62,7 +62,7 @@ function App() {
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
         <Route path="/admin/payments" element={<AdminRoute><Payments /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
-        <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} />
+        {/* <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} /> */}
 
         {/* Unknown routes */}
         <Route path="*" element={<Navigate to="/" replace />} />

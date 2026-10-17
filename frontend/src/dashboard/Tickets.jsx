@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Tickets.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
 
 function Tickets() {
   const [subject, setSubject] = useState("");
@@ -52,6 +53,8 @@ function Tickets() {
   );
 
   return (
+    <>
+    <Navbar/>
     <div className="tickets-page">
 
       {/* =========================
@@ -295,6 +298,7 @@ function Tickets() {
       <WhatsAppButton/>
 
     </div>
+    </>
   );
 }
 

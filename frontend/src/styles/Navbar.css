@@ -1,192 +1,526 @@
 
-/* TOP NAVBAR */
-.top-header {
+/* ========================================
+   GLOBAL NAVBAR
+======================================== */
+
+.rgbhai-navbar {
   width: 100%;
-  min-height: 76px;
+  position: relative;
+  z-index: 2000;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.rgbhai-navbar * {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   TOP HEADER
+======================================== */
+
+.rgbhai-navbar-header {
+  width: 100%;
+  height: 90px;
+  padding: 0 25px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 12px 24px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  box-sizing: border-box;
+
+  background: linear-gradient(135deg, #12afd0, #29bdd3);
+
   position: relative;
-  z-index: 1000;
+  z-index: 2001;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
-.logo-container img {
+/* ========================================
+   LOGO
+======================================== */
+
+.rgbhai-navbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.rgbhai-navbar-logo img {
   display: block;
-  width: 150px;
-  max-height: 48px;
+  width: 100px;
+  height: 50px;
+  max-width: 100%;
+  max-height: 70px;
   object-fit: contain;
 }
 
-/* USERNAME + ORDER COUNT */
-.navbar-user-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-left: auto;
-  margin-right: 12px;
-}
+/* ========================================
+   HAMBURGER BUTTON
+======================================== */
 
-.navbar-user,
-.navbar-order-count {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #374151;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.navbar-user {
-  font-weight: 600;
-}
-
-.navbar-order-count strong {
-  color: #2563eb;
-  font-size: 15px;
-}
-
-/* MENU TOGGLE */
-.hamburger-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
+.rgbhai-navbar-toggle {
+  width: 50px;
+  height: 50px;
   flex-shrink: 0;
-  border: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
   border-radius: 8px;
-  background: #ffffff;
-  color: #111827;
+
+  background: transparent;
+  color: #294d75;
+
   cursor: pointer;
-  transition: background 0.2s ease;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.hamburger-btn:hover {
-  background: #f3f4f6;
+.rgbhai-navbar-toggle:hover {
+  background: rgba(18, 175, 208, 0.1);
 }
 
-/* NAVIGATION */
-.vertical-nav {
-  position: absolute;
-  top: 76px;
-  right: 16px;
-  width: 240px;
-  max-height: calc(100vh - 90px);
-  overflow-y: auto;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  z-index: 999;
+.rgbhai-navbar-toggle:active {
+  transform: scale(0.95);
+}
+
+.rgbhai-navbar-toggle:focus-visible {
+  outline: 3px solid rgba(18, 175, 208, 0.35);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   NAVIGATION MENU - MOBILE DEFAULT
+======================================== */
+
+.rgbhai-navbar-nav {
+  width: 100%;
+  max-height: 0;
+
+  position: relative;
+  z-index: 2000;
+
+  overflow: hidden;
   visibility: hidden;
   opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
+
+  background: #12aeca;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    visibility 0.2s ease;
+    max-height 0.3s ease,
+    opacity 0.25s ease,
+    visibility 0.3s ease;
 }
 
-.vertical-nav.menu-open {
+/* Open mobile menu */
+
+.rgbhai-navbar-nav.rgbhai-navbar-open {
+  max-height: 1000px;
   visibility: visible;
   opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  overflow-y: auto;
 }
 
-.vertical-navmenu {
-  list-style: none;
+/* ========================================
+   NAVIGATION LIST
+======================================== */
+
+.rgbhai-navbar-list {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+
   margin: 0;
-  padding: 8px;
+  padding: 10px 20px;
+
+  list-style: none;
 }
 
-.vertical-navmenu li {
-  margin: 2px 0;
+.rgbhai-navbar-list li {
+  width: 100%;
+  display: block;
+
+  margin: 0;
+  padding: 0;
 }
 
-.vertical-navmenu a,
-.nav-logout-btn {
+/* ========================================
+   NAVIGATION LINKS
+======================================== */
+
+.rgbhai-navbar-link {
+  width: 100%;
+  min-height: 48px;
+
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px;
-  box-sizing: border-box;
+  justify-content: flex-start;
+  gap: 10px;
+
+  padding: 15px 12px;
+
   border: none;
-  border-radius: 7px;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 0;
+
   background: transparent;
-  color: #374151;
-  text-decoration: none;
-  font-size: 14px;
+  color: #030c17;
+
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+
   text-align: left;
+  text-decoration: none;
+
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    padding-left 0.2s ease;
 }
 
-.vertical-navmenu a:hover,
-.nav-logout-btn:hover {
-  background: #f3f4f6;
-  color: #2563eb;
+.rgbhai-navbar-link svg {
+  flex-shrink: 0;
 }
 
-.nav-logout-btn {
-  font-family: inherit;
+.rgbhai-navbar-link:hover {
+  background: #e8f7f8;
+  color: #12aeca;
+  padding-left: 17px;
 }
 
-/* MOBILE VIEW */
-@media (max-width: 600px) {
-  .top-header {
-    min-height: 68px;
-    padding: 10px 12px;
-    gap: 10px;
+.rgbhai-navbar-link:focus-visible {
+  outline: 2px solid #12afd0;
+  outline-offset: -2px;
+}
+
+.rgbhai-navbar-list li:last-child .rgbhai-navbar-link {
+  border-bottom: none;
+}
+
+/* ========================================
+   LOGOUT LINK
+======================================== */
+
+.rgbhai-navbar-logout {
+  background: transparent;
+  color: #294d75;
+  text-align: left;
+}
+
+.rgbhai-navbar-logout:hover {
+  background: #e8f7f8;
+  color: #d60000;
+}
+
+/* ========================================
+   SMALL MOBILE - 320px TO 380px
+======================================== */
+
+@media (max-width: 380px) {
+  .rgbhai-navbar-header {
+    width: 100%;
+  margin: 0;
+  background: linear-gradient(135deg, #12afd0, #29bdd3);
+    /* width: calc(100% - 24px); */
+    height: 80px;
+
+    /* margin: 16px 12px 0; */
+    padding: 0 14px;
+
+    /* background: #ffffff; */
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   }
 
-  .logo-container img {
-    width: 105px;
-    max-height: 40px;
+  .rgbhai-navbar-logo img {
+    width: 64px;
+    height: 60px;
   }
 
-  .navbar-user-info {
-    gap: 10px;
-    margin-right: 0;
+  .rgbhai-navbar-toggle {
+    width: 44px;
+    height: 44px;
   }
 
-  .navbar-user,
-  .navbar-order-count {
-    gap: 4px;
-    font-size: 11px;
+  .rgbhai-navbar-nav,
+  .rgbhai-navbar-nav.rgbhai-navbar-open {
+    width: calc(100% - 24px);
+    margin: 0 12px;
   }
 
-  .navbar-user svg,
-  .navbar-order-count svg {
-    width: 15px;
-    height: 15px;
+  .rgbhai-navbar-list {
+    padding: 8px;
+  }
+}
+
+/* ========================================
+   MOBILE AND TABLET - 381px TO 767px
+======================================== */
+
+@media (min-width: 381px) and (max-width: 767px) {
+  .rgbhai-navbar-header {
+    width: 100%;
+  margin: 0;
+  background: linear-gradient(135deg, #12afd0, #99cdd5);
+    /* width: calc(100% - 48px); */
+    height: 95px;
+
+    /* margin: 38px 24px 0; */
+    padding: 0 30px;
+
+    /* background: #ffffff; */
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   }
 
-  .navbar-user span {
-    max-width: 78px;
+  .rgbhai-navbar-logo img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+  }
+
+  .rgbhai-navbar-toggle {
+    display: flex;
+    width: 50px;
+    height: 50px;
+  }
+
+  .rgbhai-navbar-nav,
+  .rgbhai-navbar-nav.rgbhai-navbar-open {
+    position: relative;
+    top: auto;
+    left: auto;
+    bottom: auto;
+
+    width: calc(100% - 48px);
+    height: auto;
+
+    margin: 0 24px;
+    padding: 0;
+
+    background: #12aeca;
+  }
+
+  .rgbhai-navbar-nav {
+    max-height: 0;
+    visibility: hidden;
+    opacity: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  .navbar-order-count strong {
-    font-size: 12px;
+  .rgbhai-navbar-nav.rgbhai-navbar-open {
+    max-height: calc(100dvh - 140px);
+    visibility: visible;
+    opacity: 1;
+    overflow-y: auto;
   }
 
-  .hamburger-btn {
-    width: 38px;
-    height: 38px;
+  .rgbhai-navbar-list {
+    width: 100%;
+    padding: 10px 12px;
   }
 
-  .vertical-nav {
-    top: 68px;
-    right: 10px;
-    width: min(260px, calc(100vw - 20px));
+  .rgbhai-navbar-link {
+    min-height: 48px;
+    padding: 15px 12px;
+
+    justify-content: flex-start;
+
+    color: #030c17;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .rgbhai-navbar-link:hover {
+    padding-left: 17px;
+  }
+}
+
+/* ========================================
+   DESKTOP SIDEBAR - 768px AND ABOVE
+======================================== */
+
+@media (min-width: 768px) {
+  /* Header and logo area */
+
+  .rgbhai-navbar-header {
+    
+    width: 100%;
+  margin: 0;
+  background: linear-gradient(135deg, #12afd0, #29bdd3);
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    /* width: 282px; */
+    height: 108px;
+
+    /* margin: 0; */
+    padding: 0;
+
+    /* background: #ffffff; */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: none;
+  }
+
+  .rgbhai-navbar-logo {
+    width: 100%;
+    height: 80%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rgbhai-navbar-logo img {
+    width: 150px;
+    height: auto;
+    max-width: 90%;
+    max-height: 75px;
+    object-fit: contain;
+  }
+
+  /* Hide hamburger */
+
+  .rgbhai-navbar-toggle {
+    display: none !important;
+  }
+
+  /* Fixed left sidebar */
+
+  .rgbhai-navbar-nav,
+  .rgbhai-navbar-nav.rgbhai-navbar-open {
+    position: fixed;
+
+    top: 108px;
+    left: 0;
+    bottom: 0;
+
+    width: 282px;
+    height: auto;
+    max-height: none;
+
+    display: block;
+
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    visibility: visible;
+    opacity: 1;
+
+    background: #ffffff;
+
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.05);
+
+    transition: none;
+  }
+
+  /* Sidebar list */
+
+  .rgbhai-navbar-list {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    margin: 0;
+    padding: 10px 0 30px;
+  }
+
+  .rgbhai-navbar-list li {
+    width: 100%;
+  }
+
+  /* Sidebar links */
+
+  .rgbhai-navbar-link {
+    width: 100%;
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 16px 14px;
+
+    border: none;
+    border-radius: 0;
+
+    background: #ffffff;
+    color: #294d75;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    text-align: center;
+    white-space: normal;
+  }
+
+  .rgbhai-navbar-link:hover {
+    padding-left: 14px;
+
+    background: #e8f7f8;
+    color: #12aeca;
+  }
+
+  .rgbhai-navbar-list li:last-child .rgbhai-navbar-link {
+    border-bottom: none;
+  }
+}
+
+/* ========================================
+   LARGE DESKTOP - 1200px AND ABOVE
+======================================== */
+
+@media (min-width: 1200px) {
+  .rgbhai-navbar-header {
+    width: 100%;
+  margin: 0;
+  background: linear-gradient(135deg, #12afd0, #29bdd3);
+    /* width: 282px; */
+  }
+
+  .rgbhai-navbar-logo img {
+    width: 150px;
+  }
+
+  .rgbhai-navbar-nav,
+  .rgbhai-navbar-nav.rgbhai-navbar-open {
+    width: 282px;
+  }
+
+  .rgbhai-navbar-link {
+    font-size: 20px;
   }
 }

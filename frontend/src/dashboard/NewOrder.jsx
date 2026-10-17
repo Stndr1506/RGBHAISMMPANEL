@@ -3,6 +3,10 @@ import axios from "axios";
 import "../styles/NewOrder.css";
 // import Home from "../pages/Home";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
+
+const API_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 function NewOrder() {
   const [services, setServices] = useState([]);
@@ -387,7 +391,7 @@ Please add funds.`
 
       const response =
         await axios.post(
-          `http://localhost:5000/api/orders`,
+          `${API_URL}/api/orders`,
           {
 
             serviceId:
@@ -472,7 +476,8 @@ Please add funds.`
 
 
   return (
-
+    <>
+    <Navbar/>
     <div className="order-page">
 
       {/* <Home /> */}
@@ -1061,7 +1066,7 @@ Please add funds.`
       <WhatsAppButton/>
 
     </div>
-
+    </>
   );
 }
 

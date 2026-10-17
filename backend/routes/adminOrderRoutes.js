@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 
@@ -7,6 +8,7 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   getAdminOrders,
   updateOrderStatus,
+  updateStartCount,
 } = require("../controllers/adminOrderController");
 
 // GET ALL ORDERS
@@ -23,6 +25,14 @@ router.patch(
   authMiddleware,
   adminMiddleware,
   updateOrderStatus
+);
+
+// UPDATE ORDER START COUNT
+router.patch(
+  "/orders/:id/start-count",
+  authMiddleware,
+  adminMiddleware,
+  updateStartCount
 );
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../styles/AdminAnnouncement.css";
+import AdminNavbar from "../components/AdminNavbar";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -323,6 +324,9 @@ ${announcement.message}
   // =====================================================
 
   return (
+    <>
+    <AdminNavbar/>
+    
     <div className="admin-announcement-page">
 
       {/* HEADER */}
@@ -708,6 +712,7 @@ ${announcement.message}
       )}
 
     </div>
+    </>
   );
 };
 

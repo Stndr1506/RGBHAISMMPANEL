@@ -1,10 +1,11 @@
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pencil, X, Save, RefreshCw } from "lucide-react";
 import "../styles/AdminOrders.css";
 
-const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000";
+import AdminNavbar from "../components/AdminNavbar";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const ORDER_STATUSES = [
   "All",
@@ -24,76 +25,82 @@ const normalizeStatus = (status) =>
   String(status || "")
     .toLowerCase()
     .replace(/[_-]+/g, " ")
-    .trim()
-    .replace("cancelled", "canceled");
+    .replace("cancelled", "canceled")
+    .trim();
+
+const getServiceName = (order) =>
+  order.service_name ||
+  order.serviceName ||
+  order.service?.service ||
+  (typeof order.service === "string" ? order.service : "Service");
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+  const [newStartCount, setNewStartCount] = useState("");
+
   const [saving, setSaving] = useState(false);
+  const [savingStartCount, setSavingStartCount] = useState(false);
   const [editError, setEditError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+
+  const fetchOrders = useCallback(async (showRefresh = false) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setOrders([]);
+      setError("Please log in to view orders.");
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+
+    if (showRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
+    setError("");
+
+    try {
+      const response = await fetch(`${API_URL}/api/admin/orders`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch orders.");
+      }
+
+      const orderList = Array.isArray(data)
+        ? data
+        : data.orders || [];
+
+      setOrders(Array.isArray(orderList) ? orderList : []);
+    } catch (err) {
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          setOrders([]);
-          setError("Please log in to view orders.");
-          return;
-        }
-
-        const response = await fetch(
-          `${API_URL}/api/admin/orders`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-            signal: controller.signal,
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to fetch orders.");
-        }
-
-        const orderList = Array.isArray(data)
-          ? data
-          : data.orders || [];
-
-        setOrders(Array.isArray(orderList) ? orderList : []);
-      } catch (err) {
-        if (err.name !== "AbortError") {
-          setError(err.message || "Something went wrong.");
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    };
-
     fetchOrders();
-
-    return () => controller.abort();
-  }, []);
+  }, [fetchOrders]);
 
   const filteredOrders = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -101,22 +108,19 @@ const AdminOrders = () => {
     return orders.filter((order) => {
       const matchesStatus =
         selectedStatus === "All" ||
-        normalizeStatus(order.status) ===
-          normalizeStatus(selectedStatus);
+        normalizeStatus(order.status) === normalizeStatus(selectedStatus);
 
-      const serviceName =
-        order.service_name ||
-        order.serviceName ||
-        order.service?.service ||
-        (typeof order.service === "string"
-          ? order.service
-          : "");
+      const searchableValues = [
+        order.id,
+        order.link,
+        getServiceName(order),
+      ];
 
       const matchesSearch =
         !query ||
-        String(order.id || "").toLowerCase().includes(query) ||
-        String(order.link || "").toLowerCase().includes(query) ||
-        String(serviceName).toLowerCase().includes(query);
+        searchableValues.some((value) =>
+          String(value ?? "").toLowerCase().includes(query)
+        );
 
       return matchesStatus && matchesSearch;
     });
@@ -139,29 +143,50 @@ const AdminOrders = () => {
 
     const value = Number(amount);
 
-    return Number.isFinite(value)
-      ? `₹${value.toFixed(2)}`
-      : "—";
+    return Number.isFinite(value) ? `₹${value.toFixed(2)}` : "—";
   };
 
   const openEditModal = (order) => {
     setEditingOrder(order);
+
     setNewStatus(
       EDITABLE_STATUSES.find(
         (status) =>
           normalizeStatus(status) === normalizeStatus(order.status)
       ) || "Pending"
     );
+
+    setNewStartCount(
+      String(order.start_count ?? order.startCount ?? "")
+    );
+
     setEditError("");
     setSuccessMessage("");
   };
 
   const closeEditModal = () => {
-    if (saving) return;
+    if (saving || savingStartCount) return;
 
     setEditingOrder(null);
     setNewStatus("");
+    setNewStartCount("");
     setEditError("");
+  };
+
+  const updateLocalOrder = (orderId, changes) => {
+    setOrders((previousOrders) =>
+      previousOrders.map((order) =>
+        String(order.id) === String(orderId)
+          ? { ...order, ...changes }
+          : order
+      )
+    );
+
+    setEditingOrder((previous) =>
+      previous && String(previous.id) === String(orderId)
+        ? { ...previous, ...changes }
+        : previous
+    );
   };
 
   const saveOrderStatus = async (event) => {
@@ -169,8 +194,17 @@ const AdminOrders = () => {
 
     if (!editingOrder || !newStatus) return;
 
-    if (normalizeStatus(editingOrder.status) === normalizeStatus(newStatus)) {
+    if (
+      normalizeStatus(editingOrder.status) === normalizeStatus(newStatus)
+    ) {
       setEditError("Please select a different status.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setEditError("Please log in again.");
       return;
     }
 
@@ -179,14 +213,8 @@ const AdminOrders = () => {
       setEditError("");
       setSuccessMessage("");
 
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("Please log in again.");
-      }
-
       const response = await fetch(
-        `http://localhost:5000/api/admin/orders/${editingOrder.id}/status`,  //${API_URL}
+        `${API_URL}/api/admin/orders/${editingOrder.id}/status`,
         {
           method: "PATCH",
           headers: {
@@ -206,21 +234,18 @@ const AdminOrders = () => {
         );
       }
 
-      const updatedStatus = data.order?.status || data.status || newStatus;
+      const updatedStatus =
+        data.order?.status ?? data.status ?? newStatus;
 
-      setOrders((previousOrders) =>
-        previousOrders.map((order) =>
-          String(order.id) === String(editingOrder.id)
-            ? { ...order, status: updatedStatus }
-            : order
-        )
-      );
+      updateLocalOrder(editingOrder.id, { status: updatedStatus });
 
       setSuccessMessage(
         `Order #${editingOrder.id} status updated successfully.`
       );
+
       setEditingOrder(null);
       setNewStatus("");
+      setNewStartCount("");
     } catch (err) {
       setEditError(err.message || "Something went wrong.");
     } finally {
@@ -228,7 +253,95 @@ const AdminOrders = () => {
     }
   };
 
+  const saveStartCount = async () => {
+    if (!editingOrder) return;
+
+    const value = String(newStartCount).trim();
+
+    if (value === "") {
+      setEditError("Please enter a start count.");
+      return;
+    }
+
+    const startCount = Number(value);
+
+    if (!Number.isSafeInteger(startCount) || startCount < 0) {
+      setEditError(
+        "Start count must be a non-negative whole number."
+      );
+      return;
+    }
+
+    const currentCount = Number(
+      editingOrder.start_count ?? editingOrder.startCount
+    );
+
+    if (
+      value !== "" &&
+      Number.isSafeInteger(currentCount) &&
+      currentCount === startCount
+    ) {
+      setEditError("The start count has not changed.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setEditError("Please log in again.");
+      return;
+    }
+
+    try {
+      setSavingStartCount(true);
+      setEditError("");
+      setSuccessMessage("");
+
+      const response = await fetch(
+        `${API_URL}/api/admin/orders/${editingOrder.id}/start-count`, 
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ start_count: startCount }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to update start count."
+        );
+      }
+
+      const savedCount =
+        data.order?.start_count ??
+        data.start_count ??
+        startCount;
+
+      updateLocalOrder(editingOrder.id, {
+        start_count: savedCount,
+        startCount: savedCount,
+      });
+
+      setNewStartCount(String(savedCount));
+      setSuccessMessage(
+        `Order #${editingOrder.id} start count updated successfully.`
+      );
+    } catch (err) {
+      setEditError(err.message || "Something went wrong.");
+    } finally {
+      setSavingStartCount(false);
+    }
+  };
+
   return (
+    <>
+    <AdminNavbar/>
     <main className="orders-page admin-orders-page">
       <div className="orders-status-filters">
         {ORDER_STATUSES.map((status) => (
@@ -246,26 +359,41 @@ const AdminOrders = () => {
       </div>
 
       <section className="orders-card">
-        <form
-          className="orders-search"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search by order ID, link or service"
-            aria-label="Search orders"
-          />
+        <div className="admin-orders-toolbar">
+          <form
+            className="orders-search"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search by order ID, link or service"
+              aria-label="Search orders"
+            />
 
-          <button type="submit" aria-label="Search">
-            ⌕
+            <button type="submit" aria-label="Search">
+              ⌕
+            </button>
+          </form>
+
+          <button
+            type="button"
+            className="admin-orders-refresh-btn"
+            onClick={() => fetchOrders(true)}
+            disabled={loading || refreshing}
+          >
+            <RefreshCw
+              size={16}
+              className={refreshing ? "admin-orders-spinning" : ""}
+            />
+            {refreshing ? "Refreshing..." : "Refresh"}
           </button>
-        </form>
+        </div>
 
         {successMessage && (
           <div className="admin-order-success" role="status">
-            {successMessage}
+            <span>{successMessage}</span>
             <button
               type="button"
               onClick={() => setSuccessMessage("")}
@@ -281,7 +409,15 @@ const AdminOrders = () => {
         )}
 
         {!loading && error && (
-          <div className="orders-message orders-error">{error}</div>
+          <div className="orders-message orders-error">
+            {error}
+            <button
+              type="button"
+              onClick={() => fetchOrders()}
+            >
+              Try again
+            </button>
+          </div>
         )}
 
         {!loading && !error && (
@@ -310,14 +446,6 @@ const AdminOrders = () => {
 
                 <tbody>
                   {filteredOrders.map((order) => {
-                    const serviceName =
-                      order.service_name ||
-                      order.serviceName ||
-                      order.service?.service ||
-                      (typeof order.service === "string"
-                        ? order.service
-                        : "Service");
-
                     const statusClass = normalizeStatus(order.status)
                       .replace(/\s+/g, "-");
 
@@ -327,8 +455,8 @@ const AdminOrders = () => {
 
                         <td data-label="Date">
                           {formatDate(
-                            order.created_at ||
-                              order.createdAt ||
+                            order.created_at ??
+                              order.createdAt ??
                               order.date
                           )}
                         </td>
@@ -359,7 +487,9 @@ const AdminOrders = () => {
                           {order.quantity ?? "—"}
                         </td>
 
-                        <td data-label="Service">{serviceName}</td>
+                        <td data-label="Service">
+                          {getServiceName(order)}
+                        </td>
 
                         <td data-label="Status">
                           <span
@@ -393,7 +523,9 @@ const AdminOrders = () => {
               {filteredOrders.length === 0 && (
                 <div className="orders-empty">
                   <h3>No orders found</h3>
-                  <p>Try changing your status filter or search term.</p>
+                  <p>
+                    Try changing your status filter or search term.
+                  </p>
                   <button
                     type="button"
                     onClick={() => {
@@ -427,7 +559,7 @@ const AdminOrders = () => {
           >
             <div className="admin-order-modal-header">
               <div>
-                <h2 id="edit-order-title">Edit Order Status</h2>
+                <h2 id="edit-order-title">Edit Order</h2>
                 <p>Order #{editingOrder.id}</p>
               </div>
 
@@ -435,7 +567,7 @@ const AdminOrders = () => {
                 type="button"
                 className="admin-order-close-btn"
                 onClick={closeEditModal}
-                disabled={saving}
+                disabled={saving || savingStartCount}
                 aria-label="Close modal"
               >
                 <X size={20} />
@@ -450,7 +582,7 @@ const AdminOrders = () => {
                   id="order-status"
                   value={newStatus}
                   onChange={(event) => setNewStatus(event.target.value)}
-                  disabled={saving}
+                  disabled={saving || savingStartCount}
                   required
                 >
                   {EDITABLE_STATUSES.map((status) => (
@@ -461,8 +593,47 @@ const AdminOrders = () => {
                 </select>
 
                 <p className="admin-order-current-status">
-                  Current status: <strong>{editingOrder.status}</strong>
+                  Current status:{" "}
+                  <strong>{editingOrder.status || "Unknown"}</strong>
                 </p>
+
+                <div className="admin-order-start-count-field">
+                  <label htmlFor="order-start-count">
+                    Start count
+                  </label>
+
+                  <input
+                    id="order-start-count"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={newStartCount}
+                    onChange={(event) =>
+                      setNewStartCount(event.target.value)
+                    }
+                    disabled={saving || savingStartCount}
+                    placeholder="Enter start count"
+                  />
+
+                  <button
+                    type="button"
+                    className="admin-order-save-btn"
+                    onClick={saveStartCount}
+                    disabled={saving || savingStartCount}
+                  >
+                    {savingStartCount ? (
+                      <>
+                        <RefreshCw size={16} />
+                        Saving count...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={16} />
+                        Save Start Count
+                      </>
+                    )}
+                  </button>
+                </div>
 
                 {editError && (
                   <p className="admin-order-edit-error" role="alert">
@@ -476,7 +647,7 @@ const AdminOrders = () => {
                   type="button"
                   className="admin-order-cancel-btn"
                   onClick={closeEditModal}
-                  disabled={saving}
+                  disabled={saving || savingStartCount}
                 >
                   Cancel
                 </button>
@@ -484,7 +655,7 @@ const AdminOrders = () => {
                 <button
                   type="submit"
                   className="admin-order-save-btn"
-                  disabled={saving}
+                  disabled={saving || savingStartCount}
                 >
                   {saving ? (
                     <>
@@ -504,6 +675,7 @@ const AdminOrders = () => {
         </div>
       )}
     </main>
+    </>
   );
 };
 

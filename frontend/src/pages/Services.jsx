@@ -13,6 +13,7 @@ import {
   faSnapchat,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+import Navbar from "../components/Navbar";
 
 const Services = () => {
 
@@ -261,7 +262,8 @@ const Services = () => {
   // ================================
 
   return (
-
+    <>
+    <Navbar/>
     <div className="services-page">
 
       {/* HOME / NAVBAR */}
@@ -595,7 +597,7 @@ const Services = () => {
       </div>
 
     </div>
-
+    </>
   );
 
 };

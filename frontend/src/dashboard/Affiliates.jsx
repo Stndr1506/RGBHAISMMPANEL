@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Affiliates.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
 
 function Affiliates() {
   const [copied, setCopied] = useState(false);
@@ -22,7 +23,8 @@ function Affiliates() {
   };
 
   return (
-    
+    <>
+    <Navbar/>
     <div className="affiliate-page">
       
       {/* =========================================
@@ -183,6 +185,7 @@ function Affiliates() {
     <WhatsAppButton/>
 
     </div>
+    </>
   );
 }
 

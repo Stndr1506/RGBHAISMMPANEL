@@ -1,10 +1,10 @@
+
 const {
   getAllOrders,
 } = require("../models/adminOrderModel");
 
 const { sql, getDB } = require("../config/db");
 
-// Allowed order statuses
 const ALLOWED_STATUSES = [
   "Pending",
   "In progress",
@@ -14,10 +14,7 @@ const ALLOWED_STATUSES = [
   "Canceled",
 ];
 
-// =====================================================
 // GET ALL ORDERS - ADMIN
-// =====================================================
-
 const getAdminOrders = async (req, res) => {
   try {
     const orders = await getAllOrders();
@@ -32,30 +29,24 @@ const getAdminOrders = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Unable to fetch orders",
-      error: error.message,
+      message: "Unable to fetch orders.",
     });
   }
 };
 
-// =====================================================
 // UPDATE ORDER STATUS - ADMIN
-// =====================================================
-
 const updateOrderStatus = async (req, res) => {
   try {
     const orderId = Number(req.params.id);
     const { status } = req.body;
 
-    // Validate order ID
-    if (!Number.isInteger(orderId) || orderId <= 0) {
+    if (!Number.isSafeInteger(orderId) || orderId <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid order ID.",
       });
     }
 
-    // Validate status
     const normalizedStatus = String(status || "").trim();
 
     const validStatus = ALLOWED_STATUSES.find(
@@ -71,26 +62,24 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    // Connect to SQL Server
     const pool = await getDB();
 
-    // Update order status
     const result = await pool
       .request()
       .input("id", sql.Int, orderId)
       .input("status", sql.VarChar(30), validStatus)
       .query(`
-        UPDATE orders
+        UPDATE dbo.orders
         SET
           status = @status,
           updated_at = GETDATE()
         OUTPUT
           INSERTED.id,
-          INSERTED.status
-        WHERE id = @id
+          INSERTED.status,
+          INSERTED.updated_at
+        WHERE id = @id;
       `);
 
-    // Check whether the order exists
     if (result.recordset.length === 0) {
       return res.status(404).json({
         success: false,
@@ -113,7 +102,75 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// UPDATE START COUNT - ADMIN
+const updateStartCount = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+    const startCount = req.body?.start_count;
+
+    if (!Number.isSafeInteger(orderId) || orderId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID.",
+      });
+    }
+
+    if (
+      startCount === null ||
+      startCount === undefined ||
+      startCount === "" ||
+      !Number.isSafeInteger(Number(startCount)) ||
+      Number(startCount) < 0 ||
+      Number(startCount) > 2147483647
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Start count must be a non-negative whole number.",
+      });
+    }
+
+    const pool = await getDB();
+
+    const result = await pool
+      .request()
+      .input("id", sql.Int, orderId)
+      .input("start_count", sql.Int, Number(startCount))
+      .query(`
+        UPDATE dbo.orders
+        SET
+          start_count = @start_count,
+          updated_at = GETDATE()
+        OUTPUT
+          INSERTED.id,
+          INSERTED.start_count,
+          INSERTED.updated_at
+        WHERE id = @id;
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Start count updated successfully.",
+      order: result.recordset[0],
+    });
+  } catch (error) {
+    console.error("Update start count error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update start count.",
+    });
+  }
+};
+
 module.exports = {
   getAdminOrders,
   updateOrderStatus,
+  updateStartCount,
 };

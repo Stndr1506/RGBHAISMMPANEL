@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Updates.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
 
 const services = [
   {
@@ -80,6 +81,9 @@ function Updates() {
   );
 
   return (
+    <>
+    <Navbar/>
+    
     <div className="page">
 
       <main className="container">
@@ -210,6 +214,7 @@ function Updates() {
     <WhatsAppButton/>
 
     </div>
+    </>
   );
 }
 

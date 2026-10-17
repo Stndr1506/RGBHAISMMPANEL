@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/AdminUsers.css";
 
+import AdminNavbar from "../components/AdminNavbar";
+
 const API_URL =
   process.env.REACT_APP_API_URL || "http://localhost:5000";
 
@@ -269,6 +271,9 @@ function AdminUsers() {
   // ============================================
 
   return (
+    <>
+    
+    <AdminNavbar/>
     <div className="admin-users-page">
       <div className="users-header">
         <div>
@@ -569,6 +574,7 @@ function AdminUsers() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

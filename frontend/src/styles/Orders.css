@@ -405,3 +405,19 @@
     font-size: 12px;
   }
 }
+
+
+.page-with-navbar {
+  width: calc(100% - 282px);
+  margin-left: 282px;
+  padding: 25px 30px 40px;
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .page-with-navbar {
+    width: 100%;
+    margin-left: 0;
+    padding: 20px 16px 30px;
+  }
+}

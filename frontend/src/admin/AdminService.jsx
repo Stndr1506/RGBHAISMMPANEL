@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 import AdminHome from "./AdminHome";
+import AdminNavbar from "../components/AdminNavbar";
 
 const API_URL =
   process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -569,6 +570,9 @@ const handleAddService = (category = "") => {
   // =====================================
 
   return (
+    <>
+    <AdminNavbar/>
+    
     <div className="services-page">
       <AdminHome />
 
@@ -1128,6 +1132,7 @@ const handleAddService = (category = "") => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

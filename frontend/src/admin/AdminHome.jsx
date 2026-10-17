@@ -18,6 +18,9 @@ import {
   CircleDollarSign
 } from "lucide-react";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+
 function AdminHome() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [, setDashboard] = useState({
@@ -34,7 +37,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "http://localhost:5000/api/dashboard",
+        `${API_URL}/api/dashboard`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -3,6 +3,7 @@ import axios from "axios";
 import "../styles/Funds.css";
 // import Home from "../pages/Home";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
 
 const quickAmounts = [100, 250, 500, 1000, 2500, 5000];
 
@@ -411,6 +412,9 @@ useEffect(() => {
 
 
   return (
+    <>
+    <Navbar/>
+    
     <div className="funds-page">
       {/* <Home /> */}
 
@@ -669,6 +673,7 @@ useEffect(() => {
       </main>
       <WhatsAppButton/>
     </div>
+    </>
   );
 }
 

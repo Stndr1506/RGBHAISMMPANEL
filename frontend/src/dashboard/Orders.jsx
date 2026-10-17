@@ -1,8 +1,9 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/Orders.css";
+import Navbar from "../components/Navbar";
 
-// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 const ORDER_STATUSES = [
   "All",
@@ -38,7 +39,7 @@ const Orders = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/user-orders`, {   //${API_URL}
+        const response = await fetch(`${API_URL}/api/user-orders`, {   //${API_URL}
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -140,6 +141,9 @@ const Orders = () => {
   };
 
   return (
+    <>
+    <div className="page-with-navbar">
+    <Navbar/>
     <main className="orders-page">
       {/* Status Filters */}
       <div className="orders-status-filters">
@@ -321,7 +325,10 @@ const Orders = () => {
         )}
       </section>
     </main>
+    </div>
+    </>
   );
 };
+
 
 export default Orders;

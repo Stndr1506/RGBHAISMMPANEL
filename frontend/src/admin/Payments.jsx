@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/Payments.css";
+import AdminNavbar from "../components/AdminNavbar";
 
 function Payments() {
   const [payments, setPayments] = useState([]);
@@ -59,6 +60,9 @@ function Payments() {
   }, []);
 
   return (
+    <>
+    <AdminNavbar/>
+    
     <div className="payments-container">
 
       <div className="payments-header">
@@ -154,6 +158,7 @@ function Payments() {
       )}
 
     </div>
+    </>
   );
 }
 
