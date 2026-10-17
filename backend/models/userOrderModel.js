@@ -1,4 +1,3 @@
-
 const { sql, getDB } = require("../config/db");
 
 // ============================================
@@ -20,12 +19,11 @@ const getOrdersByUserId = async (userId) => {
         o.quantity,
         o.rate,
         o.amount,
+        o.start_count,
         o.status,
         o.created_at,
         o.updated_at,
         s.service AS service_name,
-
-        CAST(NULL AS BIGINT) AS start_count,
         CAST(NULL AS BIGINT) AS remains
 
       FROM orders AS o

@@ -15,7 +15,7 @@ import {
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 
-import AdminHome from "./AdminHome";
+
 import AdminNavbar from "../components/AdminNavbar";
 
 const API_URL =
@@ -574,7 +574,7 @@ const handleAddService = (category = "") => {
     <AdminNavbar/>
     
     <div className="services-page">
-      <AdminHome />
+  
 
       {/* ADMIN HEADER */}
       <div className="services-admin-header">
