@@ -79,7 +79,7 @@ const Login = () => {
       {/* Heading */}
       <div className="hero-section">
         <h1>
-          Cheapest <span>SMM</span> Panel API Provider: #1 Main{" "}
+          RG Bhai <span>Main Google Ads Youtube Views</span> Provider: #1 Main{" "}
           <span>SMM</span> Service Provider
         </h1>
 

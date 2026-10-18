@@ -38,8 +38,8 @@ const AdminService = () => {
 
   const [servicesData, setServicesData] = useState([]);
   const [search, setSearch] = useState("");
-  const [currency, setCurrency] = useState("INR ₹");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currency, ] = useState("INR ₹");
+  const [selectedCategory, ] = useState("All");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -607,7 +607,7 @@ const handleAddService = (category = "") => {
 
       {/* FILTER AREA */}
       <div className="services-filter-card">
-        <select
+        {/* <select
           className="filter-select"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -627,7 +627,7 @@ const handleAddService = (category = "") => {
           <option value="INR ₹">INR ₹</option>
           <option value="USD $">USD $</option>
           <option value="EUR €">EUR €</option>
-        </select>
+        </select> */}
 
         <div className="search-box">
           <input

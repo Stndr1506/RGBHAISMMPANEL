@@ -23,8 +23,8 @@ const Services = () => {
 
   const [servicesData, setServicesData] = useState([]);
   const [search, setSearch] = useState("");
-  const [currency, setCurrency] = useState("INR ₹");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currency, ] = useState("INR ₹");
+  const [selectedCategory,] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -87,14 +87,14 @@ const Services = () => {
   // GET UNIQUE CATEGORIES
   // ================================
 
-  const categories = [
-    "All",
-    ...new Set(
-      servicesData.map(
-        (item) => item.category
-      )
-    ),
-  ];
+  // const categories = [
+  //   "All",
+  //   ...new Set(
+  //     servicesData.map(
+  //       (item) => item.category
+  //     )
+  //   ),
+  // ];
 
 
   // ================================
@@ -280,7 +280,7 @@ const Services = () => {
 
         {/* CATEGORY */}
 
-        <select
+        {/* <select
           className="filter-select"
           value={selectedCategory}
           onChange={(e) =>
@@ -303,11 +303,11 @@ const Services = () => {
             )
           )}
 
-        </select>
+        </select> */}
 
 
         {/* CURRENCY */}
-
+{/* 
         <select
           className="currency-select"
           value={currency}
@@ -330,7 +330,7 @@ const Services = () => {
             EUR €
           </option>
 
-        </select>
+        </select> */}
 
 
         {/* SEARCH */}

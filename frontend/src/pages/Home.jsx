@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Home.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import homeBanner from "../assets/dummy.jpg";
+
 import {
   ShoppingCart,
   Layers,
@@ -18,7 +20,7 @@ import {
   ClipboardList,
   Package,
 } from "lucide-react";
-import NewOrder from "../dashboard/NewOrder";
+
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -113,7 +115,7 @@ function Home() {
       {/* HEADER */}
       <header className="top-header">
         <div className="logo-container">
-          <Link to="/new-order" onClick={closeMenu}>
+          <Link to="/home" onClick={closeMenu}>
             <img src={logo} alt="RGBHAI SMM Panel" />
           </Link>
         </div>
@@ -250,8 +252,15 @@ function Home() {
         {/* WHATSAPP */}
         <WhatsAppButton />
       </main>
+      {/* HOME PROMOTIONAL IMAGE */}
+        <section className="home-banner">
+          <img
+            src={homeBanner}
+            alt="RGBHAI SMM Panel Promotion"
+            className="home-banner-image"
+          />
+        </section>
 
-      <NewOrder />
     </div>
   );
 }

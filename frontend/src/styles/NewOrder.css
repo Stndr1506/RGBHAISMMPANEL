@@ -972,6 +972,22 @@
   .recent-table {
     min-width: 600px;
   }
+
+  #order-category {
+    font-size: 13px;
+  }
+
+  #order-category option {
+    font-size: 11px;
+  }
+  #order-service {
+    font-size: 13px;
+  }
+
+  #order-service option {
+    font-size: 11px;
+  }
+
 }
 
 
@@ -1022,5 +1038,170 @@
 
   .summary-card {
     padding: 16px;
+  }
+}
+
+
+/* ==========================================
+   ORDER SUCCESS CONFIRMATION
+========================================== */
+
+.order-success-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 20px 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #bbf7d0;
+  border-radius: 14px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.order-success-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-success-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  color: #fff;
+  background: #16a34a;
+  border-radius: 50%;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.order-success-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-success-heading h2 {
+  margin: 0 0 5px;
+  color: #166534;
+  font-size: 21px;
+}
+
+.order-success-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.order-success-close {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.order-success-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.success-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+}
+
+.success-detail span {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.success-detail strong {
+  color: #1e293b;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.success-link a {
+  color: #2563eb;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.success-balance {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.success-balance strong {
+  color: #15803d;
+  font-size: 19px;
+}
+
+.success-done-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px 18px;
+  color: #fff;
+  background: #16a34a;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.success-done-btn:hover {
+  background: #15803d;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .order-success-card {
+    margin: 15px 0;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .order-success-header {
+    gap: 10px;
+  }
+
+  .order-success-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+  }
+
+  .order-success-heading h2 {
+    font-size: 17px;
+  }
+
+  .order-success-heading p {
+    font-size: 12px;
+  }
+
+  .order-success-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .success-detail {
+    padding: 12px;
   }
 }

@@ -1092,3 +1092,49 @@ button {
   }
 }
 
+/* HOME PROMOTIONAL IMAGE */
+.home-banner {
+  width: 100%;
+  margin: 18px 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f5f5f5;
+  line-height: 0;
+}
+
+.home-banner-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 12px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .home-banner {
+    margin: 24px 0;
+  }
+
+  .home-banner-image {
+    max-height: 320px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .home-banner {
+    margin: 14px 0;
+    border-radius: 8px;
+  }
+
+  .home-banner-image {
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+}

@@ -129,7 +129,7 @@ function Navbar() {
           <li>
             <button
               type="button"
-              className="rgbhai-navbar-link rgbhai-navbar-logout"
+              className="rgbhai-navbar-link"
               onClick={handleLogout}
             >
               <LogOut size={19} />

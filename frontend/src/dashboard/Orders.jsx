@@ -96,19 +96,27 @@ const Orders = () => {
         activeStatus === "all" ||
         orderStatus === activeStatus;
 
+      const serviceId =
+        order.service_id ??
+        order.serviceId ??
+        order.service?.id ??
+        "—";
+
       const serviceName =
         order.service_name ||
         order.serviceName ||
         order.service?.service ||
         (typeof order.service === "string"
           ? order.service
-          : "");
+          : "Service");
+
 
       const matchesSearch =
-        !query ||
-        String(order.id || "").toLowerCase().includes(query) ||
-        String(order.link || "").toLowerCase().includes(query) ||
-        String(serviceName).toLowerCase().includes(query);
+          !query ||
+          String(order.id || "").toLowerCase().includes(query) ||
+          String(order.link || "").toLowerCase().includes(query) ||
+          String(serviceId).toLowerCase().includes(query) ||
+          String(serviceName).toLowerCase().includes(query);
 
       return matchesStatus && matchesSearch;
     });
@@ -221,6 +229,11 @@ const Orders = () => {
 
                 <tbody>
                   {filteredOrders.map((order) => {
+                    const serviceId =
+                      order.service_id ??
+                      order.serviceId ??
+                      order.service?.id ??
+                      "—";
                     const serviceName =
                       order.service_name ||
                       order.serviceName ||
@@ -278,7 +291,7 @@ const Orders = () => {
                         </td>
 
                         <td data-label="Service">
-                          {serviceName}
+                           <b>{serviceId}</b> - {serviceName}
                         </td>
 
                         <td data-label="Status">

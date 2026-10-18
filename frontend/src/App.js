@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import NewOrder from "./dashboard/NewOrder";
-import Funds from "./dashboard/Funds";
+// import Funds from "./dashboard/Funds";
 import API from "./dashboard/Api";
 import Affiliates from "./dashboard/Affiliates";
 import ChildPanel from "./dashboard/ChildPanel";
@@ -22,6 +22,7 @@ import Announcement from "./dashboard/Announcement";
 import Services from "./pages/Services";
 import AdminAnnouncement from "./admin/AdminAnnouncement";
 import Orders from "./dashboard/Orders";
+import DirectFunds from "./dashboard/DirectFunds";
 
 // Protect user routes
 const ProtectedRoute = ({ children }) => {
@@ -47,7 +48,7 @@ function App() {
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/announcements" element={<ProtectedRoute><Announcement /></ProtectedRoute>} />
         <Route path="/dashboard-services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
-        <Route path="/add-funds" element={<ProtectedRoute><Funds /></ProtectedRoute>} />
+        <Route path="/add-funds" element={<ProtectedRoute><DirectFunds/></ProtectedRoute>} />
         <Route path="/api-integration" element={<ProtectedRoute><API /></ProtectedRoute>} />
         <Route path="/affiliates" element={<ProtectedRoute><Affiliates /></ProtectedRoute>} />
         <Route path="/child-panel" element={<ProtectedRoute><ChildPanel /></ProtectedRoute>} />

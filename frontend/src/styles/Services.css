@@ -248,7 +248,7 @@
 ========================================= */
 
 .search-box {
-  height: 44px;
+  height: 74px;
 
   flex: 1;
 
@@ -789,6 +789,10 @@
 
   .search-box {
     width: 100%;
+  }
+
+  .search-box input{
+    height: 34px;
   }
 
 
