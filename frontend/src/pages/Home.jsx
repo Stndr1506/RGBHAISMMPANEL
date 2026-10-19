@@ -24,7 +24,8 @@ import {
   ClipboardList,
   Package,
 } from "lucide-react";
-import NewOrder from "../dashboard/NewOrder";
+import Services from "./Services";
+
 
 
 function Home() {
@@ -253,10 +254,10 @@ function Home() {
             </p>
           </div>
         </section>
-
+        <Services/>
         {/* WHATSAPP */}
         <WhatsAppButton />
-        <NewOrder/>
+        
       </main>
       {/* HOME PROMOTIONAL IMAGE */}
         <section className="home-banner">

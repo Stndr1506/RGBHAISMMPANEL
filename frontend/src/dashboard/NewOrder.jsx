@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "../styles/NewOrder.css";
 import WhatsAppButton from "../components/WhatsappButton";
+import Navbar from "../components/Navbar";
 
 const API_URL =
   process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -392,6 +393,8 @@ function NewOrder() {
   // PAGE
   // ==========================================
   return (
+    <>
+    <Navbar/>
     <div className="order-page" onKeyDown={(e) => {
       if (e.key === "Escape") closeDropdowns();
     }}>
@@ -903,6 +906,7 @@ function NewOrder() {
 
       <WhatsAppButton />
     </div>
+    </>
   );
 }
 
