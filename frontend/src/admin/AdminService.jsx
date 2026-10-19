@@ -316,7 +316,7 @@ const handleAddService = (category = "") => {
 
      if (editingService) {
   await axios.put(
-    `${API_URL}/api/admin-service/${editingService.id}`,
+    `${API_URL}/api/admin-service/${editingService.id}`, //${API_URL}
     formData,
     {
       headers: {

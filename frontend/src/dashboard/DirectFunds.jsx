@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import paymentQr from '../assets/payment-qr.jpeg';
 import "../styles/DirectFunds.css";
 
-const WHATSAPP_NUMBER = "919015903883"; // Replace with your WhatsApp number
+const WHATSAPP_NUMBER = "918376925292"; // Replace with your WhatsApp number
 const QR_IMAGE = paymentQr; // Put your QR image in the public folder
 
 const PAYMENT_METHODS = [

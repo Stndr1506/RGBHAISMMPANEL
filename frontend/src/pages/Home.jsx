@@ -5,7 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Home.css";
 import WhatsAppButton from "../components/WhatsappButton";
-import homeBanner from "../assets/dummy.jpg";
+import homeBanner4 from "../assets/homeBanner4.jpeg";
+import homeBanner3 from "../assets/homeBanner3.jpeg";
+import homeBanner2 from "../assets/homeBanner2.jpeg";
+import homeBanner1 from "../assets/homeBanner1.jpeg";
+
 
 import {
   ShoppingCart,
@@ -20,6 +24,7 @@ import {
   ClipboardList,
   Package,
 } from "lucide-react";
+import NewOrder from "../dashboard/NewOrder";
 
 
 function Home() {
@@ -251,16 +256,38 @@ function Home() {
 
         {/* WHATSAPP */}
         <WhatsAppButton />
+        <NewOrder/>
       </main>
       {/* HOME PROMOTIONAL IMAGE */}
         <section className="home-banner">
           <img
-            src={homeBanner}
+            src={homeBanner4}
             alt="RGBHAI SMM Panel Promotion"
             className="home-banner-image"
           />
         </section>
-
+        <section className="home-banner">
+          <img
+            src={homeBanner3}
+            alt="RGBHAI SMM Panel Promotion"
+            className="home-banner-image"
+          />
+        </section>
+        <section className="home-banner">
+          <img
+            src={homeBanner2}
+            alt="RGBHAI SMM Panel Promotion"
+            className="home-banner-image"
+          />
+        </section>
+        <section className="home-banner">
+          <img
+            src={homeBanner1}
+            alt="RGBHAI SMM Panel Promotion"
+            className="home-banner-image"
+          />
+        </section>
+        
     </div>
   );
 }

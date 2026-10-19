@@ -142,7 +142,7 @@ const updateService = async (req, res) => {
   try {
     const id = Number(req.params.id);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({
         message: "Invalid service ID",
       });
@@ -151,24 +151,27 @@ const updateService = async (req, res) => {
     const {
       category,
       service,
+      description,
       rate,
       min_order,
       max_order,
       average_time,
     } = req.body;
 
-    // Required field validation
+    // Validate required fields.
+    // Description is optional, so an empty description is allowed.
 
     if (
-      !category ||
-      !service ||
+      typeof category !== "string" ||
+      !category.trim() ||
+      typeof service !== "string" ||
+      !service.trim() ||
       rate === undefined ||
       min_order === undefined ||
-      max_order === undefined ||
-      !average_time
+      max_order === undefined
     ) {
       return res.status(400).json({
-        message: "All fields are required",
+        message: "Please provide all required fields",
       });
     }
 
@@ -177,25 +180,38 @@ const updateService = async (req, res) => {
     const numericMax = Number(max_order);
 
     if (
-      Number.isNaN(numericRate) ||
-      Number.isNaN(numericMin) ||
-      Number.isNaN(numericMax)
+      !Number.isFinite(numericRate) ||
+      !Number.isInteger(numericMin) ||
+      !Number.isInteger(numericMax) ||
+      numericRate < 0 ||
+      numericMin < 0 ||
+      numericMax < numericMin
     ) {
       return res.status(400).json({
-        message:
-          "Rate, minimum order and maximum order must be numbers",
+        message: "Please provide valid rates and order limits",
       });
     }
 
-    if (numericMin > numericMax) {
+    // Validate description and average time.
+    if (
+      description !== undefined &&
+      typeof description !== "string"
+    ) {
       return res.status(400).json({
-        message:
-          "Minimum order cannot be greater than maximum order",
+        message: "Description must be text",
       });
     }
 
-    // Check service exists
+    if (
+      average_time !== undefined &&
+      typeof average_time !== "string"
+    ) {
+      return res.status(400).json({
+        message: "Average time must be text",
+      });
+    }
 
+    // Check whether the service exists.
     const existingService =
       await serviceModel.getServiceById(id);
 
@@ -205,21 +221,38 @@ const updateService = async (req, res) => {
       });
     }
 
+    // Update service, including description.
     const updatedService =
       await serviceModel.updateService(id, {
         category: category.trim(),
         service: service.trim(),
+        description:
+          description === undefined
+            ? existingService.description || ""
+            : description.trim(),
         rate: numericRate,
         min_order: numericMin,
         max_order: numericMax,
-        average_time: average_time.trim(),
+        average_time:
+          average_time === undefined
+            ? existingService.average_time || ""
+            : average_time.trim(),
       });
 
-    res.status(200).json(updatedService);
+    if (!updatedService) {
+      return res.status(500).json({
+        message: "Service update returned no data",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Service updated successfully",
+      service: updatedService,
+    });
   } catch (error) {
     console.error("UPDATE SERVICE ERROR:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to update service",
       error: error.message,
     });
