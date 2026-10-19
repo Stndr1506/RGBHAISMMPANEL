@@ -3,7 +3,17 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "../styles/NewOrder.css";
 import WhatsAppButton from "../components/WhatsappButton";
-import Navbar from "../components/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faInstagram,
+  faYoutube,
+  faTelegram,
+  faTwitter,
+  faFacebook,
+  faTiktok,
+  faSnapchat,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 
 const API_URL =
   process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -389,12 +399,55 @@ function NewOrder() {
     setServiceOpen(false);
   };
 
+  // CATEGORY SOCIAL ICON — SAME AS Services.jsx
+const getCategoryIcon = (category) => {
+  const name = (category || "").toLowerCase();
+
+  if (name.includes("instagram")) {
+    return faInstagram;
+  }
+
+  if (
+    name.includes("youtube") ||
+    name.includes("you tube")
+  ) {
+    return faYoutube;
+  }
+
+  if (name.includes("telegram")) {
+    return faTelegram;
+  }
+
+  if (
+    name.includes("twitter") ||
+    name.includes("x")
+  ) {
+    return faTwitter;
+  }
+
+  if (name.includes("facebook")) {
+    return faFacebook;
+  }
+
+  if (name.includes("tiktok")) {
+    return faTiktok;
+  }
+
+  if (name.includes("snapchat")) {
+    return faSnapchat;
+  }
+
+  if (name.includes("linkedin")) {
+    return faLinkedin;
+  }
+
+  return null;
+};
+
   // ==========================================
   // PAGE
   // ==========================================
   return (
-    <>
-    <Navbar/>
     <div className="order-page" onKeyDown={(e) => {
       if (e.key === "Escape") closeDropdowns();
     }}>
@@ -535,9 +588,17 @@ function NewOrder() {
                       setCategorySearch("");
                     }}
                   >
-                    <span className="custom-dropdown-value">
-                      {category}
-                    </span>
+                    <span className="custom-dropdown-value category-dropdown-value">
+  <span className="category-icon">
+    {getCategoryIcon(category) ? (
+      <FontAwesomeIcon icon={getCategoryIcon(category)} />
+    ) : (
+      "⭐"
+    )}
+  </span>
+
+  <span>{category}</span>
+</span>
                     <span className="custom-dropdown-arrow">
                       {categoryOpen ? "▲" : "▼"}
                     </span>
@@ -571,7 +632,17 @@ function NewOrder() {
                                 handleCategoryChange(item)
                               }
                             >
-                              <span>{item}</span>
+                              <span className="category-option-label">
+  <span className="category-icon">
+    {getCategoryIcon(item) ? (
+      <FontAwesomeIcon icon={getCategoryIcon(item)} />
+    ) : (
+      "⭐"
+    )}
+  </span>
+
+  <span>{item}</span>
+</span>
                               {category === item && (
                                 <span className="custom-dropdown-check">
                                   ✓
@@ -691,10 +762,26 @@ function NewOrder() {
                   </div>
 
                   <p>Description</p>
-                  <h3>
-                    {selectedService.description ||
-                      "No description available"}
-                  </h3>
+
+<div className="service-description">
+  {selectedService.description
+    ? selectedService.description
+        .replace(/\\n/g, "\n")
+        .split("\n")
+        .map((line, index) => (
+          <div
+            key={index}
+            className={
+              line.trim() === ""
+                ? "description-spacer"
+                : "description-line"
+            }
+          >
+            {line || "\u00A0"}
+          </div>
+        ))
+    : "No description available"}
+</div>
 
                   <div className="service-limits">
                     <div>
@@ -747,6 +834,17 @@ function NewOrder() {
                   }
                 />
               </div>
+              {/* CHARGE */}
+<div className="charge-field">
+  <label htmlFor="order-charge">Total Charge</label>
+  <div className="charge-input">
+    <span className="charge-currency">₹</span>
+    <strong id="order-charge">
+      {totalPrice.toFixed(2)}
+    </strong>
+  </div>
+  <small>Calculated automatically based on quantity.</small>
+</div>
 
               {/* INSUFFICIENT BALANCE */}
               {selectedService &&
@@ -762,11 +860,11 @@ function NewOrder() {
                   </div>
                 )}
 
-              {/* DRIP FEED - UI ONLY */}
+              {/* DRIP FEED - UI ONLY
               <div className="checkbox-row">
                 <input type="checkbox" id="drip" />
                 <label htmlFor="drip">Enable Drip-feed</label>
-              </div>
+              </div> */}
 
               {/* PLACE ORDER */}
               <button
@@ -906,7 +1004,6 @@ function NewOrder() {
 
       <WhatsAppButton />
     </div>
-    </>
   );
 }
 
