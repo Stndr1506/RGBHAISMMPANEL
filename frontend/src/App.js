@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import NewOrder from "./dashboard/NewOrder";
-// import Funds from "./dashboard/Funds";
+// import Funds from "./dashboard/Funds";s
 import API from "./dashboard/Api";
 import Affiliates from "./dashboard/Affiliates";
 import ChildPanel from "./dashboard/ChildPanel";
