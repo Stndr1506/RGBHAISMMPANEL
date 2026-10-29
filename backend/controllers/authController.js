@@ -33,7 +33,6 @@ const signup = async (req, res) => {
       });
     }
 
-    // Check password confirmation
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
@@ -41,7 +40,6 @@ const signup = async (req, res) => {
       });
     }
 
-    // Basic password validation
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
@@ -49,7 +47,7 @@ const signup = async (req, res) => {
       });
     }
 
-    // Check username
+    // Check duplicate username
     const existingUsername =
       await findUserByUsername(username);
 
@@ -60,7 +58,7 @@ const signup = async (req, res) => {
       });
     }
 
-    // Check email
+    // Check duplicate email
     const existingEmail =
       await findUserByEmail(email);
 
@@ -77,7 +75,7 @@ const signup = async (req, res) => {
       12
     );
 
-    // Create user
+    // Create account in database
     const user = await createUser({
       username,
       email,
@@ -85,10 +83,39 @@ const signup = async (req, res) => {
       password: hashedPassword,
     });
 
+    if (!user || user.id == null) {
+      throw new Error(
+        "Created user record is missing its database ID."
+      );
+    }
+
+    // Generate JWT for the newly registered user
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role || "user",
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn:
+          process.env.JWT_EXPIRES_IN || "7d",
+      }
+    );
+
+    // Return token and safe user profile
     return res.status(201).json({
       success: true,
       message: "Account created successfully",
-      user,
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        whatsapp: user.whatsapp,
+        role: user.role || "user",
+      },
     });
 
   } catch (error) {
@@ -96,11 +123,10 @@ const signup = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Unable to create account or complete signup",
     });
   }
 };
-
 
 const login = async (req, res) => {
   try {

@@ -20,7 +20,7 @@ const API_URL =
 
 function NewOrder() {
   const [services, setServices] = useState([]);
-  const [category, setCategory] = useState("All Categories");
+  const [category, setCategory] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [link, setLink] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -112,11 +112,29 @@ function NewOrder() {
   // ==========================================
   // LOAD PAGE DATA
   // ==========================================
+  // useEffect(() => {
+  //   fetchServices();
+  //   fetchWalletBalance();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   useEffect(() => {
-    fetchServices();
-    fetchWalletBalance();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  fetchServices();
+  fetchWalletBalance();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
+// Automatically select the first category when services load
+useEffect(() => {
+  if (services.length > 0 && !category) {
+    const firstCategory = services.find(
+      (service) => service.category
+    )?.category;
+
+    if (firstCategory) {
+      setCategory(firstCategory);
+    }
+  }
+}, [services, category]);
 
   // ==========================================
   // CATEGORIES
@@ -130,7 +148,7 @@ function NewOrder() {
       ),
     ];
 
-    return ["All Categories", ...uniqueCategories];
+    return uniqueCategories;
   }, [services]);
 
   const filteredCategories = useMemo(() => {

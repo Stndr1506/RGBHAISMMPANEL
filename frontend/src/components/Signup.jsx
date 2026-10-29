@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Signup.css";
@@ -16,8 +17,8 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Validation
-    if (!username || !email || !whatsapp || !password || !confirmPassword) {
+    if (!username.trim() || !email.trim() || !whatsapp.trim() ||
+        !password || !confirmPassword) {
       alert("Please fill in all fields.");
       return;
     }
@@ -43,9 +44,9 @@ const Signup = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            username,
-            email,
-            whatsapp,
+            username: username.trim(),
+            email: email.trim(),
+            whatsapp: whatsapp.trim(),
             password,
             confirmPassword,
           }),
@@ -54,16 +55,32 @@ const Signup = () => {
 
       const data = await response.json();
 
+      console.log("Signup API response:", {
+        success: data.success,
+        message: data.message,
+        hasToken: Boolean(data.token),
+        user: data.user,
+      });
+
       if (!response.ok) {
         alert(data.message || "Signup failed.");
         return;
       }
 
-      alert("Account created successfully!");
+      // Backend must return both the JWT token and user profile.
+      if (!data.token || !data.user) {
+        alert(
+          "Account created successfully. Pls login with credentials"
+        );
+        return;
+      }
 
-      // Redirect to login
-      navigate("/home");
+      // Save authentication details.
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
+      // Redirect directly to the home page.
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error("Signup error:", error);
       alert("Unable to connect to server.");
@@ -74,9 +91,7 @@ const Signup = () => {
 
   return (
     <div className="signup-page">
-
       <form className="signup-card" onSubmit={handleSignup}>
-
         <div className="signup-input-group">
           <label>Username</label>
           <input
@@ -84,6 +99,7 @@ const Signup = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter username"
+            required
           />
         </div>
 
@@ -94,6 +110,7 @@ const Signup = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter email"
+            required
           />
         </div>
 
@@ -104,6 +121,7 @@ const Signup = () => {
             value={whatsapp}
             onChange={(e) => setWhatsapp(e.target.value)}
             placeholder="Enter WhatsApp number"
+            required
           />
         </div>
 
@@ -114,6 +132,7 @@ const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
+            required
           />
         </div>
 
@@ -124,6 +143,7 @@ const Signup = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm password"
+            required
           />
         </div>
 
@@ -139,11 +159,9 @@ const Signup = () => {
           Already have an account?
           <Link to="/"> Sign in</Link>
         </div>
-
       </form>
 
-      {/* WhatsApp floating button */}
-      <WhatsAppButton/>
+      <WhatsAppButton />
     </div>
   );
 };
