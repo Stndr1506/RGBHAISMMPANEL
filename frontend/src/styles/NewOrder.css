@@ -1047,23 +1047,42 @@
 ========================================== */
 
 .order-success-card {
-  width: 100%;
+  /* max-width: 480px;
+  width: calc(100% - 24px);
+  margin: 12px auto;
+  padding: 16px;
+  border-radius: 10px;
+  box-sizing: border-box; */
+  /* width: 100%; */
+  /* box-sizing: border-box; */
+  /* margin: 20px 0; */
+  /* padding: 24px; */
+  /* background: #fff; */
+  /* border: 1px solid #bbf7d0; */
+  /* border-radius: 14px; */
+  /* box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06); */
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: calc(100% - 20px);
+  margin: 8px auto;
+  padding: 6px 10px;
+  gap: 6px;
+  border-radius: 6px;
   box-sizing: border-box;
-  margin: 20px 0;
-  padding: 24px;
-  background: #fff;
-  border: 1px solid #bbf7d0;
-  border-radius: 14px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+  
 }
 
 .order-success-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
-  padding-bottom: 18px;
+  gap: 6px;
+  /* margin-bottom: 22px; */
+  /* padding-bottom: 18px; */
   border-bottom: 1px solid #e5e7eb;
+  gap: 10px;
+  /* margin-bottom: 12px; */
+  margin: 0;
 }
 
 .order-success-icon {
@@ -1071,30 +1090,43 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  /* width: 46px; */
+  /* height: 46px; */
   color: #fff;
   background: #16a34a;
   border-radius: 50%;
-  font-size: 26px;
-  font-weight: 700;
+  /* font-size: 26px; */
+  /* font-weight: 700; */
+  /* width: 32px;
+  height: 32px; */
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  font-size: 12px;
 }
 
 .order-success-heading {
   flex: 1;
   min-width: 0;
+  
 }
 
 .order-success-heading h2 {
-  margin: 0 0 5px;
+  /* margin: 0 0 5px; */
   color: #166534;
-  font-size: 21px;
+  /* font-size: 21px; */
+   font-size: 12px;
+   line-height: 1.3;
+  margin: 0;
 }
 
 .order-success-heading p {
-  margin: 0;
+  display: none;
+  /* margin: 0; */
   color: #64748b;
-  font-size: 14px;
+  /* font-size: 14px; */
+  font-size: 6px;
+  margin: 0;
 }
 
 .order-success-close {
@@ -1102,26 +1134,32 @@
   border: none;
   background: transparent;
   color: #64748b;
-  font-size: 28px;
+  font-size: 16px;
   line-height: 1;
+  padding: 0;
   cursor: pointer;
 }
 
 .order-success-details {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  /* gap: 14px; */
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .success-detail {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  min-width: 0;
-  padding: 14px;
+  /* min-width: 0; */
+  /* padding: 14px; */
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 12px;
+  min-width: 0;
 }
 
 .success-detail span {
@@ -1129,10 +1167,16 @@
   font-size: 13px;
 }
 
+
 .success-detail strong {
   color: #1e293b;
   font-size: 15px;
   overflow-wrap: anywhere;
+}
+.success-detail strong,
+.success-detail a {
+  overflow-wrap: anywhere;
+  font-size: 12px;
 }
 
 .success-link a {
@@ -1154,16 +1198,19 @@
 
 .success-done-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 13px 18px;
+  /* margin-top: 20px; */
+  /* padding: 13px 18px; */
   color: #fff;
   background: #16a34a;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  /* font-size: 15px; */
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
+  padding: 8px 16px;
+  font-size: 13px;
+  margin-top: 12px;
 }
 
 .success-done-btn:hover {
@@ -1173,8 +1220,11 @@
 /* Mobile responsive */
 @media (max-width: 600px) {
   .order-success-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 5px 8px;
     margin: 15px 0;
-    padding: 16px;
+    /* padding: 16px; */
     border-radius: 10px;
   }
 
@@ -1189,7 +1239,7 @@
   }
 
   .order-success-heading h2 {
-    font-size: 17px;
+    font-size: 11px;
   }
 
   .order-success-heading p {
@@ -1538,4 +1588,389 @@
   .service-description .description-spacer {
     height: 8px;
   }
+}
+
+/* Compact order success box - all details in one box */
+/* .order-success-card {
+  width: 100%;
+  max-width: 480px;
+  margin: 12px auto;
+  padding: 12px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.order-success-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d1e7d5;
+}
+
+.order-success-icon {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  font-size: 14px;
+}
+
+.order-success-heading h2 {
+  font-size: 14px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.order-success-heading p {
+  font-size: 11px;
+  margin: 3px 0 0;
+}
+
+.order-success-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 12px;
+  margin: 0;
+}
+
+.success-detail {
+  padding: 3px 0;
+  margin: 0;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.success-detail strong {
+  font-size: 11px;
+}
+
+.success-link {
+  grid-column: 1 / -1;
+}
+
+.success-balance {
+  font-weight: 600;
+}
+
+.success-done-btn {
+  display: block;
+  margin: 10px 0 0 auto;
+  padding: 5px 12px;
+  font-size: 11px;
+  border-radius: 5px;
+}
+
+.order-success-close {
+  margin-left: auto;
+  font-size: 18px;
+  padding: 0 3px;
+} */
+
+/* ==========================================
+   COMPACT ORDER SUCCESS CONFIRMATION
+   Single box with vertical details
+========================================== */
+
+.order-success-card {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  max-width: 380px;
+  margin: 10px auto;
+  padding: 12px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
+
+  font-size: 12px;
+}
+
+/* ==========================================
+   SUCCESS HEADER
+========================================== */
+
+.order-success-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+
+  border-bottom: 1px solid #d1e7d5;
+}
+
+.order-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+
+  color: #ffffff;
+  background: #16a34a;
+  border-radius: 50%;
+
+  font-size: 14px;
+}
+
+.order-success-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-success-heading h2 {
+  margin: 0;
+
+  color: #166534;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.order-success-heading p {
+  display: block;
+
+  margin: 2px 0 0;
+
+  color: #64748b;
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.order-success-close {
+  flex-shrink: 0;
+  align-self: flex-start;
+
+  margin-left: auto;
+  padding: 0 2px;
+
+  border: none;
+  background: transparent;
+
+  color: #64748b;
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+/* ==========================================
+   DETAILS - SINGLE VERTICAL COLUMN
+========================================== */
+
+.order-success-details {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  gap: 0;
+
+  margin: 0;
+  padding: 0;
+}
+
+.success-detail {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-width: 0;
+
+  gap: 2px;
+
+  margin: 0;
+  padding: 6px 0;
+
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  border-radius: 0;
+
+  font-size: 11px;
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+.success-detail:last-child {
+  border-bottom: none;
+}
+
+.success-detail span {
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.success-detail strong,
+.success-detail a {
+  color: #1e293b;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ==========================================
+   LINKS
+========================================== */
+
+.success-link {
+  width: 100%;
+}
+
+.success-link a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.success-link a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================
+   BALANCE
+========================================== */
+
+.success-balance {
+  padding: 7px 9px;
+  margin-top: 5px;
+
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  border-radius: 6px;
+}
+
+.success-balance span {
+  color: #166534;
+}
+
+.success-balance strong {
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ==========================================
+   DONE BUTTON
+========================================== */
+
+.success-done-btn {
+  display: block;
+
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+
+  color: #ffffff;
+  background: #16a34a;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.success-done-btn:hover {
+  background: #15803d;
+}
+
+@media (max-width: 480px) {
+  /* .order-success-card {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .order-success-details {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .success-link {
+    grid-column: auto;
+  } */
+   @media (max-width: 480px) {
+  .order-success-card {
+    width: 100%;
+    max-width: 340px;
+
+    margin: 8px auto;
+    padding: 10px;
+
+    border-radius: 8px;
+  }
+
+  .order-success-header {
+    gap: 7px;
+    margin-bottom: 6px;
+    padding-bottom: 7px;
+  }
+
+  .order-success-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+
+    font-size: 13px;
+  }
+
+  .order-success-heading h2 {
+    font-size: 13px;
+  }
+
+  .order-success-heading p {
+    font-size: 10px;
+  }
+
+  .success-detail {
+    padding: 5px 0;
+  }
+
+  .success-detail span {
+    font-size: 10px;
+  }
+
+  .success-detail strong,
+  .success-detail a {
+    font-size: 11px;
+  }
+
+  .success-balance {
+    padding: 6px 8px;
+  }
+
+  .success-done-btn {
+    margin-top: 8px;
+    padding: 7px 10px;
+
+    font-size: 11px;
+  }
+}
 }
