@@ -1182,3 +1182,5 @@
 [2026-10-29T05:31:17.720Z] [PAYTM] INFO [NODE-SDK1.0.0] <MerchantProperties>: Setting Environment for STAGE
 [2026-10-29T05:31:42.516Z] [PAYTM] INFO [NODE-SDK1.0.0] <MerchantProperties>: initialize called
 [2026-10-29T05:31:42.518Z] [PAYTM] INFO [NODE-SDK1.0.0] <MerchantProperties>: Setting Environment for STAGE
+[2026-10-29T05:34:35.129Z] [PAYTM] INFO [NODE-SDK1.0.0] <MerchantProperties>: initialize called
+[2026-10-29T05:34:35.131Z] [PAYTM] INFO [NODE-SDK1.0.0] <MerchantProperties>: Setting Environment for STAGE

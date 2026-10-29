@@ -55,12 +55,12 @@ const Signup = () => {
 
       const data = await response.json();
 
-      console.log("Signup API response:", {
-        success: data.success,
-        message: data.message,
-        hasToken: Boolean(data.token),
-        user: data.user,
-      });
+      // console.log("Signup API response:", {
+      //   success: data.success,
+      //   message: data.message,
+      //   hasToken: Boolean(data.token),
+      //   user: data.user,
+      // });
 
       if (!response.ok) {
         alert(data.message || "Signup failed.");
