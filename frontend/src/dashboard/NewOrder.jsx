@@ -36,6 +36,7 @@ function NewOrder() {
   const [categorySearch, setCategorySearch] = useState("");
   const [serviceOpen, setServiceOpen] = useState(false);
   const [serviceSearch, setServiceSearch] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // ==========================================
   // FETCH SERVICES

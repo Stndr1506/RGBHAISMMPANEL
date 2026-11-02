@@ -17,6 +17,7 @@ const getAllServices = async () => {
       min_order,
       max_order,
       average_time,
+      display_order,
       created_at,
       updated_at
     FROM services
@@ -46,6 +47,7 @@ const getServiceById = async (id) => {
         min_order,
         max_order,
         average_time,
+        display_order,
         created_at,
         updated_at
       FROM services
@@ -128,6 +130,7 @@ const createService = async (serviceData) => {
         INSERTED.min_order,
         INSERTED.max_order,
         INSERTED.average_time,
+        INSERTED.display_order,
         INSERTED.created_at,
         INSERTED.updated_at
       VALUES (
@@ -328,11 +331,106 @@ const bulkCreateServices = async (services) => {
   }
 };
 
+
+// =====================================================
+// REORDER SERVICES
+// =====================================================
+
+const reorderServices = async (serviceIds) => {
+  if (
+    !Array.isArray(serviceIds) ||
+    serviceIds.length === 0 ||
+    serviceIds.some(
+      (id) => !Number.isInteger(Number(id)) || Number(id) <= 0
+    )
+  ) {
+    throw new Error("Invalid service order.");
+  }
+
+  const ids = serviceIds.map(Number);
+
+  if (new Set(ids).size !== ids.length) {
+    throw new Error("Duplicate service IDs are not allowed.");
+  }
+
+  const pool = await getDB();
+  const transaction = new sql.Transaction(pool);
+
+  let transactionStarted = false;
+
+  try {
+    await transaction.begin(sql.ISOLATION_LEVEL.SERIALIZABLE);
+    transactionStarted = true;
+
+    // Lock and retrieve the current service list.
+    const existing = await transaction.request().query(`
+      SELECT id
+      FROM dbo.services WITH (UPDLOCK, HOLDLOCK)
+    `);
+
+    const existingIds = existing.recordset.map(
+      (item) => Number(item.id)
+    );
+
+    const requestedIds = new Set(ids);
+
+    // Make sure the submitted list contains every service exactly once.
+    if (
+      existingIds.length !== ids.length ||
+      existingIds.some((id) => !requestedIds.has(id))
+    ) {
+      throw new Error(
+        "Service list has changed. Refresh the page and try again."
+      );
+    }
+
+    // Build a parameterized SQL CASE statement.
+    const request = transaction.request();
+
+    const whenClauses = ids.map((id, index) => {
+      request.input(`id${index}`, sql.Int, id);
+
+      return `WHEN @id${index} THEN ${index + 1}`;
+    });
+
+    const placeholders = ids.map(
+      (_, index) => `@id${index}`
+    );
+
+    await request.query(`
+      UPDATE dbo.services
+      SET display_order = CASE id
+        ${whenClauses.join("\n")}
+        ELSE display_order
+      END
+      WHERE id IN (${placeholders.join(",")})
+    `);
+
+    await transaction.commit();
+    transactionStarted = false;
+
+    return true;
+
+  } catch (error) {
+    if (transactionStarted) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackError) {
+        console.error("REORDER ROLLBACK ERROR:", rollbackError);
+      }
+    }
+
+    throw error;
+  }
+};
+
+
 module.exports = {
   getAllServices,
   getServiceById,
   createService,
   updateService,
   deleteService,
-  bulkCreateServices
+  bulkCreateServices,
+  reorderServices
 };

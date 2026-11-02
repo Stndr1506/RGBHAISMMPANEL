@@ -952,3 +952,30 @@
     font-size: 12px;
   }
 }
+
+.sortable-service-item {
+  width: 100%;
+}
+
+.sortable-service-item.is-dragging {
+  opacity: 0.45;
+}
+
+.service-drag-handle {
+  border: none;
+  background: transparent;
+  font-size: 25px;
+  color: #777;
+  cursor: grab;
+  padding: 5px 10px;
+  user-select: none;
+}
+
+.service-drag-handle:active {
+  cursor: grabbing;
+}
+
+.service-drag-handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}

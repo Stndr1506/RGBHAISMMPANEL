@@ -69,6 +69,7 @@ const AdminService = () => {
     description: "",
     icon: "⭐",
   });
+  const [draggedServiceId, setDraggedServiceId] = useState(null);
 
   // =====================================
   // FETCH SERVICES
@@ -494,49 +495,57 @@ const handleAddService = (category = "") => {
   // DELETE SERVICE
   // =====================================
 
-  const handleDeleteService = async (service) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete "${service.service}"?`
-    );
+  
+const handleDeleteService = async (service) => {
+  const confirmDelete = window.confirm(
+    `Are you sure you want to delete "${service.service}"?`
+  );
 
-    if (!confirmDelete) {
+  if (!confirmDelete) return;
+
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Session expired. Please login again.");
       return;
     }
 
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        alert("Session expired. Please login again.");
-        return;
+    const response = await axios.delete(
+      `${API_URL}/api/admin-service/${service.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
 
-      const response = await axios.delete(
-        `${API_URL}/api/admin-service/${service.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (response.data.success) {
+      alert("Service deleted successfully.");
+      await fetchServices();
+    } else {
+      alert(response.data.message || "Unable to delete service.");
+    }
 
-      if (response.data.success) {
-        alert("Service deleted successfully.");
-        await fetchServices();
-      } else {
-        alert(
-          response.data.message || "Unable to delete service."
-        );
-      }
-    } catch (err) {
-      console.error("Delete service error:", err);
+  } catch (err) {
+    console.error(
+      "Delete service error:",
+      err.response?.status,
+      err.response?.data || err.message
+    );
 
+    if (err.response?.status === 401) {
+      alert("Unauthorized. Please login again.");
+    } else if (err.response?.status === 403) {
+      alert("You don't have permission to delete services.");
+    } else {
       alert(
         err.response?.data?.message ||
-          "Something went wrong while deleting service."
+        "Something went wrong while deleting service."
       );
     }
-  };
+  }
+};
 
   // =====================================
   // CATEGORY SOCIAL ICON
@@ -564,6 +573,111 @@ const handleAddService = (category = "") => {
 
     return null;
   };
+
+  
+const handleServiceDragStart = (event, serviceId) => {
+  if (search.trim()) {
+    event.preventDefault();
+    return;
+  }
+
+  setDraggedServiceId(String(serviceId));
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", String(serviceId));
+};
+
+const handleServiceDragOver = (event) => {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+};
+
+const handleServiceDragEnd = () => {
+  setDraggedServiceId(null);
+};
+
+const handleServiceDrop = async (event, targetServiceId) => {
+  event.preventDefault();
+
+  const sourceId =
+    event.dataTransfer.getData("text/plain") || draggedServiceId;
+
+  setDraggedServiceId(null);
+
+  if (!sourceId || String(sourceId) === String(targetServiceId)) {
+    return;
+  }
+
+  const fromIndex = servicesData.findIndex(
+    (item) => String(item.id) === String(sourceId)
+  );
+
+  const targetIndex = servicesData.findIndex(
+    (item) => String(item.id) === String(targetServiceId)
+  );
+
+  if (fromIndex === -1 || targetIndex === -1) return;
+
+  // Decide whether to place the dragged service above or below the target.
+  const rect = event.currentTarget.getBoundingClientRect();
+  const dropAfter = event.clientY > rect.top + rect.height / 2;
+
+  let toIndex = targetIndex + (dropAfter ? 1 : 0);
+
+  const reorderedServices = [...servicesData];
+
+  const [movedService] = reorderedServices.splice(fromIndex, 1);
+
+  if (fromIndex < toIndex) {
+    toIndex--;
+  }
+
+  reorderedServices.splice(toIndex, 0, movedService);
+
+  // Update the screen immediately.
+  setServicesData(reorderedServices);
+
+  // Save the new order in SQL Server through the backend.
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Session expired. Please login again.");
+    }
+
+    const response = await axios.put(
+      `${API_URL}/api/admin-service/reorder`,
+      {
+        serviceIds: reorderedServices.map((item) => item.id),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.data?.success) {
+      throw new Error(
+        response.data?.message || "Unable to save service order."
+      );
+    }
+
+  } catch (error) {
+    console.error(
+      "Service reorder error:",
+      error.response?.data || error.message
+    );
+
+    alert(
+      error.response?.data?.message ||
+      error.message ||
+      "Unable to save service order."
+    );
+
+    // Restore the order from the backend.
+    await fetchServices();
+  }
+};
 
   // =====================================
   // UI
@@ -598,7 +712,7 @@ const handleAddService = (category = "") => {
           <button
             type="button"
             className="add-service-btn"
-            onClick={handleAddService}
+            onClick={() => handleAddService()}
           >
             + Add Service
           </button>
@@ -664,93 +778,121 @@ const handleAddService = (category = "") => {
           <div className="no-services">{error}</div>
         )}
 
-        {!loading &&
-          !error &&
-          filteredServices.length > 0 &&
-          filteredServices.map((service, index) => {
-            const previousCategory =
-              index > 0
-                ? filteredServices[index - 1].category
-                : null;
+        
+{!loading &&
+  !error &&
+  filteredServices.length > 0 &&
+  filteredServices.map((service, index) => {
+    const previousCategory =
+      index > 0 ? filteredServices[index - 1].category : null;
 
-            const showCategory =
-              index === 0 || previousCategory !== service.category;
+    const showCategory =
+      index === 0 || previousCategory !== service.category;
 
-            const categoryIcon = getCategoryIcon(service.category);
+    const categoryIcon = getCategoryIcon(service.category);
 
-            return (
-              <React.Fragment key={service.id}>
-                {showCategory && (
-                  <div className="category-row">
-                    <span className="category-icon">
-                      {categoryIcon ? (
-                        <FontAwesomeIcon icon={categoryIcon} />
-                      ) : (
-                        "⭐"
-                      )}
-                    </span>
+    return (
+      <div
+        key={service.id}
+        className={`sortable-service-item ${
+          draggedServiceId === String(service.id) ? "is-dragging" : ""
+        }`}
+        onDragOver={handleServiceDragOver}
+        onDrop={(event) => handleServiceDrop(event, service.id)}
+      >
+        {showCategory && (
+          <div className="category-row">
+            <span className="category-icon">
+              {categoryIcon ? (
+                <FontAwesomeIcon icon={categoryIcon} />
+              ) : (
+                "⭐"
+              )}
+            </span>
+            <span>{service.category}</span>
+          </div>
+        )}
 
-                    <span>{service.category}</span>
-                  </div>
-                )}
+        <div className="service-row">
+          <div className="service-id">{service.id}</div>
 
-                <div className="service-row">
-                  <div className="service-id">{service.id}</div>
+          <div className="service-name">
+            {service.service}
+          </div>
 
-                  <div className="service-name">
-                    {service.service}
-                  </div>
+          <div className="service-rate">
+            {getRate(service.rate)}
+          </div>
 
-                  <div className="service-rate">
-                    {getRate(service.rate)}
-                  </div>
+          <div>{formatNumber(service.min_order)}</div>
+          <div>{formatNumber(service.max_order)}</div>
 
-                  <div>{formatNumber(service.min_order)}</div>
-                  <div>{formatNumber(service.max_order)}</div>
+          <div>
+            {service.average_time || "Not available"}
+          </div>
 
-                  <div>
-                    {service.average_time || "Not available"}
-                  </div>
+          <div className="view-column">
+            <button
+              type="button"
+              className="view-btn"
+              onClick={() => handleView(service)}
+            >
+              View
+            </button>
+          </div>
 
-                  <div className="view-column">
-                    <button
-                      type="button"
-                      className="view-btn"
-                      onClick={() => handleView(service)}
-                    >
-                      View
-                    </button>
-                  </div>
+          <div className="service-actions">
 
-                  <div className="service-actions">
-                    <button
-                        type="button"
-                        className="add-row-btn"
-                        onClick={() => handleAddService(service.category)}
-                        title={`Add service under ${service.category}`}
-                      >
-                        ➕ Add
-                      </button>
-                    <button
-                      type="button"
-                      className="add-row-btn"
-                      onClick={() => handleEditService(service)}
-                    >
-                      📝 Edit
-                    </button>
+            {/* DRAG HANDLE */}
+            <button
+              type="button"
+              className="service-drag-handle"
+              draggable={!search.trim()}
+              disabled={Boolean(search.trim())}
+              onDragStart={(event) =>
+                handleServiceDragStart(event, service.id)
+              }
+              onDragEnd={handleServiceDragEnd}
+              title={
+                search.trim()
+                  ? "Clear search to rearrange services"
+                  : "Hold and drag to rearrange"
+              }
+              aria-label={`Drag ${service.service} to rearrange`}
+            >
+              ⠿
+            </button>
 
-                    <button
-                      type="button"
-                      className="add-row-btn"
-                      onClick={() => handleDeleteService(service)}
-                    >
-                      ❌ Delete
-                    </button>
-                  </div>
-                </div>
-              </React.Fragment>
-            );
-          })}
+            <button
+              type="button"
+              className="add-row-btn"
+              onClick={() => handleAddService(service.category)}
+              title={`Add service under ${service.category}`}
+            >
+              ➕ Add
+            </button>
+
+            <button
+              type="button"
+              className="add-row-btn"
+              onClick={() => handleEditService(service)}
+            >
+              📝 Edit
+            </button>
+
+            <button
+              type="button"
+              className="add-row-btn"
+              onClick={() => handleDeleteService(service)}
+            >
+              ❌ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+
 
         {!loading &&
           !error &&

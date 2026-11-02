@@ -396,11 +396,59 @@ const createBulkServices = async (req, res) => {
   }
 };
 
+
+// =====================================================
+// REORDER SERVICES
+// =====================================================
+
+const reorderServices = async (req, res) => {
+  try {
+    const { serviceIds } = req.body;
+
+    if (!Array.isArray(serviceIds) || serviceIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide the service order."
+      });
+    }
+
+    const ids = serviceIds.map(Number);
+
+    if (
+      ids.some((id) => !Number.isInteger(id) || id <= 0) ||
+      new Set(ids).size !== ids.length
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or duplicate service IDs."
+      });
+    }
+
+    await serviceModel.reorderServices(ids);
+
+    return res.status(200).json({
+      success: true,
+      message: "Service order updated successfully."
+    });
+
+  } catch (error) {
+    console.error("REORDER SERVICES ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update service order.",
+      error: error.message
+    });
+  }
+};
+
+
 module.exports = {
   getServices,
   getService,
   createService,
   updateService,
   deleteService,
-  createBulkServices
+  createBulkServices,
+  reorderServices
 };

@@ -13,6 +13,7 @@ const {
   updateService,
   deleteService,
   createBulkServices,
+  reorderServices,
 } = require("../controllers/adminServiceController");
 
 // GET all services
@@ -45,6 +46,14 @@ router.post(
   authMiddleware,
   adminMiddleware,
   createService
+);
+
+// REORDER SERVICES
+router.put(
+  "/reorder",
+  authMiddleware,
+  adminMiddleware,
+  reorderServices
 );
 
 // UPDATE service
