@@ -72,6 +72,7 @@ const createOrder = async ({ userId, serviceId, link, quantity }) => {
       .input("quantity", sql.Int, orderQuantity)
       .input("rate", sql.Decimal(10, 2), rate)
       .input("amount", sql.Decimal(18, 2), amount)
+      .input("remains", sql.Int, orderQuantity)
       .query(`
         INSERT INTO orders (
           user_id,
@@ -80,6 +81,7 @@ const createOrder = async ({ userId, serviceId, link, quantity }) => {
           quantity,
           rate,
           amount,
+          remains,
           status,
           created_at,
           updated_at
@@ -92,6 +94,8 @@ const createOrder = async ({ userId, serviceId, link, quantity }) => {
           INSERTED.quantity,
           INSERTED.rate,
           INSERTED.amount,
+          INSERTED.start_count,
+          INSERTED.remains,
           INSERTED.status,
           INSERTED.created_at,
           INSERTED.updated_at
@@ -102,6 +106,7 @@ const createOrder = async ({ userId, serviceId, link, quantity }) => {
           @quantity,
           @rate,
           @amount,
+          @remains,
           'Pending',
           GETDATE(),
           GETDATE()
@@ -150,6 +155,8 @@ const getOrdersByUserId = async (userId) => {
         o.quantity,
         o.rate,
         o.amount,
+        o.start_count,
+        o.remains,
         o.status,
         o.created_at,
         o.updated_at
@@ -184,6 +191,8 @@ const getOrderById = async (orderId, userId) => {
         o.quantity,
         o.rate,
         o.amount,
+        o.start_count,
+        o.remains,
         o.status,
         o.created_at,
         o.updated_at
@@ -196,8 +205,52 @@ const getOrderById = async (orderId, userId) => {
   return result.recordset[0];
 };
 
+
+// =====================================================
+// GET MULTIPLE ORDERS BY IDS FOR ONE USER
+// =====================================================
+
+
+const getOrdersByIds = async (orderIds, userId) => {
+  const pool = await getDB();
+
+  const request = pool.request();
+
+  request.input("user_id", sql.Int, Number(userId));
+
+  const placeholders = orderIds.map((id, index) => {
+    const parameterName = `order_id_${index}`;
+
+    request.input(parameterName, sql.Int, Number(id));
+
+    return `@${parameterName}`;
+  });
+
+  const result = await request.query(`
+    SELECT
+      o.id,
+      o.user_id,
+      o.service_id,
+      o.amount,
+      o.start_count,
+      o.remains,
+      o.status,
+      o.created_at,
+      o.updated_at
+    FROM dbo.orders AS o
+    WHERE
+      o.user_id = @user_id
+      AND o.id IN (${placeholders.join(", ")})
+  `);
+
+  return result.recordset;
+};
+
+
+
 module.exports = {
   createOrder,
   getOrdersByUserId,
   getOrderById,
+  getOrdersByIds,
 };

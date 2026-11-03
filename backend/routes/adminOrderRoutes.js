@@ -9,6 +9,7 @@ const {
   getAdminOrders,
   updateOrderStatus,
   updateStartCount,
+  updateRemains,
 } = require("../controllers/adminOrderController");
 
 // GET ALL ORDERS
@@ -33,6 +34,13 @@ router.patch(
   authMiddleware,
   adminMiddleware,
   updateStartCount
+);
+// UPDATE ORDER REMAINING QUANTITY
+router.patch(
+  "/orders/:id/remains",
+  authMiddleware,
+  adminMiddleware,
+  updateRemains
 );
 
 module.exports = router;

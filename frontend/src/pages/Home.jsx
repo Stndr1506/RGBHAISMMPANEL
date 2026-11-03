@@ -170,7 +170,13 @@ function Home() {
           <li>
             <Link to="/api-integration" onClick={closeMenu}>
               <Code2 size={19} />
-              API
+              API Integration
+            </Link>
+          </li>
+          <li>
+            <Link to="/api-management" onClick={closeMenu}>
+              <Code2 size={19} />
+              API Management
             </Link>
           </li>
 

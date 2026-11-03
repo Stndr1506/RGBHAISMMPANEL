@@ -35,6 +35,7 @@ const getAdminOrders = async (req, res) => {
 };
 
 // UPDATE ORDER STATUS - ADMIN
+// UPDATE ORDER STATUS - ADMIN
 const updateOrderStatus = async (req, res) => {
   try {
     const orderId = Number(req.params.id);
@@ -72,10 +73,25 @@ const updateOrderStatus = async (req, res) => {
         UPDATE dbo.orders
         SET
           status = @status,
+          remains = CASE
+            WHEN @status = 'Completed' THEN 0
+
+            WHEN status = 'Completed'
+                 AND @status IN (
+                   'Pending',
+                   'Processing',
+                   'In progress'
+                 )
+              THEN quantity
+
+            ELSE remains
+          END,
           updated_at = GETDATE()
         OUTPUT
           INSERTED.id,
           INSERTED.status,
+          INSERTED.quantity,
+          INSERTED.remains,
           INSERTED.updated_at
         WHERE id = @id;
       `);
@@ -92,6 +108,7 @@ const updateOrderStatus = async (req, res) => {
       message: "Order status updated successfully.",
       order: result.recordset[0],
     });
+
   } catch (error) {
     console.error("Update order status error:", error);
 
@@ -101,7 +118,6 @@ const updateOrderStatus = async (req, res) => {
     });
   }
 };
-
 // UPDATE START COUNT - ADMIN
 const updateStartCount = async (req, res) => {
   try {
@@ -169,8 +185,130 @@ const updateStartCount = async (req, res) => {
   }
 };
 
+
+// ============================================
+// UPDATE REMAINING QUANTITY - ADMIN
+// ============================================
+
+const updateRemains = async (req, res) => {
+  let transaction;
+  let transactionStarted = false;
+
+  try {
+    const orderId = Number(req.params.id);
+    const remains = Number(req.body?.remains);
+
+    if (!Number.isSafeInteger(orderId) || orderId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID.",
+      });
+    }
+
+    if (
+      req.body?.remains === "" ||
+      req.body?.remains === null ||
+      req.body?.remains === undefined ||
+      !Number.isSafeInteger(remains) ||
+      remains < 0 ||
+      remains > 2147483647
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Remaining quantity must be a non-negative whole number.",
+      });
+    }
+
+    const pool = await getDB();
+
+    transaction = new sql.Transaction(pool);
+    await transaction.begin();
+    transactionStarted = true;
+
+    // Lock the order while validating and updating it.
+    const existingResult = await transaction.request()
+      .input("id", sql.Int, orderId)
+      .query(`
+        SELECT id, quantity, status
+        FROM dbo.orders WITH (UPDLOCK, HOLDLOCK)
+        WHERE id = @id;
+      `);
+
+    const existingOrder = existingResult.recordset[0];
+
+    if (!existingOrder) {
+      await transaction.rollback();
+      transactionStarted = false;
+
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    if (remains > existingOrder.quantity) {
+      await transaction.rollback();
+      transactionStarted = false;
+
+      return res.status(400).json({
+        success: false,
+        message: `Remaining quantity cannot exceed ordered quantity (${existingOrder.quantity}).`,
+      });
+    }
+
+    const result = await transaction.request()
+      .input("id", sql.Int, orderId)
+      .input("remains", sql.Int, remains)
+      .query(`
+        UPDATE dbo.orders
+        SET
+          remains = @remains,
+          status = CASE
+            WHEN @remains = 0 THEN 'Completed'
+            WHEN status = 'Completed' THEN 'In progress'
+            ELSE status
+          END,
+          updated_at = GETDATE()
+        OUTPUT
+          INSERTED.id,
+          INSERTED.quantity,
+          INSERTED.start_count,
+          INSERTED.remains,
+          INSERTED.status,
+          INSERTED.updated_at
+        WHERE id = @id;
+      `);
+
+    await transaction.commit();
+    transactionStarted = false;
+
+    return res.status(200).json({
+      success: true,
+      message: "Remaining quantity updated successfully.",
+      order: result.recordset[0],
+    });
+
+  } catch (error) {
+    if (transactionStarted && transaction) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackError) {
+        console.error("REMAINS ROLLBACK ERROR:", rollbackError);
+      }
+    }
+
+    console.error("UPDATE REMAINS ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update remaining quantity.",
+    });
+  }
+};
+
 module.exports = {
   getAdminOrders,
   updateOrderStatus,
   updateStartCount,
+  updateRemains,
 };

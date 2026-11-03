@@ -16,6 +16,7 @@ const getAllOrders = async () => {
         o.rate,
         o.amount,
         o.start_count,
+        o.remains,
         o.status,
         o.created_at,
         o.updated_at,

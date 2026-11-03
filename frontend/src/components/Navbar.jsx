@@ -41,8 +41,13 @@ const NAV_ITEMS = [
     icon: Wallet,
   },
   {
-    label: "API",
+    label: "API Integration",
     path: "/api-integration",
+    icon: Code2,
+  },
+  {
+    label: "API Management",
+    path: "/api-management",
     icon: Code2,
   },
   {

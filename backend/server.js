@@ -21,6 +21,9 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const announcementRoutes = require('./routes/announcementRoutes');
 const adminAnnouncementRoutes = require('./routes/adminAnnouncementRoutes');
 const userOrderRoutes = require("./routes/userOrderRoutes");
+const apiKeyRoutes = require("./routes/apiKeyRoutes");
+const apiRoutes = require("./routes/apiRoutes");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -79,7 +82,8 @@ app.use("/api/dashboard-service", serviceRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/admin/announcements", adminAnnouncementRoutes);
-
+app.use("/api/api-keys", apiKeyRoutes);
+app.use("/api/v2", apiRoutes);
 
 app.listen(PORT, () => {
   console.log(

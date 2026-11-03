@@ -46,9 +46,11 @@ const AdminOrders = () => {
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [newStartCount, setNewStartCount] = useState("");
+  const [newRemains, setNewRemains] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [savingStartCount, setSavingStartCount] = useState(false);
+  const [savingRemains, setSavingRemains] = useState(false);
   const [editError, setEditError] = useState("");
 
   const fetchOrders = useCallback(async (showRefresh = false) => {
@@ -159,17 +161,23 @@ const AdminOrders = () => {
     setNewStartCount(
       String(order.start_count ?? order.startCount ?? "")
     );
+    setNewRemains(
+      order.remains === null || order.remains === undefined
+        ? ""
+        : String(order.remains)
+    );
 
     setEditError("");
     setSuccessMessage("");
   };
 
   const closeEditModal = () => {
-    if (saving || savingStartCount) return;
+    if (saving || savingStartCount || savingRemains) return;
 
     setEditingOrder(null);
     setNewStatus("");
     setNewStartCount("");
+    setNewRemains("");
     setEditError("");
   };
 
@@ -236,8 +244,17 @@ const AdminOrders = () => {
 
       const updatedStatus =
         data.order?.status ?? data.status ?? newStatus;
+      const updatedRemains =
+        data.order?.remains !== undefined
+          ? data.order.remains
+          : normalizeStatus(updatedStatus) === "completed"
+          ? 0
+          : editingOrder.remains;
 
-      updateLocalOrder(editingOrder.id, { status: updatedStatus });
+      updateLocalOrder(editingOrder.id, {
+        status: updatedStatus,
+        remains: updatedRemains,
+      });
 
       setSuccessMessage(
         `Order #${editingOrder.id} status updated successfully.`
@@ -246,6 +263,7 @@ const AdminOrders = () => {
       setEditingOrder(null);
       setNewStatus("");
       setNewStartCount("");
+      setNewRemains("");
     } catch (err) {
       setEditError(err.message || "Something went wrong.");
     } finally {
@@ -336,6 +354,106 @@ const AdminOrders = () => {
       setEditError(err.message || "Something went wrong.");
     } finally {
       setSavingStartCount(false);
+    }
+  };
+
+  // ============================================
+  // SAVE REMAINING QUANTITY
+  // PATCH /api/admin/orders/:id/remains
+  // ============================================
+
+  const saveRemains = async () => {
+    if (!editingOrder) return;
+
+    const value = String(newRemains).trim();
+
+    if (value === "") {
+      setEditError("Please enter the remaining quantity.");
+      return;
+    }
+
+    const remains = Number(value);
+    const orderedQuantity = Number(editingOrder.quantity);
+
+    if (!Number.isSafeInteger(remains) || remains < 0) {
+      setEditError("Remaining quantity must be a non-negative whole number.");
+      return;
+    }
+
+    if (!Number.isSafeInteger(orderedQuantity) || orderedQuantity <= 0) {
+      setEditError("The order quantity is invalid. Refresh the orders and try again.");
+      return;
+    }
+
+    if (remains > orderedQuantity) {
+      setEditError(`Remaining quantity cannot exceed ${orderedQuantity.toLocaleString()}.`);
+      return;
+    }
+
+    const currentRemains = editingOrder.remains;
+    if (
+      currentRemains !== null &&
+      currentRemains !== undefined &&
+      Number(currentRemains) === remains
+    ) {
+      setEditError("The remaining quantity has not changed.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setEditError("Please log in again.");
+      return;
+    }
+
+    try {
+      setSavingRemains(true);
+      setEditError("");
+      setSuccessMessage("");
+
+      const response = await fetch(
+        `${API_URL}/api/admin/orders/${editingOrder.id}/remains`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ remains }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to update remaining quantity."
+        );
+      }
+
+      const savedRemains = Number(
+        data.order?.remains ?? data.remains ?? remains
+      );
+      const savedStatus =
+        data.order?.status ??
+        (savedRemains === 0 ? "Completed" : editingOrder.status);
+
+      updateLocalOrder(editingOrder.id, {
+        remains: savedRemains,
+        status: savedStatus,
+      });
+
+      setNewRemains(String(savedRemains));
+      setNewStatus(savedStatus);
+      setSuccessMessage(
+        `Order #${editingOrder.id} remaining quantity updated successfully.`
+      );
+    } catch (err) {
+      setEditError(err.message || "Something went wrong.");
+    } finally {
+      setSavingRemains(false);
     }
   };
 
@@ -567,7 +685,7 @@ const AdminOrders = () => {
                 type="button"
                 className="admin-order-close-btn"
                 onClick={closeEditModal}
-                disabled={saving || savingStartCount}
+                disabled={saving || savingStartCount || savingRemains}
                 aria-label="Close modal"
               >
                 <X size={20} />
@@ -582,7 +700,7 @@ const AdminOrders = () => {
                   id="order-status"
                   value={newStatus}
                   onChange={(event) => setNewStatus(event.target.value)}
-                  disabled={saving || savingStartCount}
+                  disabled={saving || savingStartCount || savingRemains}
                   required
                 >
                   {EDITABLE_STATUSES.map((status) => (
@@ -611,7 +729,7 @@ const AdminOrders = () => {
                     onChange={(event) =>
                       setNewStartCount(event.target.value)
                     }
-                    disabled={saving || savingStartCount}
+                    disabled={saving || savingStartCount || savingRemains}
                     placeholder="Enter start count"
                   />
 
@@ -619,7 +737,7 @@ const AdminOrders = () => {
                     type="button"
                     className="admin-order-save-btn"
                     onClick={saveStartCount}
-                    disabled={saving || savingStartCount}
+                    disabled={saving || savingStartCount || savingRemains}
                   >
                     {savingStartCount ? (
                       <>
@@ -635,6 +753,46 @@ const AdminOrders = () => {
                   </button>
                 </div>
 
+                <div className="admin-order-start-count-field">
+                  <label htmlFor="order-remains">
+                    Remaining quantity
+                  </label>
+
+                  <input
+                    id="order-remains"
+                    type="number"
+                    min="0"
+                    max={editingOrder.quantity ?? undefined}
+                    step="1"
+                    value={newRemains}
+                    onChange={(event) => setNewRemains(event.target.value)}
+                    disabled={saving || savingStartCount || savingRemains}
+                    placeholder="Enter remaining quantity"
+                  />
+
+                  <button
+                    type="button"
+                    className="admin-order-save-btn"
+                    onClick={saveRemains}
+                    disabled={saving || savingStartCount || savingRemains}
+                  >
+                    {savingRemains ? (
+                      <>
+                        <RefreshCw size={16} />
+                        Saving remains...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={16} />
+                        Save Remaining Quantity
+                      </>
+                    )}
+                  </button>
+                  <p className="admin-order-current-status">
+                    Ordered quantity: {Number(editingOrder.quantity || 0).toLocaleString()}
+                  </p>
+                </div>
+
                 {editError && (
                   <p className="admin-order-edit-error" role="alert">
                     {editError}
@@ -647,7 +805,7 @@ const AdminOrders = () => {
                   type="button"
                   className="admin-order-cancel-btn"
                   onClick={closeEditModal}
-                  disabled={saving || savingStartCount}
+                  disabled={saving || savingStartCount || savingRemains}
                 >
                   Cancel
                 </button>
@@ -655,7 +813,7 @@ const AdminOrders = () => {
                 <button
                   type="submit"
                   className="admin-order-save-btn"
-                  disabled={saving || savingStartCount}
+                  disabled={saving || savingStartCount || savingRemains}
                 >
                   {saving ? (
                     <>

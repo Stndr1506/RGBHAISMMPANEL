@@ -23,6 +23,7 @@ import Services from "./pages/Services";
 import AdminAnnouncement from "./admin/AdminAnnouncement";
 import Orders from "./dashboard/Orders";
 import DirectFunds from "./dashboard/DirectFunds";
+import ApiManagement from "./dashboard/ApiManagement";
 
 // Protect user routes
 const ProtectedRoute = ({ children }) => {
@@ -49,12 +50,12 @@ function App() {
         <Route path="/announcements" element={<ProtectedRoute><Announcement /></ProtectedRoute>} />
         <Route path="/dashboard-services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
         <Route path="/add-funds" element={<ProtectedRoute><DirectFunds/></ProtectedRoute>} />
-        <Route path="/api-integration" element={<ProtectedRoute><API /></ProtectedRoute>} />
+        <Route path="/api-management" element={<ProtectedRoute><ApiManagement/></ProtectedRoute>} />
         <Route path="/affiliates" element={<ProtectedRoute><Affiliates /></ProtectedRoute>} />
         <Route path="/child-panel" element={<ProtectedRoute><ChildPanel /></ProtectedRoute>} />
         <Route path="/tickets" element={<ProtectedRoute><Tickets /></ProtectedRoute>} />
         <Route path="/updates" element={<ProtectedRoute><Updates /></ProtectedRoute>} />
-        <Route path="/api" element={<ProtectedRoute><h1>API</h1></ProtectedRoute>} />
+        <Route path="/api-integration" element={<ProtectedRoute><API/></ProtectedRoute>} />
 
         {/* Admin routes */}
         <Route path="/admin" element={<AdminRoute><AdminHome /></AdminRoute>} />
