@@ -7,6 +7,7 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 const {
   getAdminOrders,
+  getAdminApiOrders,
   updateOrderStatus,
   updateStartCount,
   updateRemains,
@@ -18,6 +19,14 @@ router.get(
   authMiddleware,
   adminMiddleware,
   getAdminOrders
+);
+
+// GET API ORDERS
+router.get(
+  "/api-orders",
+  authMiddleware,
+  adminMiddleware,
+  getAdminApiOrders
 );
 
 // UPDATE ORDER STATUS
@@ -42,5 +51,7 @@ router.patch(
   adminMiddleware,
   updateRemains
 );
+
+
 
 module.exports = router;

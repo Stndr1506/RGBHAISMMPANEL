@@ -24,6 +24,7 @@ import AdminAnnouncement from "./admin/AdminAnnouncement";
 import Orders from "./dashboard/Orders";
 import DirectFunds from "./dashboard/DirectFunds";
 import ApiManagement from "./dashboard/ApiManagement";
+import AdminApiOrders from "./admin/AdminApiOrders";
 
 // Protect user routes
 const ProtectedRoute = ({ children }) => {
@@ -65,6 +66,7 @@ function App() {
         <Route path="/admin/payments" element={<AdminRoute><Payments /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         {/* <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} /> */}
+        <Route path="/admin/api-orders" element={<AdminRoute><AdminApiOrders /></AdminRoute>}/>
 
         {/* Unknown routes */}
         <Route path="*" element={<Navigate to="/" replace />} />

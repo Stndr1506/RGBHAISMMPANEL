@@ -765,7 +765,8 @@ const handleServiceDrop = async (event, targetServiceId) => {
           <div>Rate per 1000</div>
           <div>Min order</div>
           <div>Max order</div>
-          <div>Average time</div>
+          {/* <div>Average time</div> */}
+          <div>Status</div>
           <div>Description</div>
           <div>Actions</div>
         </div>
@@ -827,9 +828,20 @@ const handleServiceDrop = async (event, targetServiceId) => {
           <div>{formatNumber(service.min_order)}</div>
           <div>{formatNumber(service.max_order)}</div>
 
-          <div>
+          {/* <div>
             {service.average_time || "Not available"}
-          </div>
+          </div> */}
+          <div className="service-status">
+  <span
+    className={
+      String(service.status || "Active").toLowerCase() === "active"
+        ? "status-badge status-active"
+        : "status-badge status-inactive"
+    }
+  >
+    {service.status || "Active"}
+  </span>
+</div>
 
           <div className="view-column">
             <button

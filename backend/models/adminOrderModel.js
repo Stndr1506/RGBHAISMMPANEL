@@ -18,6 +18,7 @@ const getAllOrders = async () => {
         o.start_count,
         o.remains,
         o.status,
+        o.order_source,
         o.created_at,
         o.updated_at,
         s.service AS service_name

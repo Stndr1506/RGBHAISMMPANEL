@@ -96,6 +96,12 @@ useEffect(() => {
               Orders
             </Link>
           </li>
+          <li>
+            <Link to="/admin/api-orders" onClick={() => setMenuOpen(false)}>
+            <ShoppingCart size={19}/>
+              API Orders
+            </Link>
+          </li>
 
           <li>
             <Link to="/admin/services" onClick={() => setMenuOpen(false)}>

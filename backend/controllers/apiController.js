@@ -150,7 +150,8 @@ const handleApiRequest = async (req, res) => {
           userId,
           serviceId,
           link: link.trim(),
-          quantity
+          quantity,
+          source: "API",
         });
 
         return res.status(200).json({

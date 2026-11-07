@@ -18,6 +18,7 @@ const getAllServices = async () => {
       max_order,
       average_time,
       display_order,
+      status,
       created_at,
       updated_at
     FROM services
@@ -48,6 +49,7 @@ const getServiceById = async (id) => {
         max_order,
         average_time,
         display_order,
+        status,
         created_at,
         updated_at
       FROM services
@@ -235,19 +237,20 @@ const updateService = async (id, serviceData) => {
 // =====================================================
 
 const deleteService = async (id) => {
-  const pool = await getDB();
+   const pool = await getDB();
 
-  const result = await pool
-    .request()
-    .input("id", sql.Int, id)
-    .query(`
-      DELETE FROM services
-      OUTPUT DELETED.id
-      WHERE id = @id
-    `);
+    const result = await pool.request()
+        .input("id", sql.Int, Number(id))
+        .query(`
+            UPDATE services
+            SET status = 'Inactive',
+                updated_at = GETDATE()
+            WHERE id = @id
+        `);
 
-  return result.recordset[0];
+    return result.rowsAffected[0] > 0;
 };
+
 
 // =====================================================
 // BULK CREATE SERVICES

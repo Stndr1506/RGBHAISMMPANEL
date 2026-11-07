@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
   Layers,
@@ -12,6 +12,7 @@ import {
   LogOut,
   Package,
   Menu,
+  // Code2,
   X,
 } from "lucide-react";
 
@@ -22,6 +23,11 @@ const NAV_ITEMS = [
   {
     label: "Orders",
     path: "/admin/orders",
+    icon: ShoppingCart,
+  },
+  {
+    label: "API Orders",
+    path: "/admin/api-orders",
     icon: ShoppingCart,
   },
   {
@@ -39,11 +45,11 @@ const NAV_ITEMS = [
     path: "/admin/payments",
     icon: Wallet,
   },
-//   {
-//     label: "API",
-//     path: "/api-integration",
-//     icon: Code2,
-//   },
+  // {
+  //   label: "API Orders",
+  //   path: "/admin/api-orders",
+  //   icon: Code2,
+  // },
   {
     label: "Affiliates",
     path: "/admin/affiliates",
@@ -84,14 +90,14 @@ function AdminNavbar() {
     <div className="rgbhai-navbar">
       {/* HEADER */}
       <header className="rgbhai-navbar-header">
-        <Link
+        <NavLink
           to="/new-order"
           className="rgbhai-navbar-logo"
           onClick={closeMenu}
           aria-label="RGBHAI SMM Panel home"
         >
           <img src={logo} alt="RGBHAI SMM Panel" />
-        </Link>
+        </NavLink>
 
         <button
           type="button"

@@ -2,6 +2,9 @@
 const {
   getAllOrders,
 } = require("../models/adminOrderModel");
+const {
+  getAllApiOrders,
+} = require("../models/orderModels");
 
 const { sql, getDB } = require("../config/db");
 
@@ -306,8 +309,65 @@ const updateRemains = async (req, res) => {
   }
 };
 
+// ============================================
+// GET API ORDERS - ADMIN
+// ============================================
+
+const getAdminApiOrders = async (req, res) => {
+  try {
+    const search = String(req.query.search || "").trim();
+    const status = String(req.query.status || "").trim();
+
+    if (search.length > 255) {
+      return res.status(400).json({
+        success: false,
+        message: "Search text is too long.",
+      });
+    }
+
+    if (
+      status &&
+      !ALLOWED_STATUSES.some(
+        (item) => item.toLowerCase() === status.toLowerCase()
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order status.",
+        allowedStatuses: ALLOWED_STATUSES,
+      });
+    }
+
+    const normalizedStatus = status
+      ? ALLOWED_STATUSES.find(
+          (item) => item.toLowerCase() === status.toLowerCase()
+        )
+      : "";
+
+    const orders = await getAllApiOrders({
+      search,
+      status: normalizedStatus,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders,
+    });
+
+  } catch (error) {
+    console.error("Admin API orders error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch API orders.",
+    });
+  }
+};
+
 module.exports = {
   getAdminOrders,
+  getAdminApiOrders,
   updateOrderStatus,
   updateStartCount,
   updateRemains,

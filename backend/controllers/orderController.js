@@ -149,7 +149,12 @@ const placeOrder = async (req, res) => {
 
       });
 
-    }
+    }if (error.message === "Service is inactive") {
+  return res.status(400).json({
+    success: false,
+    message: "This service is no longer available. Please select another service.",
+  });
+}
 
 
     // ================================================

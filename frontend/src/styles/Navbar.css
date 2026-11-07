@@ -316,3 +316,9 @@
     height: 50px;
   }
 }
+
+.rgbhai-navbar-link.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-weight: 600;
+}
