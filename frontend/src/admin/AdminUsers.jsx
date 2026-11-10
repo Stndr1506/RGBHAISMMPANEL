@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import axios from "axios";
 import "../styles/AdminUsers.css";
 
@@ -113,6 +114,7 @@ function AdminUsers() {
       setUpdatingUserId(null);
     }
   };
+
 
   // ============================================
   // OPEN / CLOSE FUND MODAL
@@ -232,6 +234,57 @@ function AdminUsers() {
   }, [fetchUsers]);
 
   // ============================================
+// EXPORT USERS TO EXCEL
+// ============================================
+
+const handleExportExcel = () => {
+  if (!users || users.length === 0) {
+    window.alert("No users available to export.");
+    return;
+  }
+
+  const excelData = users.map((user) => ({
+    "User ID": user.id,
+    "Username": user.username || "",
+    "Wallet Balance (INR)": Number(user.balance || 0),
+    "WhatsApp": user.whatsapp || "",
+    "Email": user.email || "",
+    "Created At": user.created_at
+      ? new Date(user.created_at).toLocaleString("en-IN")
+      : "",
+    "Account Status": user.account_status || "Active",
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+  // Set Excel column widths
+  worksheet["!cols"] = [
+    { wch: 12 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 18 },
+    { wch: 30 },
+    { wch: 25 },
+    { wch: 20 },
+  ];
+
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "User Master"
+  );
+
+  const today = new Date().toISOString().split("T")[0];
+
+  XLSX.writeFile(
+    workbook,
+    `RGBHAI_User_Master_${today}.xlsx`
+  );
+};
+
+  // ============================================
   // LOADING
   // ============================================
 
@@ -286,6 +339,16 @@ function AdminUsers() {
             <span>Total Users</span>
             <strong>{users.length}</strong>
           </div>
+
+           {/* EXPORT EXCEL BUTTON */}
+          <button
+            type="button"
+            className="export-users-btn"
+            onClick={handleExportExcel}
+            disabled={users.length === 0}
+          >
+            <span>📥</span> Export Excel
+          </button>
 
           <button
             className="refresh-users-btn"

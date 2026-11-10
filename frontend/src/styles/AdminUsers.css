@@ -761,3 +761,35 @@
     width: 100%;
   }
 }
+
+
+/* =====================================
+   EXPORT USERS EXCEL BUTTON
+===================================== */
+
+.export-users-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  background: #16834a;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-users-btn:hover {
+  background: #116b3b;
+  transform: translateY(-1px);
+}
+
+.export-users-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
