@@ -14,6 +14,7 @@ const {
   deleteService,
   createBulkServices,
   reorderServices,
+  renameCategory
 } = require("../controllers/adminServiceController");
 
 // GET all services
@@ -55,6 +56,13 @@ router.put(
   adminMiddleware,
   reorderServices
 );
+// RENAME CATEGORY
+router.put(
+  "/category",
+  authMiddleware,
+  adminMiddleware,
+  renameCategory
+);
 
 // UPDATE service
 router.put(
@@ -71,5 +79,7 @@ router.delete(
   adminMiddleware,
   deleteService
 );
+
+
 
 module.exports = router;

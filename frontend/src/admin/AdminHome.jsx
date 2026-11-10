@@ -15,7 +15,8 @@ import {
   Ticket,
   BellRing,
   LogOut,
-  CircleDollarSign
+  CircleDollarSign,
+  Settings
 } from "lucide-react";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -115,6 +116,12 @@ useEffect(() => {
             <Users size={19}/>
              Users
             </Link>
+          </li>
+          <li>
+            <Link to="/admin/admin-settings" onClick={()=>setMenuOpen(false)}>
+            <Settings size={19}/>
+            Settings
+              </Link>
           </li>
           <li>
             <Link to="/admin/payments" onClick={() => setMenuOpen(false)}>

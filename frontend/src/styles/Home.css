@@ -52,7 +52,7 @@ body {
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 25px;
+  padding: 0px;
 
   position: relative;
   z-index: 1001;
@@ -69,16 +69,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .logo-container img {
-  width: 100px;
-  height: 50px;
-
-  max-height: 70px;
-
+  width: 150px;
+  height: auto;
+  max-width: 100%;
+  max-height: 75px;
   object-fit: contain;
-
   display: block;
 }
 
@@ -586,31 +585,21 @@ button {
     box-shadow:
       0 5px 20px rgba(0, 0, 0, 0.08);
   }
-
+@media (max-width: 767px) {
   .logo-container {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   .logo-container img {
-    width: 70px;
-    height: 70px;
-
+    width: 100px;
+    height: auto;
+    max-width: 140px;
+    max-height: 70px;
     object-fit: contain;
-
-    display: block;
   }
-
-  .hamburger-btn {
-    display: flex;
-
-    width: 50px;
-    height: 50px;
-
-    color: #294d75;
-
-    font-size: 32px;
-  }
+}
 
 }
 
@@ -1136,5 +1125,62 @@ button {
     max-height: 420px;
     object-fit: contain;
     border-radius: 8px;
+  }
+}
+
+/* =========================================
+   REMOVE UNWANTED PAGE SPACING
+========================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+}
+
+/* Remove spacing around header */
+.top-header {
+  margin: 0 !important;
+}
+
+/* Remove spacing around dashboard */
+.dashboard-info {
+  margin-top: 0 !important;
+}
+
+/* Remove unwanted content spacing */
+.main-content {
+  margin-top: 0 !important;
+}
+
+/* Remove spacing around service section */
+.service-content {
+  margin-top: 0 !important;
+}
+
+/* Desktop layout */
+@media (min-width: 768px) {
+  .main-content,
+  .dashboard-info {
+    margin-left: 282px;
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 767px) {
+  .main-content,
+  .dashboard-info {
+    margin-left: 0 !important;
   }
 }

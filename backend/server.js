@@ -1,10 +1,12 @@
 // const dotenv = require("dotenv");
-
+const fs = require("fs");
+const path = require("path");
 // dotenv.config();
 require("dotenv").config();
 // const {connectRedis} = require("./config/redis");
 const express = require("express");
 const cors = require("cors");
+
 
 
 const authRoutes = require("./routes/authRoutes");
@@ -23,6 +25,7 @@ const adminAnnouncementRoutes = require('./routes/adminAnnouncementRoutes');
 const userOrderRoutes = require("./routes/userOrderRoutes");
 const apiKeyRoutes = require("./routes/apiKeyRoutes");
 const apiRoutes = require("./routes/apiRoutes");
+const adminSettingRoutes = require("./routes/adminSettingRoutes");
 
 
 const app = express();
@@ -61,6 +64,16 @@ app.use(express.urlencoded({
   extended: true,
 }));
 
+// Create uploads folder automatically if missing
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+app.use(
+  "/uploads",
+  express.static(uploadDir));
+
 
 app.get("/test", (req, res) => {
   res.send("Server route working");
@@ -84,6 +97,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/admin/announcements", adminAnnouncementRoutes);
 app.use("/api/api-keys", apiKeyRoutes);
 app.use("/api/v2", apiRoutes);
+app.use("/api/admin-settings", adminSettingRoutes);
 
 app.listen(PORT, () => {
   console.log(

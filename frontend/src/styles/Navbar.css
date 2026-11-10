@@ -322,3 +322,19 @@
   color: #ffffff;
   font-weight: 600;
 }
+
+.rgbhai-navbar-logo img {
+  max-width: 100%;
+  max-height: 55px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.rgbhai-navbar-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}

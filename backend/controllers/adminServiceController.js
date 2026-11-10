@@ -442,6 +442,78 @@ const reorderServices = async (req, res) => {
   }
 };
 
+// =====================================================
+// RENAME CATEGORY
+// =====================================================
+
+const renameCategory = async (req, res) => {
+  try {
+    const { oldCategory, newCategory } = req.body;
+
+    if (
+      typeof oldCategory !== "string" ||
+      typeof newCategory !== "string" ||
+      !oldCategory.trim() ||
+      !newCategory.trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide both category names.",
+      });
+    }
+
+    const oldName = oldCategory.trim();
+    const newName = newCategory.trim();
+
+    if (oldName === newName) {
+      return res.status(400).json({
+        success: false,
+        message: "New category name is the same as the old name.",
+      });
+    }
+
+    if (newName.length > 300) {
+      return res.status(400).json({
+        success: false,
+        message: "Category name cannot exceed 300 characters.",
+      });
+    }
+
+    const result = await serviceModel.renameCategory(
+      oldName,
+      newName
+    );
+
+    if (result.result === "NOT_FOUND") {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found.",
+      });
+    }
+
+    if (result.result === "DUPLICATE") {
+      return res.status(409).json({
+        success: false,
+        message: "A category with this name already exists.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Category renamed successfully.",
+      affectedRows: result.affectedRows,
+    });
+  } catch (error) {
+    console.error("RENAME CATEGORY ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to rename category.",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   getServices,
@@ -450,5 +522,6 @@ module.exports = {
   updateService,
   deleteService,
   createBulkServices,
-  reorderServices
+  reorderServices,
+  renameCategory
 };

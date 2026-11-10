@@ -1,15 +1,13 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import defaultLogo from "../assets/logo.png";
 import "../styles/Home.css";
 import WhatsAppButton from "../components/WhatsappButton";
 import homeBanner4 from "../assets/homeBanner4.jpeg";
 import homeBanner3 from "../assets/homeBanner3.jpeg";
 import homeBanner2 from "../assets/homeBanner2.jpeg";
 import homeBanner1 from "../assets/homeBanner1.jpeg";
-
 
 import {
   ShoppingCart,
@@ -24,13 +22,20 @@ import {
   ClipboardList,
   Package,
 } from "lucide-react";
+
 import NewOrder from "../dashboard/NewOrder";
 
+const API_URL = (
+  process.env.REACT_APP_API_URL || "http://localhost:5000"
+).replace(/\/$/, "");
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Dynamic website logo
+  const [logoUrl, setLogoUrl] = useState(defaultLogo);
 
   const [dashboard, setDashboard] = useState({
     username: "",
@@ -38,15 +43,55 @@ function Home() {
     totalOrders: 0,
   });
 
+  // =========================================
+  // FETCH LOGO FROM ADMIN SETTINGS
+  // =========================================
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLogo = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/api/admin-settings`
+        );
+
+        const settings =
+          response.data?.settings || response.data;
+
+        const logoPath = settings?.logo_image_path;
+
+        if (logoPath && isMounted) {
+          const imageUrl = /^https?:\/\//i.test(logoPath)
+            ? logoPath
+            : `${API_URL}${
+                logoPath.startsWith("/") ? "" : "/"
+              }${logoPath}`;
+
+          setLogoUrl(imageUrl);
+        }
+      } catch (error) {
+        console.error("Failed to fetch website logo:", error);
+      }
+    };
+
+    fetchLogo();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // =========================================
+  // FETCH USER DASHBOARD
+  // =========================================
+
   useEffect(() => {
     let isMounted = true;
 
     const fetchDashboard = async () => {
       const token = localStorage.getItem("token");
-      const API_URL =
-        process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-      // No token: redirect to login
       if (!token) {
         localStorage.removeItem("user");
         navigate("/", { replace: true });
@@ -75,10 +120,10 @@ function Home() {
       } catch (error) {
         const status = error.response?.status;
 
-        // Invalid token or discontinued account
         if (status === 401 || status === 403) {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+
           navigate("/", { replace: true });
           return;
         }
@@ -101,44 +146,66 @@ function Home() {
     };
   }, [navigate]);
 
+  // =========================================
+  // CLOSE MOBILE MENU
+  // =========================================
+
   const closeMenu = () => {
     setMenuOpen(false);
   };
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   localStorage.removeItem("user");
-  //   navigate("/", { replace: true });
-  // };
+  // =========================================
+  // LOGOUT
+  // =========================================
 
-  // if (loading) {
-  //   return <div className="home-page">Verifying your account...</div>;
-  // }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/", { replace: true });
+  };
 
   return (
     <div className="home-page">
+
       {/* HEADER */}
       <header className="top-header">
+
         <div className="logo-container">
           <Link to="/home" onClick={closeMenu}>
-            <img src={logo} alt="RGBHAI SMM Panel" />
+            <img
+              src={logoUrl}
+              alt="RGBHAI SMM Panel"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = defaultLogo;
+              }}
+            />
           </Link>
         </div>
 
         <button
           type="button"
-          className={`hamburger-btn ${menuOpen ? "active" : ""}`}
+          className={`hamburger-btn ${
+            menuOpen ? "active" : ""
+          }`}
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
         >
           {menuOpen ? "✕" : "☰"}
         </button>
+
       </header>
 
       {/* NAVIGATION */}
-      <nav className={`vertical-nav ${menuOpen ? "menu-open" : ""}`}>
+      <nav
+        className={`vertical-nav ${
+          menuOpen ? "menu-open" : ""
+        }`}
+      >
         <ul className="vertical-navmenu">
+
           <li>
             <Link to="/new-order" onClick={closeMenu}>
               <ShoppingCart size={19} />
@@ -147,7 +214,10 @@ function Home() {
           </li>
 
           <li>
-            <Link to="/dashboard-services" onClick={closeMenu}>
+            <Link
+              to="/dashboard-services"
+              onClick={closeMenu}
+            >
               <Layers size={19} />
               Services
             </Link>
@@ -173,6 +243,7 @@ function Home() {
               API Integration
             </Link>
           </li>
+
           <li>
             <Link to="/api-management" onClick={closeMenu}>
               <Code2 size={19} />
@@ -209,16 +280,24 @@ function Home() {
           </li>
 
           <li>
-            <Link to="/" onClick={closeMenu}>
+            <Link
+              to="/"
+              onClick={() => {
+                closeMenu();
+                handleLogout();
+              }}
+            >
               <LogOut size={19} />
               Logout
             </Link>
           </li>
+
         </ul>
       </nav>
 
       {/* MAIN CONTENT */}
       <main className="main-content">
+
         {/* USER DETAILS */}
         <section className="info-card">
           <div className="info-icon">
@@ -227,7 +306,7 @@ function Home() {
 
           <div className="info-content">
             <h2>{dashboard.username}</h2>
-            <p>Welcome to rgbhaismmpanel.com</p>
+            <p>Welcome to RG bhai Digital Promotion Company</p>
           </div>
         </section>
 
@@ -250,7 +329,10 @@ function Home() {
           </div>
 
           <div className="info-content">
-            <h2>₹{Number(dashboard.balance || 0).toFixed(2)}</h2>
+            <h2>
+              ₹{Number(dashboard.balance || 0).toFixed(2)}
+            </h2>
+
             <p>
               To add funds{" "}
               <Link to="/add-funds" className="fund-link">
@@ -262,38 +344,46 @@ function Home() {
 
         {/* WHATSAPP */}
         <WhatsAppButton />
-        <NewOrder/>
+
+        {/* NEW ORDER */}
+        <NewOrder />
+
       </main>
-      {/* HOME PROMOTIONAL IMAGE */}
-        <section className="home-banner">
-          <img
-            src={homeBanner4}
-            alt="RGBHAI SMM Panel Promotion"
-            className="home-banner-image"
-          />
-        </section>
-        <section className="home-banner">
-          <img
-            src={homeBanner3}
-            alt="RGBHAI SMM Panel Promotion"
-            className="home-banner-image"
-          />
-        </section>
-        <section className="home-banner">
-          <img
-            src={homeBanner2}
-            alt="RGBHAI SMM Panel Promotion"
-            className="home-banner-image"
-          />
-        </section>
-        <section className="home-banner">
-          <img
-            src={homeBanner1}
-            alt="RGBHAI SMM Panel Promotion"
-            className="home-banner-image"
-          />
-        </section>
-        
+
+      {/* HOME PROMOTIONAL IMAGES */}
+
+      <section className="home-banner">
+        <img
+          src={homeBanner4}
+          alt="RGBHAI SMM Panel Promotion"
+          className="home-banner-image"
+        />
+      </section>
+
+      <section className="home-banner">
+        <img
+          src={homeBanner3}
+          alt="RGBHAI SMM Panel Promotion"
+          className="home-banner-image"
+        />
+      </section>
+
+      <section className="home-banner">
+        <img
+          src={homeBanner2}
+          alt="RGBHAI SMM Panel Promotion"
+          className="home-banner-image"
+        />
+      </section>
+
+      <section className="home-banner">
+        <img
+          src={homeBanner1}
+          alt="RGBHAI SMM Panel Promotion"
+          className="home-banner-image"
+        />
+      </section>
+
     </div>
   );
 }

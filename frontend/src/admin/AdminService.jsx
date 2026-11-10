@@ -58,6 +58,11 @@ const AdminService = () => {
     createEmptyService(),
   ]);
 
+const [showCategoryModal, setShowCategoryModal] = useState(false);
+const [oldCategory, setOldCategory] = useState("");
+const [newCategory, setNewCategory] = useState("");
+const [categorySaving, setCategorySaving] = useState(false);
+
   // Single service form
   const [formData, setFormData] = useState({
     category: "",
@@ -235,6 +240,8 @@ const handleAddService = (category = "") => {
   setShowModal(true);
 };
 
+
+
   // =====================================
   // OPEN EDIT SERVICE MODAL
   // =====================================
@@ -268,6 +275,80 @@ const handleAddService = (category = "") => {
       [name]: value,
     }));
   };
+
+  // =====================================
+// RENAME CATEGORY
+// =====================================
+
+const handleRenameCategory = async (e) => {
+  e.preventDefault();
+
+  const oldName = oldCategory.trim();
+  const newName = newCategory.trim();
+
+  if (!oldName || !newName) {
+    alert("Please select the old category and enter a new name.");
+    return;
+  }
+
+  if (oldName === newName) {
+    alert("New category name must be different.");
+    return;
+  }
+
+  if (!window.confirm(
+    `Rename "${oldName}" to "${newName}" for ALL services?`
+  )) {
+    return;
+  }
+
+  try {
+    setCategorySaving(true);
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Session expired. Please login again.");
+      return;
+    }
+
+    const response = await axios.put(
+      `${API_URL}/api/admin-service/category`,
+      {
+        oldCategory: oldName,
+        newCategory: newName,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert(
+      `${response.data.message}\nUpdated services: ${response.data.affectedRows}`
+    );
+
+    setShowCategoryModal(false);
+    setOldCategory("");
+    setNewCategory("");
+
+    await fetchServices();
+
+  } catch (err) {
+    console.error(
+      "Rename category error:",
+      err.response?.data || err
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Unable to rename category."
+    );
+  } finally {
+    setCategorySaving(false);
+  }
+};
 
   // =====================================
   // SAVE SINGLE SERVICE
@@ -696,6 +777,19 @@ const handleServiceDrop = async (event, targetServiceId) => {
           <h1>Service Management</h1>
           <p>Add, update and manage your SMM services.</p>
         </div>
+        <button
+          type="button"
+          className="bulk-service-btn"
+          onClick={() => {
+            console.log("Manage Categories button clicked");
+
+            setOldCategory("");
+            setNewCategory("");
+            setShowCategoryModal(true);
+          }}
+        >
+          ✏️ Manage Categories
+        </button>
 
         <div className="service-header-actions">
           <button
@@ -1120,6 +1214,94 @@ const handleServiceDrop = async (event, targetServiceId) => {
           </div>
         </div>
       )}
+
+
+      
+      {/* MANAGE CATEGORY MODAL */}
+      {showCategoryModal && (
+        <div className="service-modal-overlay">
+          <div className="service-modal">
+            <div className="modal-header">
+              <h2>Manage Categories</h2>
+
+              <button
+                type="button"
+                className="modal-close"
+                disabled={categorySaving}
+                onClick={() => setShowCategoryModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              className="service-form"
+              onSubmit={handleRenameCategory}
+            >
+              <div className="form-group">
+                <label>Select Existing Category *</label>
+
+                <select
+                  value={oldCategory}
+                  onChange={(e) => setOldCategory(e.target.value)}
+                  required
+                >
+                  <option value="">Select category</option>
+
+                  {categories
+                    .filter((category) => category !== "All")
+                    .map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>New Category Name *</label>
+
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder="Enter new category name"
+                  maxLength={300}
+                  required
+                />
+              </div>
+
+              <p>
+                This will rename the category for all services,
+                including inactive services.
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  disabled={categorySaving}
+                  onClick={() => setShowCategoryModal(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-service-btn"
+                  disabled={categorySaving}
+                >
+                  {categorySaving
+                    ? "Updating..."
+                    : "Rename Category"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
 
       {/* ADD / EDIT SINGLE SERVICE MODAL */}
       {showModal && (

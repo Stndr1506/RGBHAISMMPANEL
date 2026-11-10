@@ -12,17 +12,18 @@ const getAllServices = async () => {
       id,
       category,
       service,
-      description,
       rate,
       min_order,
       max_order,
       average_time,
+      description,
       display_order,
       status,
       created_at,
       updated_at
-    FROM services
-    ORDER BY id DESC
+    FROM dbo.services
+    WHERE status = 'Active'
+    ORDER BY category ASC, display_order ASC, id DESC
   `);
 
   return result.recordset;
@@ -152,6 +153,9 @@ const createService = async (serviceData) => {
 // =====================================================
 // UPDATE SERVICE
 // =====================================================
+// =====================================================
+// UPDATE SERVICE
+// =====================================================
 
 const updateService = async (id, serviceData) => {
   const {
@@ -164,48 +168,36 @@ const updateService = async (id, serviceData) => {
     average_time,
   } = serviceData;
 
+  const serviceId = Number(id);
+
+  if (!Number.isInteger(serviceId) || serviceId <= 0) {
+    throw new Error("Invalid service ID");
+  }
+
+  if (
+    !category ||
+    !service ||
+    rate === undefined ||
+    min_order === undefined ||
+    max_order === undefined
+  ) {
+    throw new Error("Please provide all required service fields");
+  }
+
   const pool = await getDB();
 
   const result = await pool
     .request()
-    .input("id", sql.Int, id)
-    .input(
-      "category",
-      sql.NVarChar(300),
-      category
-    )
-    .input(
-      "service",
-      sql.NVarChar(500),
-      service
-    )
-    .input(
-      "description",
-      sql.NVarChar(2500),
-      description
-    )
-    .input(
-      "rate",
-      sql.Decimal(10, 2),
-      rate
-    )
-    .input(
-      "min_order",
-      sql.Int,
-      min_order
-    )
-    .input(
-      "max_order",
-      sql.Int,
-      max_order
-    )
-    .input(
-      "average_time",
-      sql.VarChar(100),
-      average_time
-    )
+    .input("id", sql.Int, serviceId)
+    .input("category", sql.NVarChar(255), category)
+    .input("service", sql.NVarChar(500), service)
+    .input("description", sql.NVarChar(2500), description || "")
+    .input("rate", sql.Decimal(10, 2), Number(rate))
+    .input("min_order", sql.Int, Number(min_order))
+    .input("max_order", sql.Int, Number(max_order))
+    .input("average_time", sql.VarChar(100), average_time || "")
     .query(`
-      UPDATE services
+      UPDATE dbo.services
       SET
         category = @category,
         service = @service,
@@ -224,10 +216,16 @@ const updateService = async (id, serviceData) => {
         INSERTED.min_order,
         INSERTED.max_order,
         INSERTED.average_time,
+        INSERTED.display_order,
+        INSERTED.status,
         INSERTED.created_at,
         INSERTED.updated_at
       WHERE id = @id
     `);
+
+  if (!result.recordset.length) {
+    throw new Error("Service not found");
+  }
 
   return result.recordset[0];
 };
@@ -427,6 +425,52 @@ const reorderServices = async (serviceIds) => {
   }
 };
 
+// =====================================================
+// RENAME CATEGORY FOR ALL SERVICES
+// =====================================================
+
+const renameCategory = async (oldCategory, newCategory) => {
+  const pool = await getDB();
+
+  const result = await pool.request()
+    .input("oldCategory", sql.NVarChar(300), oldCategory)
+    .input("newCategory", sql.NVarChar(300), newCategory)
+    .query(`
+      IF NOT EXISTS (
+        SELECT 1
+        FROM dbo.services
+        WHERE category = @oldCategory
+      )
+      BEGIN
+        SELECT 'NOT_FOUND' AS result;
+        RETURN;
+      END;
+
+      IF EXISTS (
+        SELECT 1
+        FROM dbo.services
+        WHERE LTRIM(RTRIM(category)) = @newCategory
+          AND category <> @oldCategory
+      )
+      BEGIN
+        SELECT 'DUPLICATE' AS result;
+        RETURN;
+      END;
+
+      UPDATE dbo.services
+      SET
+        category = @newCategory,
+        updated_at = GETDATE()
+      WHERE category = @oldCategory;
+
+      SELECT
+        'SUCCESS' AS result,
+        @@ROWCOUNT AS affectedRows;
+    `);
+
+  return result.recordset[0];
+};
+
 
 module.exports = {
   getAllServices,
@@ -435,5 +479,6 @@ module.exports = {
   updateService,
   deleteService,
   bulkCreateServices,
-  reorderServices
+  reorderServices,
+  renameCategory
 };
