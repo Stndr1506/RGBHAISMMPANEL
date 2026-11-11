@@ -6,11 +6,9 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 const AdminAnnouncement = () => {
   const [announcements, setAnnouncements] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [services, setServices] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
@@ -23,61 +21,44 @@ const AdminAnnouncement = () => {
   });
 
   const [error, setError] = useState("");
+  const [serviceSearch, setServiceSearch] = useState("");
 
-  // =====================================================
-  // GET TOKEN
-  // =====================================================
+  const getToken = () => localStorage.getItem("token");
 
-  const getToken = () => {
-    return localStorage.getItem("token");
+  // Fetch services for the searchable service selector.
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/dashboard-service`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch services");
+      }
+
+      setServices(Array.isArray(data.services) ? data.services : []);
+    } catch (err) {
+      console.error("Fetch services error:", err);
+      setServices([]);
+    }
   };
 
-  const fetchServices = async () => {
-  try {
-    const response = await fetch(
-      `${API_URL}/api/dashboard-service`
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch services");
-    }
-
-    console.log("Services API response:", data);
-
-    setServices(data.services || []);
-  } catch (err) {
-    console.error("Fetch services error:", err);
-  }
-};
-  // =====================================================
-  // FETCH ANNOUNCEMENTS
-  // =====================================================
-
+  // Fetch announcements.
   const fetchAnnouncements = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
-      const token = getToken();
-
-      const response = await fetch(
-        `${API_URL}/api/admin/announcements`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/admin/announcements`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to fetch announcements"
-        );
+        throw new Error(data.message || "Failed to fetch announcements");
       }
 
       setAnnouncements(data.announcements || []);
@@ -87,72 +68,56 @@ const AdminAnnouncement = () => {
     } finally {
       setLoading(false);
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchAnnouncements();
     fetchServices();
   }, [fetchAnnouncements]);
 
-  // =====================================================
-  // WHATSAPP SHARE
-  // =====================================================
+  // Share announcement on WhatsApp.
+  const shareOnWhatsApp = (announcement) => {
+    const selectedService = services.find(
+      (service) => Number(service.id) === Number(announcement.service_id)
+    );
 
-const shareOnWhatsApp = (announcement) => {
+    const serviceName = selectedService
+      ? selectedService.service
+      : announcement.service_id
+      ? "Service not found"
+      : "All Services";
 
-  // Find selected service from services list
-  const selectedService = services.find(
-    (service) =>
-      Number(service.id) === Number(announcement.service_id)
-  );
+    const websiteLink = "https://rgbhaimedia.com";
 
-  const serviceName = selectedService
-    ? selectedService.service
-    : announcement.service_id
-    ? "Service not found"
-    : "All Services";
-
-  const message = `*${announcement.title}*
+    const message = `📢 *${announcement.title}*
 
 ${announcement.message}
 
-*Service ID:* ${
-    announcement.service_id ?? "N/A"
-  }
+*Service ID:* ${announcement.service_id ?? "N/A"}
 *Service Name:* ${serviceName}
 
-*RGBHAI SMM PANEL*`;
+🌐 *Visit RGBHAI SMM PANEL:*
+${websiteLink}
 
-  const whatsappUrl =
-    `https://wa.me/?text=${encodeURIComponent(message)}`;
+🚀 Grow your social media with RGBHAI!`;
 
-  window.open(
-    whatsappUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
-};
-
-  // =====================================================
-  // INPUT CHANGE
-  // =====================================================
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // =====================================================
-  // OPEN ADD MODAL
-  // =====================================================
+  const closeModal = () => {
+    setShowModal(false);
+    setServiceSearch("");
+  };
 
   const handleAdd = () => {
     setEditingId(null);
-
+    setServiceSearch("");
     setFormData({
       title: "",
       type: "GENERAL",
@@ -160,32 +125,27 @@ ${announcement.message}
       service_id: "",
       status: "published",
     });
-
     setShowModal(true);
   };
 
-  // =====================================================
-  // OPEN EDIT MODAL
-  // =====================================================
-
   const handleEdit = (announcement) => {
     setEditingId(announcement.id);
-
+    setServiceSearch("");
     setFormData({
       title: announcement.title || "",
       type: announcement.type || "GENERAL",
       message: announcement.message || "",
-      service_id: announcement.service_id || "",
+      service_id:
+        announcement.service_id !== null &&
+        announcement.service_id !== undefined
+          ? String(announcement.service_id)
+          : "",
       status: announcement.status || "published",
     });
-
     setShowModal(true);
   };
 
-  // =====================================================
-  // SAVE ANNOUNCEMENT
-  // =====================================================
-
+  // Create or update announcement.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -202,19 +162,15 @@ ${announcement.message}
     try {
       setSaving(true);
 
-      const token = getToken();
-
       const url = editingId
         ? `${API_URL}/api/admin/announcements/${editingId}`
         : `${API_URL}/api/admin/announcements`;
 
-      const method = editingId ? "PUT" : "POST";
-
       const response = await fetch(url, {
-        method,
+        method: editingId ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
           title: formData.title,
@@ -230,9 +186,7 @@ ${announcement.message}
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to save announcement"
-        );
+        throw new Error(data.message || "Failed to save announcement");
       }
 
       alert(
@@ -241,8 +195,7 @@ ${announcement.message}
           : "Announcement created successfully"
       );
 
-      setShowModal(false);
-
+      closeModal();
       fetchAnnouncements();
     } catch (err) {
       console.error(err);
@@ -252,10 +205,7 @@ ${announcement.message}
     }
   };
 
-  // =====================================================
-  // DELETE
-  // =====================================================
-
+  // Delete announcement.
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this announcement?"
@@ -264,14 +214,12 @@ ${announcement.message}
     if (!confirmDelete) return;
 
     try {
-      const token = getToken();
-
       const response = await fetch(
         `${API_URL}/api/admin/announcements/${id}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
@@ -279,13 +227,10 @@ ${announcement.message}
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to delete announcement"
-        );
+        throw new Error(data.message || "Failed to delete announcement");
       }
 
       alert("Announcement deleted successfully");
-
       fetchAnnouncements();
     } catch (err) {
       console.error(err);
@@ -293,425 +238,297 @@ ${announcement.message}
     }
   };
 
-  // =====================================================
-  // TYPE LABEL
-  // =====================================================
-
   const getTypeLabel = (type) => {
     switch (type) {
       case "PRICE_CHANGE":
         return "Price Change";
-
       case "SERVICE_DISCONTINUED":
         return "Service Discontinued";
-
       case "SERVICE_UPDATE":
         return "Service Update";
-
       case "MAINTENANCE":
         return "Maintenance";
-
       case "IMPORTANT":
         return "Important";
-
       default:
         return "General";
     }
   };
 
-  // =====================================================
-  // RENDER
-  // =====================================================
+  // Search service by its ID or service name.
+  const filteredServices = services.filter((service) => {
+    const search = serviceSearch.trim().toLowerCase();
+    if (!search) return true;
+
+    return (
+      String(service.id ?? "").toLowerCase().includes(search) ||
+      String(service.service ?? "").toLowerCase().includes(search)
+    );
+  });
 
   return (
     <>
-    <AdminNavbar/>
-    
-    <div className="admin-announcement-page">
+      <AdminNavbar />
 
-      {/* HEADER */}
+      <div className="admin-announcement-page">
+        <div className="announcement-header">
+          <div>
+            <h2>Announcements</h2>
+            <p>Create and manage announcements for your users.</p>
+          </div>
 
-      <div className="announcement-header">
-        <div>
-          <h2>Announcements</h2>
-          <p>
-            Create and manage announcements for your users.
-          </p>
-        </div>
-
-        <button
-          className="add-announcement-btn"
-          onClick={handleAdd}
-        >
-          + Add Announcement
-        </button>
-      </div>
-
-      {/* ERROR */}
-
-      {error && (
-        <div className="announcement-error">
-          {error}
-        </div>
-      )}
-
-      {/* LOADING */}
-
-      {loading ? (
-        <div className="announcement-loading">
-          Loading announcements...
-        </div>
-      ) : announcements.length === 0 ? (
-        <div className="announcement-empty">
-          <div className="empty-icon">📢</div>
-
-          <h3>No announcements yet</h3>
-
-          <p>
-            Create your first announcement for users.
-          </p>
-
-          <button onClick={handleAdd}>
-            Create Announcement
+          <button
+            className="add-announcement-btn"
+            onClick={handleAdd}
+          >
+            + Add Announcement
           </button>
         </div>
-      ) : (
-        <div className="announcement-table-wrapper">
 
-          <table className="announcement-table">
+        {error && <div className="announcement-error">{error}</div>}
 
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Announcement</th>
-                <th>Type</th>
-                <th>Service</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              {announcements.map((announcement) => (
-                <tr key={announcement.id}>
-
-                  <td>
-                    #{announcement.id}
-                  </td>
-
-                  <td>
-                    <div className="announcement-title">
-                      {announcement.title}
-                    </div>
-
-                    <div className="announcement-message">
-                      {announcement.message}
-                    </div>
-                  </td>
-
-                  <td>
-                    <span
-                      className={`announcement-type ${announcement.type?.toLowerCase()}`}
-                    >
-                      {getTypeLabel(announcement.type)}
-                    </span>
-                  </td>
-
-                  <td>
-                    {announcement.service || (
-                      <span className="no-service">
-                        All Services
-                      </span>
-                    )}
-                  </td>
-
-                  <td>
-                    <span
-                      className={`announcement-status ${
-                        announcement.status
-                      }`}
-                    >
-                      {announcement.status}
-                    </span>
-                  </td>
-
-                  <td>
-                    {announcement.created_at
-                      ? new Date(
-                          announcement.created_at
-                        ).toLocaleDateString()
-                      : "-"}
-                  </td>
-
-                  <td>
-
-                    <div className="announcement-actions">
-
-                    
-                    {/* share on whatsapp */}
-                      <button
-                        className="whatsapp-share-btn"
-                        onClick={() =>
-                          shareOnWhatsApp(announcement)
-                        }
-                      >
-                        <span>💬</span>
-                        Share on WhatsApp
-                      </button>
-                      
-                      <button
-                        className="edit-btn"
-                        onClick={() =>
-                          handleEdit(announcement)
-                        }
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        className="delete-btn"
-                        onClick={() =>
-                          handleDelete(announcement.id)
-                        }
-                      >
-                        Delete
-                      </button>
-                      
-
-                    </div>
-                    
-
-                  </td>
+        {loading ? (
+          <div className="announcement-loading">
+            Loading announcements...
+          </div>
+        ) : announcements.length === 0 ? (
+          <div className="announcement-empty">
+            <div className="empty-icon">📢</div>
+            <h3>No announcements yet</h3>
+            <p>Create your first announcement for users.</p>
+            <button onClick={handleAdd}>Create Announcement</button>
+          </div>
+        ) : (
+          <div className="announcement-table-wrapper">
+            <table className="announcement-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Announcement</th>
+                  <th>Type</th>
+                  <th>Service</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
                 </tr>
-              ))}             
+              </thead>
 
-            </tbody>
+              <tbody>
+                {announcements.map((announcement) => (
+                  <tr key={announcement.id}>
+                    <td>#{announcement.id}</td>
+                    <td>
+                      <div className="announcement-title">
+                        {announcement.title}
+                      </div>
+                      <div className="announcement-message">
+                        {announcement.message}
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        className={`announcement-type ${announcement.type?.toLowerCase()}`}
+                      >
+                        {getTypeLabel(announcement.type)}
+                      </span>
+                    </td>
+                    <td>
+                      {announcement.service || (
+                        <span className="no-service">All Services</span>
+                      )}
+                    </td>
+                    <td>
+                      <span
+                        className={`announcement-status ${announcement.status}`}
+                      >
+                        {announcement.status}
+                      </span>
+                    </td>
+                    <td>
+                      {announcement.created_at
+                        ? new Date(
+                            announcement.created_at
+                          ).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td>
+                      <div className="announcement-actions">
+                        <button
+                          className="whatsapp-share-btn"
+                          onClick={() => shareOnWhatsApp(announcement)}
+                        >
+                          <span>💬</span>
+                          Share on WhatsApp
+                        </button>
 
-          </table>
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleEdit(announcement)}
+                        >
+                          Edit
+                        </button>
 
-        </div>
-      )}
-
-      {/* =================================================
-          MODAL
-      ================================================= */}
-
-      {showModal && (
-        <div
-          className="announcement-modal-overlay"
-          onClick={() => setShowModal(false)}
-        >
-
-          <div
-            className="announcement-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-
-            <div className="modal-header">
-
-              <div>
-                <h3>
-                  {editingId
-                    ? "Edit Announcement"
-                    : "Create Announcement"}
-                </h3>
-
-                <p>
-                  This announcement will be shown to users.
-                </p>
-              </div>
-
-              <button
-                className="modal-close"
-                onClick={() => setShowModal(false)}
-              >
-                ×
-              </button>
-
-            </div>
-
-            <form onSubmit={handleSubmit}>
-
-              {/* TITLE */}
-
-              <div className="form-group">
-
-                <label>
-                  Title
-                </label>
-
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  placeholder="Enter announcement title"
-                />
-
-              </div>
-
-              {/* TYPE */}
-
-              <div className="form-group">
-
-                <label>
-                  Announcement Type
-                </label>
-
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                >
-
-                  <option value="GENERAL">
-                    General
-                  </option>
-
-                  <option value="PRICE_CHANGE">
-                    Price Change
-                  </option>
-
-                  <option value="SERVICE_UPDATE">
-                    Service Update
-                  </option>
-
-                  <option value="SERVICE_DISCONTINUED">
-                    Service Discontinued
-                  </option>
-
-                  <option value="MAINTENANCE">
-                    Maintenance
-                  </option>
-
-                  <option value="IMPORTANT">
-                    Important
-                  </option>
-
-                </select>
-
-              </div>
-
-              {/* SERVICE */}
-
-              <div className="form-group">
-
-                <label>
-                  Service ID
-                  <span className="optional">
-                    Optional
-                  </span>
-                </label>
-
-                <select
-                name="service_id"
-                value={formData.service_id}
-                onChange={handleChange}
-                >
-                <option value="">
-                    Please select service
-                </option>
-
-                {services.map((service) => (
-                    <option
-                    key={service.id}
-                    value={service.id}
-                    >
-                    #{service.id} - {service.service}
-                    </option>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(announcement.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
-                </select>
+              </tbody>
+            </table>
+          </div>
+        )}
 
-                <small>
-                  Leave empty if announcement applies
-                  to all services.
-                </small>
-
-              </div>
-
-              {/* MESSAGE */}
-
-              <div className="form-group">
-
-                <label>
-                  Message
-                </label>
-
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Write your announcement..."
-                  rows="5"
-                />
-
-              </div>
-
-              {/* STATUS */}
-
-              <div className="form-group">
-
-                <label>
-                  Status
-                </label>
-
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                >
-
-                  <option value="published">
-                    Published
-                  </option>
-
-                  <option value="draft">
-                    Draft
-                  </option>
-
-                </select>
-
-              </div>
-
-              {/* BUTTONS */}
-
-              <div className="modal-buttons">
+        {showModal && (
+          <div
+            className="announcement-modal-overlay"
+            onClick={closeModal}
+          >
+            <div
+              className="announcement-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <div>
+                  <h3>
+                    {editingId ? "Edit Announcement" : "Create Announcement"}
+                  </h3>
+                  <p>This announcement will be shown to users.</p>
+                </div>
 
                 <button
                   type="button"
-                  className="cancel-btn"
-                  onClick={() =>
-                    setShowModal(false)
-                  }
+                  className="modal-close"
+                  onClick={closeModal}
                 >
-                  Cancel
+                  ×
                 </button>
-
-                <button
-                  type="submit"
-                  className="save-btn"
-                  disabled={saving}
-                >
-                  {saving
-                    ? "Saving..."
-                    : editingId
-                    ? "Update Announcement"
-                    : "Publish Announcement"}
-                </button>
-
               </div>
-              
 
-            </form>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="Enter announcement title"
+                  />
+                </div>
 
+                <div className="form-group">
+                  <label>Announcement Type</label>
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                  >
+                    <option value="GENERAL">General</option>
+                    <option value="PRICE_CHANGE">Price Change</option>
+                    <option value="SERVICE_UPDATE">Service Update</option>
+                    <option value="SERVICE_DISCONTINUED">
+                      Service Discontinued
+                    </option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                    <option value="IMPORTANT">Important</option>
+                  </select>
+                </div>
+
+                {/* SEARCHABLE SERVICE SELECTOR */}
+                <div className="form-group">
+                  <label>
+                    Select Service <span className="optional">Optional</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    value={serviceSearch}
+                    onChange={(e) => setServiceSearch(e.target.value)}
+                    placeholder="Search service by ID or name..."
+                    autoComplete="off"
+                  />
+
+                  <select
+                    name="service_id"
+                    value={formData.service_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">All Services</option>
+
+                    {filteredServices.map((service) => (
+                      <option
+                        key={service.id}
+                        value={String(service.id)}
+                      >
+                        #{service.id} - {service.service}
+                      </option>
+                    ))}
+                  </select>
+
+                  <small>
+                    Search by service ID or name, then select a service.
+                    Leave empty if the announcement applies to all services.
+                  </small>
+
+                  {serviceSearch.trim() && filteredServices.length === 0 && (
+                    <small>No services found for "{serviceSearch}".</small>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label>Message</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Write your announcement..."
+                    rows="5"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                  >
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+
+                <div className="modal-buttons">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="save-btn"
+                    disabled={saving}
+                  >
+                    {saving
+                      ? "Saving..."
+                      : editingId
+                      ? "Update Announcement"
+                      : "Publish Announcement"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
-        </div>
-      )}
-
-    </div>
+        )}
+      </div>
     </>
   );
 };
