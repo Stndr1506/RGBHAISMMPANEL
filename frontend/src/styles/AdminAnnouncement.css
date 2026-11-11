@@ -761,3 +761,82 @@
     font-size: 12px;
   }
 }
+
+
+
+/* =========================================
+   ADMIN ANNOUNCEMENT - SIDEBAR ALIGNMENT
+========================================= */
+
+.admin-announcement-page {
+  position: relative;
+  z-index: 1;
+
+  /* Reserve space for fixed AdminNavbar */
+  margin-left: 204px !important;
+  width: calc(100% - 204px) !important;
+
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Announcement header */
+.admin-announcement-page .announcement-header {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* Announcement table */
+.admin-announcement-page .announcement-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.admin-announcement-page .announcement-table {
+  min-width: 900px;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .admin-announcement-page {
+    margin-left: 204px !important;
+    width: calc(100% - 204px) !important;
+    padding: 26px 28px 45px;
+  }
+}
+
+/* Tablet and mobile */
+@media (max-width: 768px) {
+  .admin-announcement-page {
+    width: 100% !important;
+    max-width: 100%;
+    margin-left: 0 !important;
+    padding: 16px 12px 28px;
+  }
+
+  .admin-announcement-page .announcement-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-announcement-page .add-announcement-btn {
+    width: 100%;
+  }
+
+  .admin-announcement-page .announcement-table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+/* Keep modal above navbar */
+.announcement-modal-overlay {
+  z-index: 9999;
+}

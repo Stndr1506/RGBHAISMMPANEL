@@ -120,7 +120,7 @@ useEffect(() => {
           <li>
             <Link to="/admin/admin-settings" onClick={()=>setMenuOpen(false)}>
             <Settings size={19}/>
-            Settings
+            Admin Settings
               </Link>
           </li>
           <li>

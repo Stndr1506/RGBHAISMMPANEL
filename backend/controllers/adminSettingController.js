@@ -1,10 +1,12 @@
-
 const {
   getAdminSettings,
   updateAdminSettings,
 } = require("../models/adminSettingModel");
 
+// ==========================================
 // GET SETTINGS
+// ==========================================
+
 const getSettings = async (req, res) => {
   try {
     const settings = await getAdminSettings();
@@ -31,13 +33,25 @@ const getSettings = async (req, res) => {
   }
 };
 
+// ==========================================
 // UPDATE SETTINGS
+// ==========================================
+
 const updateSettings = async (req, res) => {
   try {
     const whatsappNumber = String(
       req.body.whatsappNumber || ""
     ).trim();
 
+    const loginHeading = String(
+      req.body.loginHeading || ""
+    ).trim();
+
+    const loginDescription = String(
+      req.body.loginDescription || ""
+    ).trim();
+
+    // Validate WhatsApp number
     if (!/^\d{10,15}$/.test(whatsappNumber)) {
       return res.status(400).json({
         success: false,
@@ -45,7 +59,22 @@ const updateSettings = async (req, res) => {
       });
     }
 
-    // Read both images from upload.fields()
+    // Validate login page content
+    if (!loginHeading || loginHeading.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "Login heading is required and must be within 500 characters",
+      });
+    }
+
+    if (!loginDescription || loginDescription.length > 1500) {
+      return res.status(400).json({
+        success: false,
+        message: "Login description is required and must be within 1500 characters",
+      });
+    }
+
+    // Read images from upload.fields()
     const qrImagePath = req.files?.qrImage?.[0]
       ? `/uploads/${req.files.qrImage[0].filename}`
       : null;
@@ -54,10 +83,13 @@ const updateSettings = async (req, res) => {
       ? `/uploads/${req.files.logoImage[0].filename}`
       : null;
 
+    // Update settings
     const settings = await updateAdminSettings({
       whatsappNumber,
       qrImagePath,
       logoImagePath,
+      loginHeading,
+      loginDescription,
     });
 
     return res.json({

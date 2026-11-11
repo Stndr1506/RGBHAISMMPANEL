@@ -19,6 +19,13 @@ const AdminSettings = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [loginHeading, setLoginHeading] = useState(
+  "RG Bhai Main Google Ads Youtube Views Provider: #1 Main SMM Service Provider"
+);
+
+const [loginDescription, setLoginDescription] = useState(
+  "SMM Panel is an online store where people can buy likes, followers, views, YouTube views etc. providing you with unbeatable prices for all of your social marketing need."
+);
 
   // ==================================
   // FETCH CURRENT SETTINGS
@@ -35,6 +42,15 @@ const AdminSettings = () => {
       const settings = response.data.settings;
 
       setWhatsappNumber(settings.whatsapp_number || "");
+      setLoginHeading(
+  settings.login_heading ||
+  "RG Bhai Main Google Ads Youtube Views Provider: #1 Main SMM Service Provider"
+);
+
+setLoginDescription(
+  settings.login_description ||
+  "SMM Panel is an online store where people can buy likes, followers, views, YouTube views etc. providing you with unbeatable prices for all of your social marketing need."
+);
 
       setQrPreview(
         settings.qr_image_path
@@ -154,6 +170,8 @@ const AdminSettings = () => {
       const formData = new FormData();
 
       formData.append("whatsappNumber", cleanNumber);
+      formData.append("loginHeading", loginHeading);
+formData.append("loginDescription", loginDescription);
 
       if (qrImage) {
         formData.append("qrImage", qrImage);
@@ -272,6 +290,50 @@ const AdminSettings = () => {
                 Supported formats: JPG, PNG, WEBP.
                 Maximum size: 5 MB.
               </p>
+
+            </section>
+            {/* LOGIN PAGE CONTENT SETTINGS */}
+
+            <section className="admin-setting-card">
+
+            <h2>Login Page Content</h2>
+
+            <p className="admin-setting-description">
+                Update the heading and description displayed on your
+                customer login page.
+            </p>
+
+            <label htmlFor="loginHeading">
+                Login Page Main Heading
+            </label>
+
+            <textarea
+                id="loginHeading"
+                value={loginHeading}
+                onChange={(event) => setLoginHeading(event.target.value)}
+                placeholder="Enter login page heading"
+                rows={3}
+                maxLength={300}
+                required
+            />
+
+            <label htmlFor="loginDescription">
+                Login Page Description
+            </label>
+
+            <textarea
+                id="loginDescription"
+                value={loginDescription}
+                onChange={(event) => setLoginDescription(event.target.value)}
+                placeholder="Enter login page description"
+                rows={4}
+                maxLength={1000}
+                required
+            />
+
+            <p className="admin-setting-hint">
+                These details will appear on your customer login page.
+            </p>
 
             </section>
 

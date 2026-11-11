@@ -13,6 +13,7 @@ import {
   Package,
   Menu,
   X,
+  Settings,
 } from "lucide-react";
 
 import "../styles/Navbar.css";
@@ -43,6 +44,16 @@ const NAV_ITEMS = [
     icon: Package,
   },
   {
+    label: "Announcements",
+    path: "/admin/announcements",
+    icon: Megaphone,
+  },
+  {
+    label: "Admin Settings",
+    path: "/admin/admin-settings",
+    icon: Settings,
+  },
+  {
     label: "Payments",
     path: "/admin/payments",
     icon: Wallet,
@@ -52,11 +63,7 @@ const NAV_ITEMS = [
     path: "/admin/affiliates",
     icon: Users,
   },
-  {
-    label: "Announcements",
-    path: "/admin/announcements",
-    icon: Megaphone,
-  },
+  
   {
     label: "Tickets",
     path: "/admin/tickets",

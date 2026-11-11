@@ -798,3 +798,58 @@
   font-size: 11px;
   font-weight: 700;
 }
+
+
+/* =========================================
+   ADMIN ORDERS - NAVBAR ALIGNMENT FIX
+========================================= */
+
+.admin-orders-page {
+  position: relative;
+  z-index: 1;
+
+  /* Sidebar width */
+  margin-left: 204px !important;
+  width: calc(100% - 204px) !important;
+
+  max-width: none;
+  min-width: 0;
+
+  box-sizing: border-box;
+}
+
+/* Keep all Orders content inside available width */
+.admin-orders-page .orders-card,
+.admin-orders-page .orders-status-filters {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-orders-page .orders-card {
+  width: 100%;
+}
+
+.admin-orders-page .orders-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Desktop spacing */
+@media (min-width: 769px) {
+  .admin-orders-page {
+    margin-left: 204px !important;
+    width: calc(100% - 204px) !important;
+    padding: 26px 28px 45px;
+  }
+}
+
+/* Tablet and mobile: sidebar becomes normal flow */
+@media (max-width: 768px) {
+  .admin-orders-page {
+    width: 100% !important;
+    max-width: 100%;
+    margin-left: 0 !important;
+    padding: 16px 12px 28px;
+  }
+}
