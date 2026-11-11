@@ -96,7 +96,7 @@ ${announcement.message}
 *Service ID:* ${announcement.service_id ?? "N/A"}
 *Service Name:* ${serviceName}
 
-🌐 *Visit RGBHAI SMM PANEL:*
+🌐 *RG Bhai smm service provider:*
 ${websiteLink}
 
 🚀 Grow your social media with RGBHAI!`;
