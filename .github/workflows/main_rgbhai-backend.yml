@@ -1,65 +1,51 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build and deploy Node.js app to Azure Web App - rgbhai-backend
 
 on:
   push:
     branches:
-      - 'main'
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: '20'
 
-      - name: npm install, build, and test
+      - name: Install backend dependencies
+        working-directory: smmpanel/backend
+        run: npm install
+
+      - name: Create deployment package
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          cd smmpanel/backend
+          zip -r ../../backend.zip . -x "node_modules/*" ".env"
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: backend.zip
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: node-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E7CB6BD1F1CD4EE09E6F00A00D035876 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_19169D1DE70447D7A79EE7985E68EBC2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7E6692805A9A499E8620B8B28215D7E8 }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: Deploy to Azure
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'rgbhai-backend'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: rgbhai-backend
+          package: backend.zip
