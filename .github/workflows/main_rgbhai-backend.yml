@@ -12,12 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install backend dependencies
         working-directory: NEW FOLDER/backend
@@ -26,7 +27,10 @@ jobs:
       - name: Create deployment package
         run: |
           cd "NEW FOLDER/backend"
-          zip -r ../../backend.zip . -x "node_modules/*" ".env"
+          zip -r "$GITHUB_WORKSPACE/backend.zip" . \
+            -x "node_modules/*" \
+               ".env" \
+               ".git/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -39,8 +43,6 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
