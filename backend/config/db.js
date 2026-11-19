@@ -1,3 +1,4 @@
+
 const sql = require("mssql");
 require("dotenv").config();
 
@@ -7,12 +8,12 @@ const dbConfig = {
   server: process.env.DB_SERVER,
   database: process.env.DB_NAME,
 
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  },
-
   port: Number(process.env.DB_PORT) || 1433,
+
+  options: {
+    encrypt: true,
+    trustServerCertificate: false,
+  },
 
   pool: {
     max: 10,
@@ -20,15 +21,15 @@ const dbConfig = {
     idleTimeoutMillis: 30000,
   },
 };
-  
+
 const poolPromise = new sql.ConnectionPool(dbConfig)
   .connect()
   .then((pool) => {
-    console.log("SQL Server connected successfully");
+    console.log("Azure SQL Database connected successfully");
     return pool;
   })
   .catch((error) => {
-    console.error("SQL Server connection failed:", error);
+    console.error("SQL Server connection failed:", error.message);
     throw error;
   });
 
@@ -36,9 +37,8 @@ const getDB = async () => {
   return await poolPromise;
 };
 
-
 module.exports = {
   sql,
   poolPromise,
-  getDB
+  getDB,
 };
