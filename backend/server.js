@@ -26,6 +26,7 @@ const userOrderRoutes = require("./routes/userOrderRoutes");
 const apiKeyRoutes = require("./routes/apiKeyRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const adminSettingRoutes = require("./routes/adminSettingRoutes");
+const providerRoutes = require("./routes/providerRoutes");
 
 
 const app = express();
@@ -98,6 +99,7 @@ app.use("/api/admin/announcements", adminAnnouncementRoutes);
 app.use("/api/api-keys", apiKeyRoutes);
 app.use("/api/v2", apiRoutes);
 app.use("/api/admin-settings", adminSettingRoutes);
+app.use("/api/admin/providers", providerRoutes);
 
 app.listen(PORT, () => {
   console.log(
