@@ -54,6 +54,11 @@ const NAV_ITEMS = [
     icon: Settings,
   },
   {
+    label: "Add Provider",
+    path: "/admin/providers",
+    icon: Settings,
+  },
+  {
     label: "Payments",
     path: "/admin/payments",
     icon: Wallet,

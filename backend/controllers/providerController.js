@@ -191,6 +191,64 @@ const fetchProviderServices = async (req, res) => {
   }
 };
 
+
+// Import selected provider services
+const importServices = async (req, res) => {
+  try {
+    const providerId = Number(req.params.providerId);
+
+    if (!Number.isInteger(providerId) || providerId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid provider ID",
+      });
+    }
+
+    const provider = await providerModel.getProviderById(providerId);
+
+    if (!provider) {
+      return res.status(404).json({
+        success: false,
+        message: "Provider not found",
+      });
+    }
+
+    if (provider.status !== "Active") {
+      return res.status(400).json({
+        success: false,
+        message: "Provider is inactive",
+      });
+    }
+
+    const {
+      services,
+      markupType = "percent",
+      markupValue = 0,
+    } = req.body;
+
+    const result = await providerModel.importProviderServices({
+      providerId,
+      services,
+      markupType,
+      markupValue,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Provider services import completed",
+      ...result,
+    });
+  } catch (error) {
+    console.error("Import provider services failed:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Unable to import provider services",
+    });
+  }
+};
+
+
 // Disconnect a provider
 const disconnectProvider = async (req, res) => {
   try {
@@ -242,5 +300,6 @@ module.exports = {
   saveProvider,
   getProviders,
   fetchProviderServices,
+  importServices,
   disconnectProvider,
 };

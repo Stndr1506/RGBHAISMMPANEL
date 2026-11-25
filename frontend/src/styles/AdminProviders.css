@@ -297,3 +297,143 @@
   font-weight: 700;
 }
 
+
+/* Provider service import settings */
+
+.provider-import-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 18px;
+  align-items: end;
+  padding: 20px;
+  margin: 20px 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.provider-markup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.provider-markup-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.provider-markup-field input,
+.provider-markup-field select {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  background: #fff;
+}
+
+.provider-markup-field input:focus,
+.provider-markup-field select:focus {
+  border-color: #2563eb;
+}
+
+.provider-markup-info {
+  padding: 10px 14px;
+  background: #eff6ff;
+  border-radius: 7px;
+  color: #1e40af;
+  font-size: 13px;
+}
+
+.provider-markup-info p {
+  margin: 5px 0 0;
+}
+
+.provider-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 15px 0;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.provider-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.provider-select-all input,
+.provider-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.provider-import-btn {
+  padding: 10px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.provider-import-btn:hover {
+  background: #1d4ed8;
+}
+
+.provider-import-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.provider-import-note {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f8fafc;
+  border-left: 3px solid #64748b;
+  color: #475569;
+  font-size: 13px;
+}
+
+.provider-table td strong {
+  color: #15803d;
+}
+
+@media (max-width: 900px) {
+  .provider-import-settings {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .provider-markup-info {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .provider-import-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-markup-info {
+    grid-column: auto;
+  }
+
+  .provider-selection-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

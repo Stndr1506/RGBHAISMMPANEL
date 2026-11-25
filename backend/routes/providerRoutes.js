@@ -10,18 +10,19 @@ const {
   saveProvider,
   getProviders,
   fetchProviderServices,
+   importServices,
   disconnectProvider,
 } = require("../controllers/providerController");
 
-console.log("Provider route handler check:", {
-  authMiddleware: typeof authMiddleware,
-  adminMiddleware: typeof adminMiddleware,
-  testConnection: typeof testConnection,
-  saveProvider: typeof saveProvider,
-  getProviders: typeof getProviders,
-  fetchProviderServices: typeof fetchProviderServices,
-  disconnectProvider: typeof disconnectProvider,
-});
+// console.log("Provider route handler check:", {
+//   authMiddleware: typeof authMiddleware,
+//   adminMiddleware: typeof adminMiddleware,
+//   testConnection: typeof testConnection,
+//   saveProvider: typeof saveProvider,
+//   getProviders: typeof getProviders,
+//   fetchProviderServices: typeof fetchProviderServices,
+//   disconnectProvider: typeof disconnectProvider,
+// });
 
 router.post(
   "/test",
@@ -51,11 +52,20 @@ router.get(
   fetchProviderServices,
 );
 
+router.post(
+  "/:providerId/import",
+  authMiddleware,
+  adminMiddleware,
+  importServices,
+);
+
 router.patch(
   "/:providerId/disconnect",
   authMiddleware,
   adminMiddleware,
   disconnectProvider,
 );
+
+
 
 module.exports = router;
