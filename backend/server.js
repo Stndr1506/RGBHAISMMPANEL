@@ -27,6 +27,9 @@ const apiKeyRoutes = require("./routes/apiKeyRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const adminSettingRoutes = require("./routes/adminSettingRoutes");
 const providerRoutes = require("./routes/providerRoutes");
+const {
+  startProviderOrderSyncScheduler,
+} = require("./services/providerOrderSyncScheduler");
 
 
 const app = express();
@@ -105,6 +108,7 @@ app.listen(PORT, () => {
   console.log(
     `Server running on port ${PORT}`
   );
+   startProviderOrderSyncScheduler();
 });
 // const startServer = async () => {
 //   try {

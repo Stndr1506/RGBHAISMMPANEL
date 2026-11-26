@@ -28,27 +28,55 @@ const sendProviderRequest = async (apiUrl, apiKey, payload) => {
     throw new Error("Invalid provider API protocol");
   }
 
-  const response = await axios.post(
-    parsedUrl.toString(),
-    {
-      key: apiKey,
-      ...payload,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
+  let response;
+
+  try {
+    response = await axios.post(
+      parsedUrl.toString(),
+      {
+        key: apiKey,
+        ...payload,
       },
-      timeout: 20000,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 20000,
+      }
+    );
+  } catch (axiosError) {
+    const statusCode = axiosError.response?.status;
+    const responseData = axiosError.response?.data;
+
+    const providerMessage =
+      responseData?.error ||
+      responseData?.message ||
+      axiosError.message ||
+      "Provider request failed";
+
+    const error = new Error(
+      `Provider HTTP ${statusCode || "error"}: ${String(providerMessage)}`
+    );
+
+    error.providerHttpStatus = statusCode;
+
+    // A 401 means the provider rejected authentication.
+    // The existing createOrder() refund branch handles providerRejected.
+    if (statusCode === 401) {
+      error.providerRejected = true;
     }
-  );
+
+    throw error;
+  }
 
   if (response.data?.error) {
-    throw new Error(response.data.error);
+    const error = new Error(String(response.data.error));
+    error.providerRejected = true;
+    throw error;
   }
 
   return response.data;
 };
-
 // Test provider connection
 const testProviderConnection = async (apiUrl, apiKey) => {
   return sendProviderRequest(apiUrl, apiKey, {

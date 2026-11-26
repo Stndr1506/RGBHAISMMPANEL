@@ -125,7 +125,7 @@ useEffect(() => {
           </li>
           <li>
             <Link to="/admin/providers" onClick={() => setMenuOpen(false)}>
-            <CircleDollarSign size={19}/>
+            <Settings size={19}/>
              Add Provider
             </Link>
           </li>

@@ -4,6 +4,7 @@ const {
 } = require("../models/adminOrderModel");
 const {
   getAllApiOrders,
+  syncProviderOrderStatus,
 } = require("../models/orderModels");
 
 const { sql, getDB } = require("../config/db");
@@ -308,6 +309,68 @@ const updateRemains = async (req, res) => {
     });
   }
 };
+// ============================================
+// SYNC PROVIDER ORDER STATUS - ADMIN
+// ============================================
+
+const syncAdminProviderOrder = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+
+    if (!Number.isSafeInteger(orderId) || orderId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID.",
+      });
+    }
+
+    const order = await syncProviderOrderStatus(orderId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Provider order status synchronized successfully.",
+      order,
+    });
+
+  } catch (error) {
+    console.error("Admin provider sync error:", error);
+
+    const message = error.message || "Unable to synchronize provider order.";
+
+    if (
+      message === "Order not found." ||
+      message === "Provider order ID not found."
+    ) {
+      return res.status(404).json({
+        success: false,
+        message,
+      });
+    }
+
+    if (
+      message === "Order is not linked to a submitted provider order."
+    ) {
+      return res.status(400).json({
+        success: false,
+        message,
+      });
+    }
+    if (
+        message ===
+        "Provider order is already being synchronized or is not eligible."
+      ) {
+        return res.status(409).json({
+          success: false,
+          message,
+        });
+      }
+
+    return res.status(502).json({
+      success: false,
+      message: "Provider status synchronization failed.",
+    });
+  }
+};
 
 // ============================================
 // GET API ORDERS - ADMIN
@@ -371,4 +434,5 @@ module.exports = {
   updateOrderStatus,
   updateStartCount,
   updateRemains,
+  syncAdminProviderOrder,
 };

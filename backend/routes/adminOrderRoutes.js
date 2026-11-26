@@ -11,6 +11,7 @@ const {
   updateOrderStatus,
   updateStartCount,
   updateRemains,
+  syncAdminProviderOrder,
 } = require("../controllers/adminOrderController");
 
 // GET ALL ORDERS
@@ -44,6 +45,7 @@ router.patch(
   adminMiddleware,
   updateStartCount
 );
+
 // UPDATE ORDER REMAINING QUANTITY
 router.patch(
   "/orders/:id/remains",
@@ -52,6 +54,12 @@ router.patch(
   updateRemains
 );
 
-
+// SYNC PROVIDER ORDER STATUS
+router.post(
+  "/orders/:id/sync-provider",
+  authMiddleware,
+  adminMiddleware,
+  syncAdminProviderOrder
+);
 
 module.exports = router;

@@ -853,3 +853,21 @@
     padding: 16px 12px 28px;
   }
 }
+
+.provider-imported-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.provider-regular-label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
